@@ -1,0 +1,42 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - "main"
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  node:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node: [18]
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Set Up Node ${{ matrix.node }}
+        uses: actions/setup-node@v3
+        with:
+          node-version: ${{ matrix.node }}
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Install Dependencies
+        shell: bash
+        run: |-
+          npm ci
+
+      - name: Lint
+        shell: bash
+        run: |-
+          npm run lint
+
+      - name: Build
+        shell: bash
+        run: |-
+          npm run build
