@@ -5,7 +5,7 @@ import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import { PrismaClient } from "@prisma/client"
 import { prisma } from "@/lib/prisma"
 
-export const authOptions: NextAuthOptions = {
+const handler = NextAuth({
   secret: process.env.NEXTAUTH_SECRET,
   adapter: PrismaAdapter(prisma),
   providers: [
@@ -22,7 +22,6 @@ export const authOptions: NextAuthOptions = {
       },
     }),
   ],
-}
+})
 
-const handler = NextAuth(authOptions);
-export { handler as GET, handler as POST };
+export { handler as GET, handler as POST }
