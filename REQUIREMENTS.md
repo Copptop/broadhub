@@ -5,7 +5,7 @@ Be able to book/manage bookable reasources availble to a user.
 
 ## Requirements
 
-### Screens
+### UI Screens
 - [ ] Login
 - [ ] Register
 - [ ] Dashboard
@@ -52,6 +52,7 @@ Be able to book/manage bookable reasources availble to a user.
 - [ ] Welcome Message
 - [ ] User can see a list of upcoming bookings
 - [ ] User can see a list of all bookings via calendar
+- [ ] User can se other team members upcoming bookings
 
 #### Map View
 - [ ] Users can navigate World Map to find office locations
@@ -103,6 +104,11 @@ Be able to book/manage bookable reasources availble to a user.
 - [ ] Users can amend their profile info
 - [ ] Users can see all their settings
 - [ ] Users can amend their settings
+- [ ] Users can set info sharing levels
+  - [ ] None
+  - [ ] Specific Users
+  - [ ] Team
+  - [ ] Company
 
 #### Help Page
 - [ ] Users can see a list of FAQ's
@@ -115,21 +121,96 @@ Be able to book/manage bookable reasources availble to a user.
 - [ ] Users can see a list of all references used
 
 ### Non-Functional Requirements
-- [ ] Users can use the app on any device
-- [ ] Users can use the app on any browser
-- [ ] Users can use the app on any OS
-- [ ] Users can use the app on any screen size
-- [ ] Users can use the app on any screen orientation
-- [ ] Users can use the app on any network
-- [ ] Users can use the app on any location
-- [ ] Users can use the app on any time zone
-- [ ] Users can use the app on any language
-- [ ] Users can use the app on any culture
-- [ ] Users can use the app on any accessibility settings
-- [ ] Users can use the app on any assistive technology
-- [ ] Users can use the app on any input device
-- [ ] Users can use the app on any output device
+- [ ] Users can use the app on Any Browser
+- [ ] Users can use the app on Any Device
+- [ ] Users can use the app on Any OS
+- [ ] Users can use the app on Any Screen size
+- [ ] Users can use the app on Any Screen orientation
+- [ ] Users can use the app on Any Network
+- [ ] Users can use the app on Any Location
+- [ ] Users can use the app on Any Time zone
+- [ ] Users can use the app on Any Language
+- [ ] Users can use the app on Any Accessibility settings
+- [ ] Users can use the app on Any Assistive technology
+- [ ] Users can use the app on Any Input device
+- [ ] Users can use the app on Any Output device
 
 ### Security Requirements
 - [ ] Users can only access their own data
 - [ ] ?? Users can only access their own help requests
+
+
+## Compatibility - Browser
+
+- [ ] Chrome (latest version)
+- [ ] Firefox (latest version)
+- [ ] Safari (latest version)
+- [ ] Edge (latest version)
+- [ ] Internet Explorer (specific version)
+- [ ] Opera (latest version)
+
+## Compatibility - Device
+
+- [ ] Desktop computer
+- [ ] Laptop
+- [ ] Tablet (iOS/Android)
+- [ ] Smartphone (iOS/Android)
+- [ ] Smart TV
+- [ ] Wearable device (e.g., smartwatch)
+
+## Compatibility - OS (Operating System)
+
+- [ ] Windows 10
+- [ ] macOS Mojave
+- [ ] iOS 14
+- [ ] Android 11
+- [ ] Linux (specific distribution and version)
+- [ ] Chrome OS
+
+## Compatibility - Screen Size
+
+- [ ] Small (e.g., 4-inch smartphone)
+- [ ] Medium (e.g., 10-inch tablet)
+- [ ] Large (e.g., 15-inch laptop)
+- [ ] Extra-large (e.g., 27-inch desktop monitor)
+- [ ] Custom sizes (provide specific dimensions)
+
+## Compatibility - Screen Orientation
+
+- [ ] Landscape (horizontal)
+- [ ] Portrait (vertical)
+
+## Compatibility - Network
+
+- [ ] High-speed Wi-Fi
+- [ ] Cellular data (3G, 4G, 5G)
+- [ ] Slow or unstable connection
+- [ ] No network connection
+- [ ] Proxy server
+
+## Compatibility - Language
+
+- [ ] English
+- [ ] Spanish
+- [ ] French
+- [ ] German
+- [ ] Chinese
+- [ ] Arabic
+- [ ] Japanese
+- [ ] Russian
+
+## Compatibility - Accessibility Settings
+
+- [ ] Zoom level (increased or decreased)
+- [ ] High contrast mode
+- [ ] Colorblind simulation (e.g., protanopia, deuteranopia)
+- [ ] Screen reader enabled (e.g., VoiceOver, NVDA)
+- [ ] Keyboard-only navigation
+
+## Compatibility - Assistive Technology
+
+- [ ] Screen readers (e.g., JAWS, NVDA, VoiceOver)
+- [ ] Braille displays
+- [ ] Magnification tools (e.g., ZoomText, Windows Magnifier)
+- [ ] Switch control devices
+- [ ] Speech recognition software (e.g., Dragon NaturallySpeaking)
