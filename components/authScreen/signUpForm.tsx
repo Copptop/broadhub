@@ -133,7 +133,7 @@ const SignUpForm = () => {
       
       text-gray-50
       dark:text-slate-200
-      hover:text-compDMKGreyText
+      hover:text-compGreyText
       dark:hover:text-slate-300
 
       '>
