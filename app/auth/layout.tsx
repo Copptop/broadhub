@@ -11,7 +11,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
   return (
     <>
       <section className='
-      bg-white dark:bg-slate-800
+      bg-white dark:bg-zinc-800
       relative
       min-h-screen
       flex 
@@ -24,7 +24,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
         rounded-2xl
         w-5/6
         h-5/6
-        bg-white dark:bg-slate-800 
+        bg-white dark:bg-zinc-800 
         shadow-2xl 
         overflow-hidden 
         '>
@@ -41,7 +41,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             flex 
             w-1/2 
             h-full 
-            bg-white dark:bg-slate-800 
+            bg-white dark:bg-zinc-800 
             duration-1000
             
             max-lg:w-1/4
@@ -62,7 +62,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             relative 
             w-1/2 
             h-full
-            bg-white dark:bg-slate-800
+            bg-white dark:bg-zinc-800
             flex
             justify-center
             items-center

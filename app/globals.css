@@ -2,8 +2,24 @@
 @tailwind components;
 @tailwind utilities;
 
-.sidebar{
-  background-color: #34495e;
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+  -webkit-background-clip: text;
+  background-clip: text;
+  --tw-text-opacity: 1;
+  -webkit-text-fill-color: rgb(63 63 70 / var(--tw-text-opacity));
+  transition: background-color 5000s ease-in-out 0s;
+  box-shadow: inset 0 0 20px 20px inherit;
+}
+
+.dark input:-webkit-autofill,
+.dark input:-webkit-autofill:hover,
+.dark input:-webkit-autofill:focus,
+.dark input:-webkit-autofill:active {
+  --tw-text-opacity: 1;
+  -webkit-text-fill-color: rgb(212 212 216 / var(--tw-text-opacity));
 }
 
 .meeting_room,
@@ -60,4 +76,3 @@
 .desk.booked rect {
   fill: red;
 }
-
