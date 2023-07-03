@@ -18,8 +18,8 @@ const SignInPage = () => {
         <SignInForm />
 
         {/* bottom */}
-        <p className='text-center text-gray-500 dark:text-slate-300'>
-          Don&apos;t have an account yet? <Link href={'/auth/signup'} className='text-compDMKDarkBlue dark:text-compDKMDarkBlue'>Sign Up</Link>
+        <p className='text-center text-gray-500 dark:text-zinc-300'>
+          Don&apos;t have an account yet? <Link href={'/auth/signup'} className='text-Primary dark:text-Secondary'>Sign Up</Link>
         </p>
       </div>
     </>

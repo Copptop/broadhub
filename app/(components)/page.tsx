@@ -15,7 +15,7 @@ import {
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 
-import F0 from './(floorplans)/f0.tsx'
+import F0 from '../(floorplans)/f0.tsx'
 
 const navigation = [
   { name: 'Dashboard', href: '#', icon: HomeIcon, current: false },
@@ -93,7 +93,7 @@ export default function Home() {
                     </div>
                   </Transition.Child>
                   {/* Sidebar component, swap this element with another sidebar if you like */}
-                  <div className="sidebar flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4 ring-1 ring-white/10">
+                  <div className="sidebar flex grow flex-col gap-y-5 overflow-y-auto px-6 pb-4 ring-1 ring-white/10 bg-compDarkBlue">
                     <div className="flex h-16 shrink-0 items-center">
                       <img
                         className="h-8 w-auto"
