@@ -2,6 +2,9 @@ import './globals.css'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 
+import { Providers } from '@/app/providers'
+import { ThemeButton } from '@/components/ThemeToggle'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export const metadata = {
@@ -15,8 +18,14 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html className="dark" lang="en-GB">
-      <body>{children}</body>
+    <html className="light" style={{ colorScheme: 'light' }} lang="en-GB">
+      <head />
+      <body>
+        <Providers>
+          <main>{children}</main>
+          <ThemeButton />
+        </Providers>
+      </body>
       <Analytics />
     </html>
   )

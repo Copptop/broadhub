@@ -53,7 +53,7 @@ const SignUpForm = () => {
               )}
             </button>
           </div>
-          <div className={`transition-all duration-1000 ease-in-out ${isCollapsed ? 'h-0 overflow-hidden' : 'h-auto'}`}>
+          <div className={`transition-all duration-700 ease-in-out ${isCollapsed ? 'h-0 overflow-hidden' : 'h-auto'}`}>
             <br />
             <InputField name='companyCode' placeholder='Company Code' type='text' />
           </div>

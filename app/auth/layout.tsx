@@ -2,6 +2,8 @@ import '../globals.css'
 import { ReactNode } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
+import { useTheme } from 'next-themes';
+import { ThemeButton } from '@/components/ThemeToggle';
 
 interface RootLayoutProps {
   children: ReactNode;
@@ -42,7 +44,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             w-1/2 
             h-full 
             bg-white dark:bg-zinc-800 
-            duration-1000
+            duration-700
             
             max-lg:w-1/4
             max-sm:hidden
@@ -66,7 +68,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             flex
             justify-center
             items-center
-            duration-1000
+            duration-700
             text-center
 
             max-lg:w-3/4
