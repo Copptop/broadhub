@@ -3,7 +3,6 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import SignUpForm from '@/components/authScreen/signUpForm';
-import { ThemeButton } from '@/components/ThemeToggle';
 
 const SignUpPage = () => {
 

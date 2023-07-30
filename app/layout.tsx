@@ -3,7 +3,8 @@ import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
 
 import { Providers } from '@/app/providers'
-import { ThemeButton } from '@/components/ThemeToggle'
+import ThemeButton from '@/components/ThemeToggle'
+import ContentContainer from '@/components/ContentContainer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,7 +23,9 @@ export default function RootLayout({
       <head />
       <body>
         <Providers>
-          <main>{children}</main>
+          <ContentContainer>
+            {children}
+          </ContentContainer>
           <ThemeButton />
         </Providers>
       </body>

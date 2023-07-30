@@ -46,6 +46,9 @@ export const SubmitButton = forwardRef<HTMLButtonElement, ButtonProps>(({
         dark:text-zinc-200
         hover:text-compGreyText
         dark:hover:text-zinc-300
+
+        transition-colors
+        duration-1000
       `,
         disabled && 'opacity-75 cursor-not-allowed',
         className
@@ -88,20 +91,23 @@ export const InvertedSubmitButton = forwardRef<HTMLButtonElement, ButtonProps>((
         hover:border-compDarkBlue
         dark:border-compDKMLightBlue
         dark:hover:border-compDKMDarkBlue
-
+        
         hover:bg-gradient-to-r
         hover:from-compLightBlue
         hover:to-compDarkBlue
-
+        
         dark:hover:bg-gradient-to-r
         dark:hover:from-compDKMLightBlue
         dark:hover:to-compDKMDarkBlue
-
+        
         text-compGreyText
         hover:text-gray-50
         dark:text-zinc-300
         dark:hover:text-zinc-100
-      `,
+        
+        transition-colors
+        duration-1000
+        `,
         disabled && 'opacity-75 cursor-not-allowed',
         className
       )}
