@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import { useTheme } from 'next-themes';
-import { ThemeButton } from '@/components/ThemeToggle';
+import ThemeButton from "@/components/ThemeToggle";
 
 interface RootLayoutProps {
   children: ReactNode;
