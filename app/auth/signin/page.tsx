@@ -4,6 +4,8 @@ import Head from 'next/head';
 import Link from 'next/link';
 
 import SignInForm from '@/components/authScreen/signInForm';
+import { VerticalLogo } from '@/components/logo';
+
 
 const SignInPage = () => {
 
@@ -14,7 +16,7 @@ const SignInPage = () => {
       </Head>
 
       <div className='w-3/4 mx-auto flex flex-col gap-5'>
-        <Image className='mb-5 self-center' src='/(branding)/(lightmode)/logo3Alt.svg' alt='BroadridgeHub' width={450} height={450} />
+        <VerticalLogo className='self-center w-2/3 h-auto' />
         <SignInForm />
 
         {/* bottom */}

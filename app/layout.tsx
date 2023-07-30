@@ -1,5 +1,10 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
+import { Analytics } from '@vercel/analytics/react'
+
+import { Providers } from '@/app/providers'
+import ThemeButton from '@/components/ThemeToggle'
+import ContentContainer from '@/components/ContentContainer'
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -14,8 +19,17 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html className="dark" lang="en-GB">
-      <body>{children}</body>
+    <html className="light" style={{ colorScheme: 'light' }} lang="en-GB">
+      <head />
+      <body>
+        <Providers>
+          <ContentContainer>
+            {children}
+          </ContentContainer>
+          <ThemeButton />
+        </Providers>
+      </body>
+      <Analytics />
     </html>
   )
 }
