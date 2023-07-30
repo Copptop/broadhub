@@ -74,7 +74,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   <div className="absolute left-full top-0 flex w-16 justify-center pt-5">
                     <button type="button" className="-m-2.5 p-2.5" onClick={() => setSidebarOpen(false)}>
                       <span className="sr-only">Close sidebar</span>
-                      <XMarkIcon className="h-6 w-6 text-zinc-300" aria-hidden="true" />
+                      <XMarkIcon className="h-6 w-6 text-zinc-200" aria-hidden="true" />
                     </button>
                   </div>
                 </Transition.Child>
@@ -103,10 +103,10 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       <li className="mt-auto">
                         <Link
                           href="/settings"
-                          className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-zinc-300 hover:bg-Primary hover:text-zinc-200"
+                          className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-zinc-200 hover:bg-Primary hover:text-zinc-100"
                         >
                           <Cog6ToothIcon
-                            className="h-6 w-6 shrink-0 text-zinc-300 group-hover:text-zinc-200"
+                            className="h-6 w-6 shrink-0 text-zinc-200 group-hover:text-zinc-100"
                             aria-hidden="true"
                           />
                           Settings
@@ -146,7 +146,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               <li className="mt-auto">
                 <a
                   href="#"
-                  className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-zinc-300 hover:bg-Primary hover:text-zinc-200"
+                  className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-zinc-200 hover:bg-Primary hover:text-zinc-100"
                 >
                   <Cog6ToothIcon
                     className="h-6 w-6 shrink-0 text-zinc-300 group-hover:text-zinc-200"
