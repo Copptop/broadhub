@@ -1,8 +1,8 @@
 export default function Example() {
   return (
     <>
-      <div>
-        Dashboard
+      <div className="">
+        Map View
       </div>
     </>
   )

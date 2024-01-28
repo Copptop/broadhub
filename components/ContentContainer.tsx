@@ -2,8 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import Sidebar from '@/components/Sidebar';
-import TopBar from '@/components/Topbar';
+import Sidebar from '@/components/navigation/sidebar/Sidebar';
+import TopBar from '@/components/navigation/topbar/Topbar';
 
 interface ContentContainerProps {
   children: React.ReactNode;

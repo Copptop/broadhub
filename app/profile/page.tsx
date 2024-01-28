@@ -2,7 +2,7 @@ export default function Example() {
   return (
     <>
       <div>
-        Dashboard
+        profile page
       </div>
     </>
   )

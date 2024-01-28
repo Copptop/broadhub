@@ -2,7 +2,7 @@ export default function Example() {
   return (
     <>
       <div>
-        Dashboard
+        analytics
       </div>
     </>
   )
