@@ -85,6 +85,7 @@ const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
             leaveTo="transform opacity-0 scale-95"
           >
             <Menu.Items className="absolute right-0 z-50 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-zinc-700 py-1 shadow-lg ring-1 ring-zinc-900/5 focus:outline-none">
+
               {userNavigation.map((item) => (
                 <Menu.Item key={item.name}>
                   {({ active }) => (

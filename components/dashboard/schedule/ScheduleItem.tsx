@@ -22,7 +22,7 @@ const userNavigation = [
   { name: 'Edit', href: '/bookings' },
   { name: 'Cancel', href: '/bookings' },
 ];
-
+        
 export const ScheduleItem: React.FC<ScheduleItemProps> = ({
   id,
   resource,
@@ -99,6 +99,7 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({
                   )}
                 </Menu.Item>
               ))}
+
             </Menu.Items>
           </Transition>
         </Menu>

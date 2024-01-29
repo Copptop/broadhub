@@ -62,6 +62,7 @@ export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resource
                         className={twMerge(
                           active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
                           'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
+
                         )}
                       >
                         {item.name}
