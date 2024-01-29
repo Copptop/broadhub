@@ -3,33 +3,20 @@
 import React from 'react';
 import ScheduleSection from '@/components/dashboard/schedule/ScheduleSection'
 import CalendarSection from '@/components/dashboard/calendar/CalendarSection'
+import DashboardHeader from '@/components/dashboard/DashboardHeader';
 
-const meetings = [
-  {
-    id: 1,
-    name: 'Leslie Alexander',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-01-21T13:00',
-    endDatetime: '2022-01-21T14:30',
-  },
-  {
-    id: 2,
-    name: 'Leslie Alexander',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-01-21T13:00',
-    endDatetime: '2022-01-21T14:30',
-  },
-  {
-    id: 3,
-    name: 'Leslie Alexander',
-    imageUrl:
-      'https://images.unsplash.com/photo-1494790108377-be9c29b29330?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80',
-    startDatetime: '2022-01-21T13:00',
-    endDatetime: '2022-01-21T14:30',
-  },
-  // More meetings...
+const ondaybookings = [
+  { id: 1, resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 2, resource: 'Desk 2', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 3, resource: 'Room 1', resourceType: "room", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 4, resource: 'Room 2', resourceType: "room", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+]
+
+const upcomingbookings = [
+  { id: 1, resource: 'Desk 1', resourceType: "desk", href: '#', datetime: '2024-01-21T13:00' },
+  { id: 2, resource: 'Desk 2', resourceType: "desk", href: '#', datetime: '2024-01-21T13:00' },
+  { id: 3, resource: 'Room 1', resourceType: "room", href: '#', datetime: '2024-01-21T13:00' },
+  { id: 4, resource: 'Room 2', resourceType: "room", href: '#', datetime: '2024-01-21T13:00' },
 ]
 
 function classNames(...classes: any[]) {
@@ -38,11 +25,12 @@ function classNames(...classes: any[]) {
 
 export default function Dashboard() {
   return (
-    <div className='p-6'>
-      <div className="md:grid md:grid-cols-2 md:divide-x md:divide-gray-200">
+    <div className='px-6 py-4'>
+      <DashboardHeader data={upcomingbookings} />
+      <div className="py-4 md:grid md:grid-cols-2 md:divide-x md:divide-zinc-200 dark:md:divide-zinc-500">
         <CalendarSection />
         <section className="mt-12 md:mt-0 md:pl-14">
-          <ScheduleSection meetings={meetings} />
+          <ScheduleSection schedules={ondaybookings} />
         </section>
       </div>
     </div>

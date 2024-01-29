@@ -29,7 +29,7 @@ const CalendarSection: React.FC = () => {
   return (
     <>
       <div className="md:pr-14">
-        <div className='px-5'>
+        <div className='px-5 '>
           <CalendarHeader
             currentMonth={currentMonth}
             onPreviousMonth={previousMonth}
@@ -37,7 +37,7 @@ const CalendarSection: React.FC = () => {
             onNextMonth={nextMonth}
           />
         </div>
-        <div className="mt-10 grid grid-cols-7 text-center  leading-6 text-s text-gray-800 font-semibold">
+        <div className="mt-7 grid grid-cols-7 text-center  leading-6 text-s font-semibold text-zinc-700 dark:text-zinc-300">
           <div>S</div>
           <div>M</div>
           <div>T</div>
@@ -48,7 +48,7 @@ const CalendarSection: React.FC = () => {
         </div>
         <div className="mt-2 grid grid-cols-7 text-sm">
           {days.map((day, dayIdx) => (
-            <CalendarDay key={day.toISOString()} day={day} dayIndex={dayIdx} />
+            <CalendarDay key={day.toISOString()} day={day} dayIndex={dayIdx} currentMonth={currentMonth} />
           ))}
         </div>
       </div>

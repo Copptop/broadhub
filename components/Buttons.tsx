@@ -42,7 +42,7 @@ export const SubmitButton = forwardRef<HTMLButtonElement, ButtonProps>(({
         dark:hover:to-zincfrom-zinc-800
   
         
-        text-gray-50
+        text-zinc-50
         dark:text-zinc-200
         hover:text-compGreyText
         dark:hover:text-zinc-300
@@ -101,7 +101,7 @@ export const InvertedSubmitButton = forwardRef<HTMLButtonElement, ButtonProps>((
         dark:hover:to-compDKMDarkBlue
         
         text-compGreyText
-        hover:text-gray-50
+        hover:text-zinc-50
         dark:text-zinc-300
         dark:hover:text-zinc-100
         

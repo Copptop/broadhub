@@ -30,7 +30,7 @@ const ContentContainer = ({ children }: ContentContainerProps) => {
         <div className="lg:pl-72">
           <TopBar topbarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           <main className="pd-4">
-            <div className="pd-4 sm:pd-6 lg:pd-8">{children}</div>
+            <div className="pd-4 sm:pd-6 lg:pd-8 ">{children}</div>
           </main>
         </div>
       </div>

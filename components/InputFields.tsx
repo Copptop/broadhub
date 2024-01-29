@@ -23,7 +23,7 @@ export const InputField = forwardRef<HTMLInputElement, InputFieldProps>(({
       {icon && (
         <span className='icon flex items-center rounded-xl bg-zinc-50 dark:bg-zinc-600 px-4 max-sm:hidden'>
           {React.cloneElement(icon as React.ReactElement, {
-            className: 'ml-2 h-5 w-5 text-gray-400 dark:text-zinc-800',
+            className: 'ml-2 h-5 w-5 text-zinc-400 dark:text-zinc-800',
             'aria-hidden': 'true',
           })}
         </span>

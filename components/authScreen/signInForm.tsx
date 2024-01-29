@@ -27,10 +27,10 @@ const SignInForm = () => {
 
         <div className="relative mt-2 mb-2">
           <div className="absolute inset-0 flex items-center" aria-hidden="true">
-            <div className="w-full border-t border-gray-300 dark:border-zinc-300" />
+            <div className="w-full border-t border-zinc-300 dark:border-zinc-300" />
           </div>
           <div className="relative flex justify-center">
-            <span className="bg-zinc-50 dark:bg-zinc-800 px-2 text-lg text-gray-500 dark:text-zinc-300">OR</span>
+            <span className="bg-zinc-50 dark:bg-zinc-800 px-2 text-lg text-zinc-500 dark:text-zinc-300">OR</span>
           </div>
         </div>
 

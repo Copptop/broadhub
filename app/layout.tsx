@@ -21,7 +21,7 @@ export default function RootLayout({
   return (
     <html className="light" style={{ colorScheme: 'light' }} lang="en-GB">
       <head />
-      <body>
+      <body className='bg-white dark:bg-zinc-900'>
         <Providers>
           <ContentContainer>
             {children}
