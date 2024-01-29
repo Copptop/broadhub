@@ -18,6 +18,11 @@ interface ScheduleItemProps {
   endDateTime: string;
 }
 
+const userNavigation = [
+  { name: 'Edit', href: '/bookings' },
+  { name: 'Cancel', href: '/bookings' },
+];
+        
 export const ScheduleItem: React.FC<ScheduleItemProps> = ({
   id,
   resource,
@@ -78,35 +83,23 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({
             leaveFrom="transform opacity-100 scale-100"
             leaveTo="transform opacity-0 scale-95"
           >
-            <Menu.Items className="absolute right-0 z-10 mt-2 w-36 origin-top-right rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
-              <div className="py-1">
-                <Menu.Item>
+            <Menu.Items className="absolute right-0 z-50 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-zinc-700 py-1 shadow-lg ring-1 ring-zinc-900/5 focus:outline-none">
+              {userNavigation.map((item) => (
+                <Menu.Item key={item.name}>
                   {({ active }) => (
                     <a
-                      href="#"
+                      href={item.href}
                       className={twMerge(
-                        active ? 'bg-zinc-100 text-zinc-900' : 'text-zinc-700',
-                        'block px-4 py-2 text-sm'
+                        active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
+                        'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
                       )}
                     >
-                      Edit
+                      {item.name}
                     </a>
                   )}
                 </Menu.Item>
-                <Menu.Item>
-                  {({ active }) => (
-                    <a
-                      href="#"
-                      className={twMerge(
-                        active ? 'bg-zinc-100 text-zinc-900' : 'text-zinc-700',
-                        'block px-4 py-2 text-sm'
-                      )}
-                    >
-                      Cancel
-                    </a>
-                  )}
-                </Menu.Item>
-              </div>
+              ))}
+
             </Menu.Items>
           </Transition>
         </Menu>

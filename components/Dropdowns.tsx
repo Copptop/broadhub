@@ -24,7 +24,7 @@ const Dropdown: React.FC<DropdownProps> = ({ items, renderTrigger }) => {
         leaveFrom="transform opacity-100 scale-100"
         leaveTo="transform opacity-0 scale-95"
       >
-        <Menu.Items className="absolute right-0 z-10 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-zinc-600 py-1 shadow-lg ring-1 ring-zinc-900/5 focus:outline-none">
+        <Menu.Items className="absolute right-0 z-50 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-zinc-700 py-1 shadow-lg ring-1 ring-zinc-900/5 focus:outline-none">
           <div className="py-1">
             {items.map((item, index) => (
               <Menu.Item key={index}>
@@ -33,7 +33,7 @@ const Dropdown: React.FC<DropdownProps> = ({ items, renderTrigger }) => {
                     onClick={item.onClick}
                     className={twMerge(
                       active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
-                      'flex items-center px-4 py-2 text-sm text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-700 rounded-md'
+                      'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
                     )}
                   >
                     {item.content}
