@@ -34,7 +34,7 @@ const SignUpForm = () => {
           <div className="relative flex justify-center">
             <button
               type="button"
-              className="inline-flex items-center gap-x-1.5 rounded-full bg-zinc-50 dark:bg-zinc-600 px-3 py-1.5 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm ring-1 ring-inset ring-gray-300 dark:ring-zinc-800 hover:bg-gray-50 dark:hover:bg-zinc-600"
+              className="inline-flex items-center gap-x-1.5 rounded-full bg-zinc-50 dark:bg-zinc-600 px-3 py-1.5 text-sm font-semibold text-zinc-700 dark:text-zinc-300 shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-800 hover:bg-zinc-50 dark:hover:bg-zinc-600"
               onClick={(event) => {
                 event.preventDefault();
                 toggleCollapse();

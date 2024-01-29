@@ -13,19 +13,19 @@ import {
 } from '@heroicons/react/24/outline'
 
 import { StandardLogo } from '@/components/logo';
-import { SidebarItem, AdminSidebarItem } from '@/components/SidebarItems'
+import { SidebarItem, AdminSidebarItem } from '@/components/navigation/sidebar/SidebarItems'
 import Link from 'next/link';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
-  { name: 'Map View', href: '/mapview', icon: MapIcon },
-  { name: 'List View', href: '/listview', icon: QueueListIcon },
+  { name: 'Map View', href: '/map', icon: MapIcon },
+  { name: 'List View', href: '/list', icon: QueueListIcon },
   { name: 'Previous Bookings', href: '/bookings', icon: TicketIcon },
 ]
 const tools = [
   { name: 'Analytics', href: '/analytics', initial: 'A' },
-  { name: 'Manage Users', href: '/usermanagement', initial: 'U' },
-  { name: 'Manage Bookings', href: '/bookingmanagement', initial: 'B' },
+  { name: 'Manage Users', href: '/management/users', initial: 'U' },
+  { name: 'Manage Bookings', href: '/management/bookings', initial: 'B' },
 ]
 interface SidebarProps {
   sidebarOpen: boolean;
@@ -145,7 +145,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               <li className="mt-auto">
                 <a
-                  href="#"
+                  href="/settings"
                   className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-zinc-200 hover:bg-Primary hover:text-zinc-100"
                 >
                   <Cog6ToothIcon

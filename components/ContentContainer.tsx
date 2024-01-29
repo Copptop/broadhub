@@ -2,8 +2,8 @@
 
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import Sidebar from '@/components/Sidebar';
-import TopBar from '@/components/Topbar';
+import Sidebar from '@/components/navigation/sidebar/Sidebar';
+import TopBar from '@/components/navigation/topbar/Topbar';
 
 interface ContentContainerProps {
   children: React.ReactNode;
@@ -30,7 +30,7 @@ const ContentContainer = ({ children }: ContentContainerProps) => {
         <div className="lg:pl-72">
           <TopBar topbarOpen={sidebarOpen} setSidebarOpen={setSidebarOpen} />
           <main className="pd-4">
-            <div className="pd-4 sm:pd-6 lg:pd-8">{children}</div>
+            <div className="pd-4 sm:pd-6 lg:pd-8 ">{children}</div>
           </main>
         </div>
       </div>
