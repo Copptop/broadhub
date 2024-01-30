@@ -12,7 +12,7 @@ interface BookingCardsProps {
   data: Booking[];
 }
 
-const DashboardHeader = ({ data }: { data: Booking[] }) => {
+const DashboardHeader = ({ data }: BookingCardsProps) => {
   return (
     <>
       <div className="">

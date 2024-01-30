@@ -1,9 +1,7 @@
-import { Menu, Transition } from '@headlessui/react';
 import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, EllipsisVerticalIcon } from '@heroicons/react/24/solid';
-import React, { Fragment } from 'react';
-import { twMerge } from 'tailwind-merge';
+import React from 'react';
 import { format } from 'date-fns';
-import { Dropdown } from './Dropdowns';
+import { Dropdown } from '@/components/Dropdowns';
 
 interface BookingCardProps {
   id: number;

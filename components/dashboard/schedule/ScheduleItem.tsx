@@ -1,11 +1,8 @@
 'use client'
 
-import React, { Fragment } from 'react';
-import Link from 'next/link';
-import { twMerge } from 'tailwind-merge';
+import React from 'react';
 import { usePathname } from 'next/navigation';
-import { Menu, Transition } from '@headlessui/react';
-import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, CalendarIcon, EllipsisHorizontalIcon, EllipsisVerticalIcon, MapPinIcon } from '@heroicons/react/24/solid';
+import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, CalendarIcon, EllipsisHorizontalIcon, MapPinIcon } from '@heroicons/react/24/solid';
 import { format } from 'date-fns';
 import { Dropdown } from '@/components/Dropdowns';
 

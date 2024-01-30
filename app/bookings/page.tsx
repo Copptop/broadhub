@@ -1,6 +1,5 @@
 import { SubmitButton } from '@/components/Buttons'
 import { Table } from '@/components/table'
-import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 
 const rawBookings = [

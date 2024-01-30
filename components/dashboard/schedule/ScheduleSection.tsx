@@ -1,9 +1,5 @@
 import { ScheduleItem } from '@/components/dashboard/schedule/ScheduleItem'
-import { Menu, Transition } from '@headlessui/react';
-import { CalendarIcon, EllipsisHorizontalIcon, MapPinIcon } from '@heroicons/react/24/solid';
 import { format, startOfToday } from 'date-fns';
-import { Fragment } from 'react';
-import { twMerge } from 'tailwind-merge';
 
 interface schedule {
   id: number;
