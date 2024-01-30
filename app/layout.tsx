@@ -19,7 +19,7 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html className="light" style={{ colorScheme: 'light' }} lang="en-GB">
+    <html className="light" lang="en-GB">
       <head />
       <body className='bg-white dark:bg-zinc-900'>
         <Providers>
