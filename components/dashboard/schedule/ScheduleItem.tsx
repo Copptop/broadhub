@@ -22,7 +22,7 @@ const userNavigation = [
   { name: 'Edit', href: '/bookings' },
   { name: 'Cancel', href: '/bookings' },
 ];
-        
+
 export const ScheduleItem: React.FC<ScheduleItemProps> = ({
   id,
   resource,
@@ -48,7 +48,7 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({
               <div className="flex items-start space-x-3">
                 <dt className="mt-0.5">
                   <span className="sr-only">Date</span>
-                  <CalendarIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />
+                  <CalendarIcon className="h-5 w-5" aria-hidden="true" />
                 </dt>
                 <dd>
                   <time dateTime={startDateTime}>
@@ -59,7 +59,7 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({
               <div className="mt-2 flex items-start space-x-3 xl:ml-3.5 xl:mt-0 xl:border-l xl:border-zinc-400 xl:border-opacity-50 xl:pl-3.5">
                 <dt className="mt-0.5">
                   <span className="sr-only">Location</span>
-                  <MapPinIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />
+                  <MapPinIcon className="h-5 w-5" aria-hidden="true" />
                 </dt>
                 <dd>{resourceLocation}</dd>
               </div>

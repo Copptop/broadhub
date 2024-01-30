@@ -28,7 +28,6 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
             'group flex gap-x-3 rounded-md p-2 text-sm leading-6 font-semibold'
           )}
         >
-          {/* Conditionally render the icon */}
           {icon && (
             <span className={twMerge(
               current ? 'text-zinc-200' : 'text-zinc-200 group-hover:text-zinc-100',

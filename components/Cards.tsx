@@ -19,21 +19,21 @@ const userNavigation = [
 
 export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resourceType, href, datetime }) => {
   const displayDate = format(datetime, 'EEEE, dd MMM yyy')
-  const iconComponent = resourceType === 'desk' ? <AcademicCapIcon className="h-5 w-5 text-zinc-700 dark:text-zinc-300" aria-hidden="true" /> : <ArrowRightEndOnRectangleIcon className="h-5 w-5 text-zinc-700 dark:text-zinc-300" aria-hidden="true" />
+  const iconComponent = resourceType === 'desk' ? <AcademicCapIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" aria-hidden="true" /> : <ArrowRightEndOnRectangleIcon className="h-5 w-5 text-zinc-300 dark:text-zinc-300" aria-hidden="true" />
 
 
   return (
     <>
-      <li key={id} className="col-span-1 flex rounded-md shadow-sm relative">
+      <li key={id} className="col-span-1 flex rounded-md shadow-lg  relative">
         <div
           className=
-          'flex w-16 flex-shrink-0 items-center justify-center rounded-l-md text-sm font-medium bg-blue-300 dark:bg-blue-700'
+          'flex w-16 flex-shrink-0 items-center justify-center rounded-l-md text-sm font-medium  bg-gradient-to-r from-compLightBlue to-compDarkBlue dark:bg-gradient-to-r dark:from-compDKMLightBlue dark:to-compDKMDarkBlue'
         >
           {iconComponent}
         </div>
-        <div className="flex flex-1 items-center justify-between truncate rounded-r-md shadow-lg bg-white dark:border-grey-800 dark:bg-darkBgSecondary">
+        <div className="flex flex-1 items-center justify-between truncate rounded-r-md bg-white dark:border-zinc-800 dark:bg-darkBgSecondary">
           <div className="flex-1 truncate px-4 py-2 text-sm">
-            <a href={href} className="font-medium text-zinc-700 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-500">
+            <a href={href} className="font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-500">
               {resource}
             </a>
             <p className="text-zinc-500 dark:text-zinc-400">{displayDate}</p>
@@ -53,7 +53,7 @@ export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resource
               leaveFrom="transform opacity-100 scale-100"
               leaveTo="transform opacity-0 scale-95"
             >
-              <Menu.Items className="absolute right-0 z-50 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-zinc-700 py-1 shadow-lg ring-1 ring-zinc-900/5 focus:outline-none">
+              <Menu.Items className="absolute right-0 z-50 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-zinc-700 py-1 ring-1 ring-zinc-900/5 focus:outline-none">
                 {userNavigation.map((item) => (
                   <Menu.Item key={item.name}>
                     {({ active }) => (
@@ -62,7 +62,6 @@ export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resource
                         className={twMerge(
                           active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
                           'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
-
                         )}
                       >
                         {item.name}

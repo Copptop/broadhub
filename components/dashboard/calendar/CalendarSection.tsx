@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { startOfToday, startOfWeek, endOfWeek, endOfMonth, parse, addMonths, add, eachDayOfInterval, format } from 'date-fns';
-import CalendarHeader from './CalendarHeader';
-import CalendarDay from './CalendarDay';
+import CalendarHeader from '@/components/dashboard/calendar/CalendarHeader';
+import CalendarDay from '@/components/dashboard/calendar/CalendarDay';
 
 const CalendarSection: React.FC = () => {
   const today = startOfToday();
