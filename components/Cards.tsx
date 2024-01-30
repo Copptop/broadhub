@@ -3,6 +3,7 @@ import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, EllipsisVerticalIcon } f
 import React, { Fragment } from 'react';
 import { twMerge } from 'tailwind-merge';
 import { format } from 'date-fns';
+import { Dropdown } from './Dropdowns';
 
 interface BookingCardProps {
   id: number;
@@ -38,40 +39,10 @@ export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resource
             </a>
             <p className="text-zinc-500 dark:text-zinc-400">{displayDate}</p>
           </div>
-          <Menu as="div">
-            <Menu.Button className="-m-1.5 flex items-center p-1.5">
-              <span className="sr-only">Open booking options</span>
-              <EllipsisVerticalIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />
-            </Menu.Button>
-
-            <Transition
-              as={Fragment}
-              enter="transition ease-out duration-100"
-              enterFrom="transform opacity-0 scale-95"
-              enterTo="transform opacity-100 scale-100"
-              leave="transition ease-in duration-75"
-              leaveFrom="transform opacity-100 scale-100"
-              leaveTo="transform opacity-0 scale-95"
-            >
-              <Menu.Items className="absolute right-0 z-50 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-zinc-700 py-1 ring-1 ring-zinc-900/5 focus:outline-none">
-                {userNavigation.map((item) => (
-                  <Menu.Item key={item.name}>
-                    {({ active }) => (
-                      <a
-                        href={item.href}
-                        className={twMerge(
-                          active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
-                          'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
-                        )}
-                      >
-                        {item.name}
-                      </a>
-                    )}
-                  </Menu.Item>
-                ))}
-              </Menu.Items>
-            </Transition>
-          </Menu>
+          <Dropdown userNavigation={userNavigation}>
+            <span className="sr-only">Open booking options</span>
+            <EllipsisVerticalIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />
+          </Dropdown>
         </div>
       </li>
     </>
