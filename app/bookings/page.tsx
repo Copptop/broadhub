@@ -4,7 +4,7 @@ import { useState } from 'react'
 import { SubmitButton } from '@/components/Buttons'
 import { Table } from '@/components/Tables'
 import { BookOpenIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
-import BookingSearchPalette from '@/components/CommandPalettes'
+import { BookingsSearchPalette } from '@/components/searchboxes/BookingsCommandPalettes'
 
 const rawBookings = [
   { id: 1, resource: 'Desk TP', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
@@ -31,13 +31,6 @@ const bookingsHeaders = [
   { name: 'Start' },
   { name: 'End' },
 ]
-
-
-const filters = [
-  { name: 'Resource', icon: <MagnifyingGlassIcon /> },
-  { name: 'Location', icon: <BookOpenIcon /> },
-  // Add more filters as needed
-];
 
 export default function BookingsPage() {
   const [showCommandPalette, setShowCommandPalette] = useState(false);
@@ -87,7 +80,7 @@ export default function BookingsPage() {
       </div>
 
       {showCommandPalette && (
-        <BookingSearchPalette onClose={handleCloseCommandPalette} />
+        <BookingsSearchPalette onClose={handleCloseCommandPalette} />
       )}
     </>
   );
