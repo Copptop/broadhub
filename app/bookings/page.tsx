@@ -1,6 +1,10 @@
+'use client';
+
+import { useState } from 'react'
 import { SubmitButton } from '@/components/Buttons'
-import { Table } from '@/components/table'
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
+import { Table } from '@/components/Tables'
+import { BookOpenIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid'
+import BookingSearchPalette from '@/components/CommandPalettes'
 
 const rawBookings = [
   { id: 1, resource: 'Desk TP', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
@@ -28,15 +32,34 @@ const bookingsHeaders = [
   { name: 'End' },
 ]
 
+
+const filters = [
+  { name: 'Resource', icon: <MagnifyingGlassIcon /> },
+  { name: 'Location', icon: <BookOpenIcon /> },
+  // Add more filters as needed
+];
+
 export default function BookingsPage() {
+  const [showCommandPalette, setShowCommandPalette] = useState(false);
+  const [searchQuery, setSearchQuery] = useState('');
+
+  const handleSearchClick = () => {
+    setShowCommandPalette(true);
+  };
+
+  const handleCloseCommandPalette = () => {
+    setShowCommandPalette(false);
+    setSearchQuery('');
+  };
+
   const bookings = rawBookings.map((booking) => {
     return {
       resource: booking.resource,
       resourceLocation: booking.resourceLocation,
       startDateTime: booking.startDateTime,
-      endDateTime: booking.endDateTime
-    }
-  }, [])
+      endDateTime: booking.endDateTime,
+    };
+  });
 
   return (
     <>
@@ -50,7 +73,10 @@ export default function BookingsPage() {
               </p>
             </div>
             <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-              <SubmitButton className='block rounded-md px-3 py-2 shadow-lg text-center text-sm font-semibold marker:focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'>
+              <SubmitButton
+                className='block rounded-md px-3 py-2 shadow-lg text-center text-sm font-semibold marker:focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
+                onClick={handleSearchClick}
+              >
                 <MagnifyingGlassIcon className="h-5 w-5 inline-block mr-2 align-middle" aria-hidden="true" />
                 <>Search Bookings</>
               </SubmitButton>
@@ -59,6 +85,10 @@ export default function BookingsPage() {
           <Table headers={bookingsHeaders} data={bookings} Actions={bookingActions} />
         </div>
       </div>
+
+      {showCommandPalette && (
+        <BookingSearchPalette onClose={handleCloseCommandPalette} />
+      )}
     </>
-  )
+  );
 }
