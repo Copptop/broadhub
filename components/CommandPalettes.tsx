@@ -4,8 +4,10 @@ import {
   MagnifyingGlassIcon,
   ExclamationTriangleIcon,
   FolderIcon,
-  LifebuoyIcon
+  LifebuoyIcon,
+  BuildingOfficeIcon
 } from '@heroicons/react/20/solid';
+import { ComputerDesktopIcon } from '@heroicons/react/24/solid';
 
 interface Resource {
   id: number;
@@ -26,7 +28,7 @@ function classNames(...classes: (string | boolean)[]): string {
 }
 
 const resources: Resource[] = [
-  { id: 1, name: 'Desk TP', category: 'desk', url: '#' },
+  { id: 1, name: 'bash test', category: 'desk', url: '#' },
   { id: 2, name: 'Desk TP', category: 'desk', url: '#' },
   { id: 3, name: 'Desk TaP', category: 'desk', url: '#' },
   { id: 4, name: 'Desk TbP', category: 'desk', url: '#' },
@@ -39,7 +41,7 @@ const resources: Resource[] = [
 const locations: Location[] = [
   {
     id: 1,
-    name: 'Marsh Wall, Canary Wharf',
+    name: 'bash Wall, Canary Wharf',
     url: '#',
     imageUrl: '',
   },
@@ -104,7 +106,7 @@ export default function BookingSearchPalette({
           leaveFrom="opacity-100"
           leaveTo="opacity-0"
         >
-          <div className="fixed inset-0 bg-gray-500 bg-opacity-25 transition-opacity" />
+          <div className="fixed inset-0 bg-zinc-500 bg-opacity-25 transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto p-4 sm:p-6 md:p-20">
@@ -117,15 +119,15 @@ export default function BookingSearchPalette({
             leaveFrom="opacity-100 scale-100"
             leaveTo="opacity-0 scale-95"
           >
-            <Dialog.Panel className="mx-auto max-w-xl transform divide-y divide-gray-100 overflow-hidden rounded-xl bg-white shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
+            <Dialog.Panel className="mx-auto max-w-xl transform divide-y divide-zinc-200 dark:divide-zinc-500 overflow-hidden rounded-xl bg-white dark:border-zinc-600 dark:bg-darkBgSecondary shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
               <Combobox onChange={(item: any) => (window.location.href = item.url)}>
                 <div className="relative">
                   <MagnifyingGlassIcon
-                    className="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-gray-400"
+                    className="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-zinc-400"
                     aria-hidden="true"
                   />
                   <Combobox.Input
-                    className="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-gray-900 placeholder:text-gray-400 focus:ring-0 sm:text-sm"
+                    className="h-12 w-full border-0 bg-transparent pl-11 pr-4 text-zinc-700 dark:text-zinc-300 placeholder:text-zinc-400 focus:ring-0 sm:text-sm"
                     placeholder="Search..."
                     onChange={(event) => setRawQuery(event.target.value)}
                   />
@@ -137,64 +139,68 @@ export default function BookingSearchPalette({
                     className="max-h-80 transform-gpu scroll-py-10 scroll-pb-2 space-y-4 overflow-y-auto p-4 pb-2"
                   >
                     {filteredResources.length > 0 && (
-                      <li>
-                        <h2 className="text-xs font-semibold text-gray-900">Resources</h2>
-                        <ul className="-mx-4 mt-2 text-sm text-gray-700">
-                          {filteredResources.map((resource) => (
-                            <Combobox.Option
-                              key={resource.id}
-                              value={resource}
-                              className={({ active }) =>
-                                classNames(
-                                  'flex cursor-default select-none items-center px-4 py-2',
-                                  active && 'bg-indigo-600 text-white'
-                                )
-                              }
-                            >
-                              {({ active }) => (
-                                <>
-                                  <FolderIcon
-                                    className={classNames('h-6 w-6 flex-none', active ? 'text-white' : 'text-gray-400')}
-                                    aria-hidden="true"
-                                  />
-                                  <span className="ml-3 flex-auto truncate">{resource.name}</span>
-                                </>
-                              )}
-                            </Combobox.Option>
-                          ))}
-                        </ul>
-                      </li>
+                      <ul>
+                        <li>
+                          <h2 className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Resources</h2>
+                          <li className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                            {filteredResources.map((resource) => (
+                              <Combobox.Option
+                                key={resource.id}
+                                value={resource}
+                                className={({ active }) =>
+                                  classNames(
+                                    'flex cursor-default select-none items-center px-4 py-2 ',
+                                    active && 'bg-blue-700 text-zinc-200'
+                                  )
+                                }
+                              >
+                                {({ active }) => (
+                                  <>
+                                    <ComputerDesktopIcon
+                                      className={classNames('h-6 w-6 flex-none', active ? 'text-zinc-600 dark:text-zinc-200' : 'text-zinc-600 dark:text-zinc-200')}
+                                      aria-hidden="true"
+                                    />
+                                    <span className="ml-3 flex-auto truncate">{resource.name}</span>
+                                  </>
+                                )}
+                              </Combobox.Option>
+                            ))}
+                          </li>
+                        </li>
+                      </ul>
                     )}
                     {filteredLocations.length > 0 && (
-                      <li>
-                        <h2 className="text-xs font-semibold text-gray-900">Locations</h2>
-                        <ul className="-mx-4 mt-2 text-sm text-gray-700">
-                          {filteredLocations.map((location) => (
-                            <Combobox.Option
-                              key={location.id}
-                              value={location}
-                              className={({ active }) =>
-                                classNames(
-                                  'flex cursor-default select-none items-center px-4 py-2',
-                                  active && 'bg-indigo-600 text-white'
-                                )
-                              }
-                            >
-                              <img src={location.imageUrl} alt="" className="h-6 w-6 flex-none rounded-full" />
-                              <span className="ml-3 flex-auto truncate">{location.name}</span>
-                            </Combobox.Option>
-                          ))}
-                        </ul>
-                      </li>
+                      <ul>
+                        <li>
+                          <h2 className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Locations</h2>
+                          <li className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                            {filteredLocations.map((location) => (
+                              <Combobox.Option
+                                key={location.id}
+                                value={location}
+                                className={({ active }) =>
+                                  classNames(
+                                    'flex cursor-default select-none items-center px-4 py-2',
+                                    active && 'bg-blue-700 text-zinc-200'
+                                  )
+                                }
+                              >
+                                <BuildingOfficeIcon className={classNames('h-6 w-6 flex-none')} aria-hidden="true" />
+                                <span className="ml-3 flex-auto truncate">{location.name}</span>
+                              </Combobox.Option>
+                            ))}
+                          </li>
+                        </li>
+                      </ul>
                     )}
                   </Combobox.Options>
                 )}
 
                 {rawQuery === '?' && (
                   <div className="px-6 py-14 text-center text-sm sm:px-14">
-                    <LifebuoyIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
-                    <p className="mt-4 font-semibold text-gray-900">Help with searching</p>
-                    <p className="mt-2 text-gray-500">
+                    <LifebuoyIcon className="mx-auto h-6 w-6 text-zinc-400" aria-hidden="true" />
+                    <p className="mt-4 font-semibold text-zinc-700 dark:text-zinc-300">Help with searching</p>
+                    <p className="mt-2 text-zinc-500">
                       Use this tool to quickly search for locations and resources across our entire platform. You can also
                       use the search modifiers found in the footer below to limit the results to just locations or resources.
                     </p>
@@ -203,18 +209,18 @@ export default function BookingSearchPalette({
 
                 {query !== '' && rawQuery !== '?' && filteredResources.length === 0 && filteredLocations.length === 0 && (
                   <div className="px-6 py-14 text-center text-sm sm:px-14">
-                    <ExclamationTriangleIcon className="mx-auto h-6 w-6 text-gray-400" aria-hidden="true" />
-                    <p className="mt-4 font-semibold text-gray-900">No results found</p>
-                    <p className="mt-2 text-gray-500">We couldn’t find anything with that term. Please try again.</p>
+                    <ExclamationTriangleIcon className="mx-auto h-6 w-6 text-zinc-400" aria-hidden="true" />
+                    <p className="mt-4 font-semibold text-zinc-700 dark:text-zinc-300">No results found</p>
+                    <p className="mt-2 text-zinc-500">We couldn’t find anything with that term. Please try again.</p>
                   </div>
                 )}
 
-                <div className="flex flex-wrap items-center bg-gray-50 px-4 py-2.5 text-xs text-gray-700">
+                <div className="flex flex-wrap items-center bg-zinc-50 dark:bg-darkBgSecondary px-4 py-2.5 text-xs text-zinc-700 dark:text-zinc-300">
                   Type{' '}
                   <kbd
                     className={classNames(
-                      'mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white font-semibold sm:mx-2',
-                      rawQuery.startsWith('#') ? 'border-indigo-600 text-indigo-600' : 'border-gray-400 text-gray-900'
+                      'mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white dark:border-zinc-600 dark:bg-darkBgSecondary font-semibold sm:mx-2',
+                      rawQuery.startsWith('#') ? 'border-blue-700 text-blue-700' : 'border-zinc-400 text-zinc-700 dark:text-zinc-300'
                     )}
                   >
                     #
@@ -223,8 +229,8 @@ export default function BookingSearchPalette({
                   <span className="hidden sm:inline">to access resources,</span>
                   <kbd
                     className={classNames(
-                      'mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white font-semibold sm:mx-2',
-                      rawQuery.startsWith('>') ? 'border-indigo-600 text-indigo-600' : 'border-gray-400 text-gray-900'
+                      'mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white dark:border-zinc-600 dark:bg-darkBgSecondary font-semibold sm:mx-2',
+                      rawQuery.startsWith('>') ? 'border-blue-700 text-blue-700' : 'border-zinc-400 text-zinc-700 dark:text-zinc-300'
                     )}
                   >
                     &gt;
@@ -232,8 +238,8 @@ export default function BookingSearchPalette({
                   for locations, and{' '}
                   <kbd
                     className={classNames(
-                      'mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white font-semibold sm:mx-2',
-                      rawQuery === '?' ? 'border-indigo-600 text-indigo-600' : 'border-gray-400 text-gray-900'
+                      'mx-1 flex h-5 w-5 items-center justify-center rounded border bg-white dark:border-zinc-600 dark:bg-darkBgSecondary font-semibold sm:mx-2',
+                      rawQuery === '?' ? 'border-blue-700 text-blue-700' : 'border-zinc-400 text-zinc-700 dark:text-zinc-300'
                     )}
                   >
                     ?
