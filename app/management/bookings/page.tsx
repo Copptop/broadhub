@@ -7,7 +7,7 @@ import { AdminBookingSearchPalette } from '@/components/searchboxes/BookingsComm
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 
-const rawBookings = [
+const rawData = [
   { id: 1, user: 'Test User', resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
   { id: 2, user: 'Test User', resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
   { id: 3, user: 'Test User', resource: 'Desk 2', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
@@ -36,7 +36,7 @@ const rawBookings = [
   { id: 26, user: 'Test User', resource: 'Parking 1', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
   { id: 27, user: 'Test User', resource: 'Parking 14', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
   { id: 28, user: 'Test User', resource: 'Parking 1', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 29, user: 'Test User', resource: 'Parking 5', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 29, user: 'Test User', resource: 'Parking BTM', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
 ]
 
 const bookingActions = [
@@ -65,7 +65,7 @@ export default function BookingsPage() {
     setSearchQuery('');
   };
 
-  const bookings = rawBookings.map((booking) => {
+  const bookings = rawData.map((booking) => {
     return {
       user: booking.user,
       resource: booking.resource,
@@ -101,7 +101,7 @@ export default function BookingsPage() {
       </div>
 
       {showCommandPalette && (
-        <AdminBookingSearchPalette onClose={handleCloseCommandPalette} data={rawBookings} />
+        <AdminBookingSearchPalette onClose={handleCloseCommandPalette} data={rawData} />
       )}
     </>
   );

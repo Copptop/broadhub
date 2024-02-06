@@ -8,17 +8,14 @@ const SignUpPage = () => {
 
   return (
     <>
-      <Head>
-        <title>Sign Up</title>
-      </Head>
-
-      <div className='w-3/4 mx-auto flex flex-col gap-5 overflow-clip'>
-        <h2 className='text-5xl font-semibold text-center text-zinc-700 dark:text-zinc-300 pb-5'>Sign Up</h2>
-        <SignUpForm />
-        {/* bottom */}
-        <p className='text-center text-zinc-500 dark:text-zinc-300'>
-          Already have an account? <Link href={'/auth/signin'} className='text-Primary dark:text-Secondary'>Sign In</Link>
-        </p>
+      <div className='overflow-y-auto h-[80vh] w-full py-3'>
+        <div className='w-3/4 mx-auto flex flex-col gap-5'>
+          <h2 className='text-5xl font-semibold text-center text-zinc-700 dark:text-zinc-300 pb-5'>Sign Up</h2>
+          <SignUpForm />
+          <p className='text-center text-zinc-500 dark:text-zinc-300'>
+            Already have an account? <Link href={'/auth/signin'} className='text-Primary dark:text-Secondary'>Sign In</Link>
+          </p>
+        </div>
       </div>
     </>
   );

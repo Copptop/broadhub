@@ -6,7 +6,7 @@ import { BookingsSearchPalette } from '@/components/searchboxes/BookingsCommandP
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 
-const rawBookings = [
+const rawData = [
   { id: 1, user: 'Test User', resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
   { id: 2, user: 'Test User', resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
   { id: 3, user: 'Test User', resource: 'Desk 2', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
@@ -55,7 +55,7 @@ export default function BookingsPage() {
     setSearchQuery('');
   };
 
-  const bookings = rawBookings.map((booking) => {
+  const bookings = rawData.map((booking) => {
     return {
       resource: booking.resource,
       resourceLocation: booking.resourceLocation,
@@ -66,7 +66,7 @@ export default function BookingsPage() {
 
   return (
     <>
-      <div className="px-6 py-4">
+      <div className="px-6 py-4 ">
         <div className="">
           <div className="sm:flex sm:items-center">
             <div className="sm:flex-auto">
@@ -90,7 +90,7 @@ export default function BookingsPage() {
       </div>
 
       {showCommandPalette && (
-        <BookingsSearchPalette onClose={handleCloseCommandPalette} data={rawBookings} />
+        <BookingsSearchPalette onClose={handleCloseCommandPalette} data={rawData} />
       )}
     </>
   );

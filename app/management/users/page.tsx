@@ -3,11 +3,11 @@
 
 import { SubmitButton } from '@/components/Buttons';
 import { Table } from '@/components/Tables';
-import { AdminBookingSearchPalette } from '@/components/searchboxes/BookingsCommandPalettes';
+import { UsersSearchPalette } from '@/components/searchboxes/UsersCommandPalettes';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 
-const rawBookings = [
+const rawData = [
   { id: 1, name: 'test user name', email: 'test@email.com', role: 'test role', officeLocation: 'Marsh Wall, Canary Wharf', profilePicture: <MagnifyingGlassIcon className='h-3 w-3' /> },
   { id: 2, name: 'test user name', email: 'test@email.com', role: 'test role', officeLocation: 'Marsh Wall, Canary Wharf', profilePicture: <MagnifyingGlassIcon className='h-3 w-3' /> },
   { id: 3, name: 'test user name', email: 'test@email.com', role: 'test role', officeLocation: 'Marsh Wall, Canary Wharf', profilePicture: <MagnifyingGlassIcon className='h-3 w-3' /> },
@@ -66,7 +66,7 @@ export default function BookingsPage() {
     setSearchQuery('');
   };
 
-  const users = rawBookings.map((user) => {
+  const users = rawData.map((user) => {
     return {
       profilePicture: user.profilePicture,
       name: user.name,
@@ -82,7 +82,7 @@ export default function BookingsPage() {
         <div className="">
           <div className="sm:flex sm:items-center">
             <div className="sm:flex-auto">
-              <h1 className="text-2xl font-semibold text-zinc-700 dark:text-zinc-300">System&apos;s Bookings</h1>
+              <h1 className="text-2xl font-semibold text-zinc-700 dark:text-zinc-300">System&apos;s Users</h1>
               <p className="text-sm text-zinc-600 dark:text-zinc-500">
                 Here&apos;s a list of all the users
               </p>
@@ -102,7 +102,7 @@ export default function BookingsPage() {
       </div>
 
       {showCommandPalette && (
-        <AdminBookingSearchPalette onClose={handleCloseCommandPalette} data={rawBookings} />
+        <UsersSearchPalette onClose={handleCloseCommandPalette} data={rawData} />
       )}
     </>
   );
