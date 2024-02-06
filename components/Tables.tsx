@@ -13,14 +13,14 @@ export const Table: React.FC<table> = ({ data, Actions, headers }) => {
   }
 
   return (
-    <div className="mt-8 h-[80vh] overflow-y-auto">
-      <div className="mx-4 my-2 overflow-x-auto sm:mx-6 lg:mx-8">
+    <div className="flex mt-8 h-[80vh] overflow-y-auto">
+      <div className="w-full my-2 overflow-x-auto sm:mx-6 lg:mx-8">
         <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
           <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-500 font-semibold text-zinc-700 dark:text-zinc-300">
-            <thead>
+            <thead className="sticky top-0 z-10 bg-white dark:bg-zinc-900">
               <tr>
                 {headers.map((header) => (
-                  <th key={header.name} scope="col" className="py-3.5 px-4 text-center text-sm sm:px-1 content-center">
+                  <th key={header.name} scope="col" className="sticky top-0 py-3.5 px-4 text-center text-sm sm:px-1 content-center ">
                     {header.sortable !== false ? (
                       <a href="#" className="group inline-flex">
                         {header.name}

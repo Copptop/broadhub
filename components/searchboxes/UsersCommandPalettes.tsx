@@ -56,25 +56,25 @@ export function UsersSearchPalette<T>({
       <Dialog as="div" className="relative z-10" onClose={() => setOpen(false)}>
         <Transition.Child
           as={Fragment}
-          enter="ease-out duration-300"
-          enterFrom="opacity-0"
-          enterTo="opacity-100"
-          leave="ease-in duration-200"
-          leaveFrom="opacity-100"
-          leaveTo="opacity-0"
+          enter="ease-out duration-500"
+          enterFrom="backdrop-blur-none"
+          enterTo="backdrop-blur-xl"
+          leave="ease-in duration-500"
+          leaveFrom="backdrop-blur-xl"
+          leaveTo="backdrop-blur-none"
         >
-          <div className="fixed inset-0 bg-zinc-500 bg-opacity-25 transition-opacity" />
+          <div className="fixed inset-0 bg-zinc-500 bg-opacity-25 backdrop-filter backdrop-blur transition-opacity" />
         </Transition.Child>
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto p-4 sm:p-6 md:p-20">
           <Transition.Child
             as={Fragment}
-            enter="ease-out duration-300"
-            enterFrom="opacity-0 scale-95"
-            enterTo="opacity-100 scale-100"
-            leave="ease-in duration-200"
-            leaveFrom="opacity-100 scale-100"
-            leaveTo="opacity-0 scale-95"
+            enter="ease-out duration-500"
+            enterFrom="scale-95 backdrop-blur-none"
+            enterTo="scale-100 backdrop-blur-xl"
+            leave="ease-in duration-500"
+            leaveFrom="scale-100 backdrop-blur-xl"
+            leaveTo="scale-95 backdrop-blur-none"
           >
             <Dialog.Panel className="mx-auto max-w-xl transform divide-y divide-zinc-200 dark:divide-zinc-500 overflow-hidden rounded-xl bg-white dark:border-zinc-600 dark:bg-darkBgSecondary shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
               <Combobox onChange={(item: any) => (window.location.href = item.url)}>
