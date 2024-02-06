@@ -22,7 +22,7 @@ export default function RootLayout({
   return (
     <html className="light" lang="en-GB">
       <head />
-      <body className='bg-white dark:bg-zinc-900'>
+      <body className='bg-white dark:bg-zinc-900 overflow-hidden'>
         <Providers>
           <ContentContainer>
             {children}

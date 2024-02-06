@@ -9,7 +9,7 @@ interface table {
 
 export const Table: React.FC<table> = ({ data, Actions, headers }) => {
   if (Actions && !headers.some(header => header.name === "Actions")) {
-    headers.push({ name: "Actions" });
+    headers.push({ name: "Actions", sortable: false });
   }
 
   return (
@@ -21,13 +21,17 @@ export const Table: React.FC<table> = ({ data, Actions, headers }) => {
               <thead>
                 <tr>
                   {headers.map((header) => (
-                    <th key={header} scope="col" className="py-3.5 px-4 text-center text-sm sm:px-1 content-center">
-                      <a href="#" className="group inline-flex">
-                        {header.name}
-                        <span className="invisible ml-2 flex-none rounded group-hover:visible group-focus:visible">
-                          <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
-                        </span>
-                      </a>
+                    <th key={header.name} scope="col" className="py-3.5 px-4 text-center text-sm sm:px-1 content-center">
+                      {header.sortable !== false ? (
+                        <a href="#" className="group inline-flex">
+                          {header.name}
+                          <span className="invisible ml-2 flex-none rounded group-hover:visible group-focus:visible">
+                            <ChevronDownIcon className="h-5 w-5" aria-hidden="true" />
+                          </span>
+                        </a>
+                      ) : (
+                        <span>{header.name}</span>
+                      )}
                     </th>
                   ))}
                 </tr>
