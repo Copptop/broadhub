@@ -7,3 +7,4 @@ export default function Example() {
     </>
   )
 }
+// TODO: COMPETE THIS PAGE USING BOOKING FORMAT
