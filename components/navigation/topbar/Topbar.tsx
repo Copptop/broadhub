@@ -1,22 +1,12 @@
 'use client'
-import { Fragment, useState } from 'react'
-import { twMerge } from 'tailwind-merge'
-
-import { Dialog, Menu, Transition } from '@headlessui/react'
+import { useState } from 'react'
 import {
   Bars3Icon,
-  BellIcon,
-  CalendarIcon,
-  ChartPieIcon,
-  Cog6ToothIcon,
-  DocumentDuplicateIcon,
-  FolderIcon,
-  HomeIcon,
-  UsersIcon,
-  XMarkIcon,
+  BellIcon
 } from '@heroicons/react/24/outline'
 import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image'
+import { Dropdown } from '@/components/Dropdowns'
 
 const userNavigation = [
   { name: 'Your profile', href: '/profile' },
@@ -57,53 +47,23 @@ const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
         </button>
 
         {/* Profile dropdown */}
-        <Menu as="div" className="relative">
-          <Menu.Button className="-m-1.5 flex items-center p-1.5">
-            <span className="sr-only">Open user menu</span>
-            <Image
-              className="h-8 w-8 rounded-full bg-zinc-50"
-              src="/components/branding/logo.svg"
-              alt=""
-              width={32}
-              height={32}
+        <Dropdown userNavigation={userNavigation} className='relative'>
+          <span className="sr-only">Open user menu</span>
+          <Image
+            className="h-8 w-8 rounded-full bg-zinc-50"
+            src="/components/branding/logo.svg"
+            alt=""
+            width={32}
+            height={32}
 
-            />
-            <span className="hidden lg:flex lg:items-center">
-              <span className="ml-4 text-sm font-semibold leading-6 text-zinc-800 dark:text-zinc-300" aria-hidden="true">
-                Tom Cook
-              </span>
-              <ChevronDownIcon className="ml-2 h-5 w-5 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300" aria-hidden="true" />
+          />
+          <span className="hidden lg:flex lg:items-center">
+            <span className="ml-4 text-sm font-semibold leading-6 text-zinc-800 dark:text-zinc-300" aria-hidden="true">
+              Tom Cook
             </span>
-          </Menu.Button>
-          <Transition
-            as={Fragment}
-            enter="transition ease-out duration-100"
-            enterFrom="transform opacity-0 scale-95"
-            enterTo="transform opacity-100 scale-100"
-            leave="transition ease-in duration-75"
-            leaveFrom="transform opacity-100 scale-100"
-            leaveTo="transform opacity-0 scale-95"
-          >
-            <Menu.Items className="absolute right-0 z-50 mt-2.5 w-32 origin-top-right rounded-md bg-white dark:bg-zinc-700 py-1 shadow-lg ring-1 ring-zinc-900/5 focus:outline-none">
-
-              {userNavigation.map((item) => (
-                <Menu.Item key={item.name}>
-                  {({ active }) => (
-                    <a
-                      href={item.href}
-                      className={twMerge(
-                        active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
-                        'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
-                      )}
-                    >
-                      {item.name}
-                    </a>
-                  )}
-                </Menu.Item>
-              ))}
-            </Menu.Items>
-          </Transition>
-        </Menu>
+            <ChevronDownIcon className="ml-2 h-5 w-5 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300" aria-hidden="true" />
+          </span>
+        </Dropdown>
       </div>
     </div>
   );

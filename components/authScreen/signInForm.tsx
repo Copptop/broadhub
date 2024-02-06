@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 
-import { AtSymbolIcon, FingerPrintIcon, UserIcon } from '@heroicons/react/24/outline';
+import { AtSymbolIcon, FingerPrintIcon } from '@heroicons/react/24/outline';
 
 import { SubmitButton, InvertedSubmitButton } from '@/components/Buttons';
 import { InputField } from '@/components/InputFields';
