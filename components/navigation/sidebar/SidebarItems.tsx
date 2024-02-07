@@ -70,7 +70,7 @@ export const AdminSidebarItem: React.FC<AdminSidebarItem> = ({
         >
           <span className={twMerge(
             current ? 'text-zinc-200' : 'text-zinc-200 group-hover:text-zinc-100',
-            'flex h-6 w-6 shrink-0 items-center justify-center rounded-lg border border-zinc-300 bg-blue-800 text-md font-semibold')}>
+            'flex h-6 w-6 shrink-0 items-center justify-center justify-middle rounded-lg  bg-blue-800 text-md font-semibold')}>
             {initial}
           </span>
           <span className="truncate">{name}</span>

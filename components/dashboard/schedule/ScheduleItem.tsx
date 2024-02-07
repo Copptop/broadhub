@@ -5,6 +5,7 @@ import { usePathname } from 'next/navigation';
 import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, CalendarIcon, EllipsisHorizontalIcon, MapPinIcon } from '@heroicons/react/24/solid';
 import { format } from 'date-fns';
 import { Dropdown } from '@/components/Dropdowns';
+import Link from 'next/link';
 
 interface ScheduleItemProps {
   id: number;
@@ -16,10 +17,6 @@ interface ScheduleItemProps {
   endDateTime: string;
 }
 
-const userNavigation = [
-  { name: 'Edit', href: '/bookings' },
-  { name: 'Cancel', href: '/bookings' },
-];
 
 export const ScheduleItem: React.FC<ScheduleItemProps> = ({
   id,
@@ -27,8 +24,14 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({
   resourceType,
   resourceLocation,
   startDateTime,
-  endDateTime
+  endDateTime,
+  href
 }) => {
+
+  const userNavigation = [
+    { name: 'Edit', href: href },
+    { name: 'Cancel', href: href },
+  ];
   const currentPath = usePathname();
 
   startDateTime = format(startDateTime, 'd/m/y h:mm a');
@@ -41,7 +44,7 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({
         <div className="flex-auto flex items-center">
           <div className="mr-4">{iconComponent}</div>
           <div>
-            <h3 className="font-semibold text-zinc-700 dark:text-zinc-300">{resource}</h3>
+            <Link href={href} className="font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-500">{resource}</Link>
             <dl className="mt-2 flex flex-col text-zinc-500 dark:text-zinc-500 xl:flex-row">
               <div className="flex items-start space-x-3">
                 <dt className="mt-0.5">

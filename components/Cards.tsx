@@ -2,6 +2,7 @@ import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, EllipsisVerticalIcon } f
 import React from 'react';
 import { format } from 'date-fns';
 import { Dropdown } from '@/components/Dropdowns';
+import Link from 'next/link';
 
 interface BookingCardProps {
   id: number;
@@ -11,12 +12,13 @@ interface BookingCardProps {
   datetime: string;
 }
 
-const userNavigation = [
-  { name: 'Edit', href: '/bookings' },
-  { name: 'Cancel', href: '/bookings' },
-];
-
 export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resourceType, href, datetime }) => {
+
+  const userNavigation = [
+    { name: 'Edit', href: href },
+    { name: 'Cancel', href: href },
+  ];
+
   const displayDate = format(datetime, 'EEEE, dd MMM yyy')
   const iconComponent = resourceType === 'desk' ? <AcademicCapIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" aria-hidden="true" /> : <ArrowRightEndOnRectangleIcon className="h-5 w-5 text-zinc-300 dark:text-zinc-300" aria-hidden="true" />
 
@@ -32,9 +34,9 @@ export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resource
         </div>
         <div className="flex flex-1 items-center justify-between truncate rounded-r-md bg-white dark:border-zinc-800 dark:bg-darkBgSecondary">
           <div className="flex-1 truncate px-4 py-2 text-sm">
-            <a href={href} className="font-medium text-zinc-600 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-500">
+            <Link href={href} className="font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-500">
               {resource}
-            </a>
+            </Link>
             <p className="text-zinc-500 dark:text-zinc-400">{displayDate}</p>
           </div>
           <Dropdown userNavigation={userNavigation}>

@@ -7,30 +7,30 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 
 const rawData = [
-  { id: 1, user: 'Test User', resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 2, user: 'Test User', resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 3, user: 'Test User', resource: 'Desk 2', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 4, user: 'Test User', resource: 'Desk 2', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 5, user: 'Test User', resource: 'Desk 2', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 6, user: 'Test User', resource: 'Office 2', resourceType: "office", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 7, user: 'Test User', resource: 'Office 2', resourceType: "office", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 8, user: 'Test User', resource: 'Office 2', resourceType: "office", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 9, user: 'Test User', resource: 'Office 1', resourceType: "office", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 10, user: 'Test User', resource: 'Office 1', resourceType: "office", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 11, user: 'Test User', resource: 'Room 1', resourceType: "meeting room", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 12, user: 'Test User', resource: 'Room 1', resourceType: "meeting room", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 13, user: 'Test User', resource: 'Room 1', resourceType: "meeting room", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 14, user: 'Test User', resource: 'Room 3', resourceType: "meeting room", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 15, user: 'Test User', resource: 'Room 2', resourceType: "meeting room", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 16, user: 'Test User', resource: 'Parking 1', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 17, user: 'Test User', resource: 'Parking 14', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 18, user: 'Test User', resource: 'Parking 1', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 19, user: 'Test User', resource: 'Parking 5', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
-  { id: 20, user: 'Test User', resource: 'Parking 1', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: '#', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 1, user: 'Test User', resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 2, user: 'Test User', resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 3, user: 'Test User', resource: 'Desk 2', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 4, user: 'Test User', resource: 'Desk 2', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 5, user: 'Test User', resource: 'Desk 2', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 6, user: 'Test User', resource: 'Office 2', resourceType: "office", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 7, user: 'Test User', resource: 'Office 2', resourceType: "office", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 8, user: 'Test User', resource: 'Office 2', resourceType: "office", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 9, user: 'Test User', resource: 'Office 1', resourceType: "office", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 10, user: 'Test User', resource: 'Office 1', resourceType: "office", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 11, user: 'Test User', resource: 'Room 1', resourceType: "meeting room", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 12, user: 'Test User', resource: 'Room 1', resourceType: "meeting room", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 13, user: 'Test User', resource: 'Room 1', resourceType: "meeting room", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 14, user: 'Test User', resource: 'Room 3', resourceType: "meeting room", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 15, user: 'Test User', resource: 'Room 2', resourceType: "meeting room", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 16, user: 'Test User', resource: 'Parking 1', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 17, user: 'Test User', resource: 'Parking 14', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 18, user: 'Test User', resource: 'Parking 1', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 19, user: 'Test User', resource: 'Parking 5', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
+  { id: 20, user: 'Test User', resource: 'Parking 1', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
 ];
 
 const bookingActions = [
-  { name: 'View' },
+  { name: 'View', navigateTo: true },
   { name: 'Cancel' },
   { name: 'Rebook' },
 ]
@@ -61,6 +61,7 @@ export default function BookingsPage() {
       resourceLocation: booking.resourceLocation,
       startDateTime: booking.startDateTime,
       endDateTime: booking.endDateTime,
+      href: booking.href,
     };
   });
 

@@ -2,6 +2,7 @@
 import React, { Fragment, ReactNode, forwardRef } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { twMerge } from 'tailwind-merge';
+import Link from 'next/link';
 
 interface DropdownOption {
   name: string;
@@ -35,7 +36,7 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
             {userNavigation.map((item) => (
               <Menu.Item key={item.name}>
                 {({ active }) => (
-                  <a
+                  <Link
                     href={item.href}
                     className={twMerge(
                       active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
@@ -43,7 +44,7 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
                     )}
                   >
                     {item.name}
-                  </a>
+                  </Link>
                 )}
               </Menu.Item>
             ))}
