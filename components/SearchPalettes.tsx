@@ -6,6 +6,7 @@ import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { UsersIcon } from '@heroicons/react/24/outline'
 import { ChevronRightIcon } from '@heroicons/react/20/solid'
 import Image from 'next/image';
+import Link from 'next/link'
 
 const people = [
   {
@@ -132,15 +133,15 @@ export function SearchPalette() {
                                 <dd>{activeOption.phone}</dd>
                                 <dt className="col-end-1 font-semibold text-gray-900">URL</dt>
                                 <dd className="truncate">
-                                  <a href={activeOption.url} className="text-indigo-600 underline">
+                                  <Link href={activeOption.url} className="text-indigo-600 underline">
                                     {activeOption.url}
-                                  </a>
+                                  </Link>
                                 </dd>
                                 <dt className="col-end-1 font-semibold text-gray-900">Email</dt>
                                 <dd className="truncate">
-                                  <a href={`mailto:${activeOption.email}`} className="text-indigo-600 underline">
+                                  <Link href={`mailto:${activeOption.email}`} className="text-indigo-600 underline">
                                     {activeOption.email}
-                                  </a>
+                                  </Link>
                                 </dd>
                               </dl>
                               <button

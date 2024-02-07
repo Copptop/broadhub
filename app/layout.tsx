@@ -1,6 +1,7 @@
 import './globals.css'
 import { Inter } from 'next/font/google'
 import { Analytics } from '@vercel/analytics/react'
+import { SpeedInsights } from '@vercel/speed-insights/next';
 
 import { Providers } from '@/app/providers'
 import ThemeButton from '@/components/ThemeToggle'
@@ -21,10 +22,11 @@ export default function RootLayout({
   return (
     <html className="light" lang="en-GB">
       <head />
-      <body className='bg-white dark:bg-zinc-900'>
+      <body className='bg-white dark:bg-zinc-900 overflow-hidden'>
         <Providers>
           <ContentContainer>
             {children}
+            <SpeedInsights />
           </ContentContainer>
           <ThemeButton />
         </Providers>
