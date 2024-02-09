@@ -64,7 +64,7 @@ export default function Page() {
   return (
     <>
       <Breadcrumb pages={pages} />
-      <div className="px-6 py-4 h-[85ddvh] overflow-y-auto">
+      <div className="px-6 py-4 h-[85dvh] overflow-y-auto">
         <div className="px-4 sm:px-0">
           <h1 className="text-2xl font-semibold text-zinc-700 dark:text-zinc-300">User Details</h1>
         </div>

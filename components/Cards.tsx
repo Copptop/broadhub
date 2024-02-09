@@ -1,3 +1,5 @@
+
+
 import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, EllipsisVerticalIcon } from '@heroicons/react/24/solid';
 import React from 'react';
 import { format } from 'date-fns';
@@ -39,7 +41,7 @@ export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resource
             </Link>
             <p className="text-zinc-500 dark:text-zinc-400">{displayDate}</p>
           </div>
-          <Dropdown userNavigation={userNavigation}>
+          <Dropdown userNavigation={userNavigation} className='px-4'>
             <span className="sr-only">Open booking options</span>
             <EllipsisVerticalIcon className="h-5 w-5 text-zinc-400" aria-hidden="true" />
           </Dropdown>

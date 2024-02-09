@@ -1,3 +1,5 @@
+
+
 import React from 'react';
 import { twMerge } from "tailwind-merge";
 import { isToday, isSameMonth, format, isEqual, startOfToday } from 'date-fns';
@@ -16,7 +18,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({ day, dayIndex, currentMonth }
         className={twMerge(
           'mx-auto flex h-8 w-8 items-center justify-center rounded-lg font-normal hover:bg-zinc-200 hover:text-zinc-900',
           isSameMonth(day, currentMonth) ? 'text-zinc-800 dark:text-zinc-400' : 'text-zinc-400 dark:text-zinc-600 font-light',
-          (isEqual(day, startOfToday()) && isToday(day)) && 'text-blue-700 hover:text-blue-800 ',
+          (isEqual(day.getDate(), startOfToday().getDate()) && isSameMonth(day, currentMonth)) ? 'text-blue-700 hover:text-blue-800' : '',
         )}
       >
         <time dateTime={day.toISOString()}>{format(day, 'd')}</time>
