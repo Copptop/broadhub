@@ -1,3 +1,5 @@
+"use server"
+
 import { Combobox, Dialog, Transition } from '@headlessui/react';
 import {
   ExclamationTriangleIcon,
@@ -71,7 +73,7 @@ export function BookingsSearchPalette<T>({
   const filteredMeetingRoomResources =
     rawQuery === '!'
       ? meetingRoomResources
-      : query === '' || rawQuery.startsWith('!') || rawQuery.startsWith('#') || rawQuery.startsWith('>')
+      : query === '' || rawQuery.startsWith('%') || rawQuery.startsWith('#') || rawQuery.startsWith('>')
         ? []
         : meetingRoomResources.filter((resource) =>
           resource.resourceType.toLowerCase() === 'meeting room' &&
@@ -81,7 +83,7 @@ export function BookingsSearchPalette<T>({
   const filteredParkingResources =
     rawQuery === '%'
       ? parkingResources
-      : query === '' || rawQuery.startsWith('%') || rawQuery.startsWith('#') || rawQuery.startsWith('>')
+      : query === '' || rawQuery.startsWith('!') || rawQuery.startsWith('#') || rawQuery.startsWith('>')
         ? []
         : parkingResources.filter((resource) =>
           resource.resourceType.toLowerCase() === 'parking' &&

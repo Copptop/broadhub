@@ -1,3 +1,5 @@
+"use server"
+
 import { Combobox, Dialog, Transition } from '@headlessui/react';
 import {
   ExclamationTriangleIcon,

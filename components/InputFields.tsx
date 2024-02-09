@@ -1,3 +1,4 @@
+"use server"
 import '@/app/globals.css'
 import React, { forwardRef, Ref } from 'react';
 
