@@ -3,7 +3,10 @@
 import { InvertedSubmitButton, SubmitButton } from "@/components/Buttons";
 import { InputField } from '@/components/InputFields';
 import Breadcrumb from "@/components/navigation/breadcrumb";
+import { ConfirmModal } from "@/components/popups/Modal";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
+import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
+import { format } from "date-fns";
 import { useState } from 'react';
 
 interface UserProps {
@@ -26,6 +29,7 @@ const User: UserProps = {
 
 export default function Page() {
   const [isEditing, setIsEditing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
   const [editedUser, setEditedUser] = useState<UserProps>({ ...User });
 
   const handleEditToggle = () => {
@@ -36,6 +40,7 @@ export default function Page() {
   };
 
   const handleUpdate = () => {
+    // Avoid updating the 'id' field
     const updatedUser = { ...editedUser, id: User.id };
     setUser(updatedUser);
 
@@ -109,9 +114,27 @@ export default function Page() {
             ) : (
               <>
                 <SubmitButton onClick={handleEditToggle}>Edit</SubmitButton>
+                <InvertedSubmitButton onClick={() => setIsModalOpen(true)}>Delete User</InvertedSubmitButton>
               </>
             )}
           </div>
+          {isModalOpen && (
+            <ConfirmModal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+              <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-darkBgTertiary">
+                <ExclamationCircleIcon className="h-12 w-12 text-red-600" aria-hidden="true" />
+              </div>
+              <div className="mt-3 text-center sm:mt-5">
+                <h3 className="text-base font-semibold leading-6 text-zinc-700 dark:text-zinc-300">
+                  Delete User
+                </h3>
+                <div className="mt-2">
+                  <p className="text-sm text-zinc-400">
+                    Are you sure you want to delete this user? This action cannot be undone.
+                  </p>
+                </div>
+              </div>
+            </ConfirmModal>
+          )}
         </div>
       </div>
     </>

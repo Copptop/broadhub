@@ -20,7 +20,7 @@ export default function Breadcrumb({ pages }: BreadcrumbProps) {
   return (
     <>
       <nav className="flex border-b border-zinc-200 dark:border-none bg-white dark:bg-zinc-800 shadow-sm dark:shadow-md">
-        <ol role="list" className="mr-auto flex w-full mar-w-screen-xl space-r-4 px-4 sm:pr-6 lg:pr-8 text-zinc-500 dark:text-zinc-500">
+        <ol role="list" className="mr-auto flex w-full mar-w-screen-xl space-r-4 px-4 sm:pr-6 lg:pr-8 font-semibold text-zinc-700 dark:text-zinc-300">
           <li className="flex">
             <div className="flex items-center">
               <Link href="/" className="hover:text-zinc-500">

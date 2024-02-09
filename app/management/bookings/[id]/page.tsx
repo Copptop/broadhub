@@ -1,11 +1,12 @@
 'use client'
 
-import { useState } from 'react';
 import { InvertedSubmitButton, SubmitButton } from "@/components/Buttons";
-import Breadcrumb from "@/components/navigation/breadcrumb";
-import { format } from "date-fns";
-import Link from "next/link";
 import { InputField } from '@/components/InputFields';
+import Breadcrumb from "@/components/navigation/breadcrumb";
+import { ConfirmModal } from "@/components/popups/Modal";
+import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
+import { format } from "date-fns";
+import { useState } from 'react';
 
 interface BookingProps {
   id: string;
@@ -29,6 +30,7 @@ const Booking = {
 
 export default function Page() {
   const [isEditing, setIsEditing] = useState(false);
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const handleEditToggle = () => {
     if (isEditing) {
@@ -72,48 +74,48 @@ export default function Page() {
   const endDateTime = format(editedEndDateTime, 'h:mm a');
 
   const pages = [
-    { name: 'Bookings', href: '/bookings', current: false },
+    { name: 'Bookings', href: '/management/bookings', current: false },
     { name: 'Booking Details', href: `/bookings/${id}`, current: true },
   ];
 
   return (
     <>
       <Breadcrumb pages={pages} />
-      <div className="px-6 py-4">
+      <div className="px-6 py-4 h-[85dvh] overflow-y-auto">
         <div className="px-4 sm:px-0">
           <h1 className="text-2xl font-semibold text-zinc-700 dark:text-zinc-300">Booking Details</h1>
           <p className="mt-1 max-w-2xl text-lg italic leading-6 text-zinc-500">#{id}</p>
         </div>
         <div className="mt-6 border-t border-zinc-200 dark:border-zinc-500">
           <div className="divide-y divide-zinc-200 dark:divide-zinc-500">
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300">Booked For</span>
+            <div className="px-4 py-6 flex flex-row sm:px-1">
+              <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300 w-32 flex-none">Booked For</span>
               {isEditing ? (
                 <InputField name='name' placeholder={editedUser} type='text' onChange={(e) => setEditedUser(e.target.value)} />
               ) : (
-                <span className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-500 sm:col-span-1 sm:mt-0">{editedUser}</span>
+                <span className="text-sm leading-6 text-zinc-500 dark:text-zinc-500  w-32 grow">{editedUser}</span>
               )}
             </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300">Resource</span>
-              <span className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-500 sm:col-span-1 sm:mt-0">{resource}</span>
+            <div className="px-4 py-6  flex flex-row sm:px-1">
+              <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300 w-32 flex-none">Resource</span>
+              <span className="text-sm leading-6 text-zinc-500 dark:text-zinc-500  w-32 grow">{resource}</span>
             </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300">Resource Type</span>
-              <span className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-500 sm:col-span-1 sm:mt-0">{resourceType}</span>
+            <div className="px-4 py-6  flex flex-row sm:px-1">
+              <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300 w-32 flex-none">Resource Type</span>
+              <span className="text-sm leading-6 text-zinc-500 dark:text-zinc-500  w-32 grow">{resourceType}</span>
             </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300">Location</span>
-              <span className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-500 sm:col-span-1 sm:mt-0">{resourceLocation}</span>
+            <div className="px-4 py-6  flex flex-row sm:px-1">
+              <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300 w-32 flex-none">Location</span>
+              <span className="text-sm leading-6 text-zinc-500 dark:text-zinc-500  w-32 grow">{resourceLocation}</span>
             </div>
-            <div className="px-4 py-6 sm:grid sm:grid-cols-3 sm:gap-4 sm:px-0">
-              <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300">Date & Time</span>
+            <div className="px-4 py-6  flex flex-row sm:px-1">
+              <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300 w-32 flex-none">Date & Time</span>
               {isEditing ? (
-                <div className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-500 sm:col-span-1 sm:mt-0">
+                <div className="text-sm leading-6 text-zinc-500 dark:text-zinc-500  w-32 grow">
                   {startDateTime} --&gt; {endDateTime}
                 </div>
               ) : (
-                <span className="mt-1 text-sm leading-6 text-zinc-500 dark:text-zinc-500 sm:col-span-1 sm:mt-0">{startDateTime} --&gt; {endDateTime}</span>
+                <span className="text-sm leading-6 text-zinc-500 dark:text-zinc-500  w-32 grow">{startDateTime} --&gt; {endDateTime}</span>
               )}
             </div>
             <div className="flex flex-auto py-4 space-x-5">
@@ -125,10 +127,28 @@ export default function Page() {
               ) : (
                 <>
                   <SubmitButton onClick={handleEditToggle}>Edit</SubmitButton>
-                  <InvertedSubmitButton >Cancel</InvertedSubmitButton>
+                  <InvertedSubmitButton onClick={() => setIsModalOpen(true)}>Cancel Booking</InvertedSubmitButton>
                 </>
               )}
             </div>
+            {isModalOpen && (
+              <ConfirmModal open={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-darkBgTertiary">
+                  <ExclamationCircleIcon className="h-12 w-12 text-red-600" aria-hidden="true" />
+                </div>
+                <div className="mt-3 text-center sm:mt-5">
+                  <h3 className="text-base font-semibold leading-6 text-zinc-700 dark:text-zinc-300">
+                    Cancel Booking
+                  </h3>
+                  <div className="mt-2">
+                    <p className="text-sm text-zinc-400">
+                      Are you sure you want to cancel this booking? This action cannot be undone.
+                    </p>
+                  </div>
+                </div>
+              </ConfirmModal>
+            )}
+
           </div>
         </div>
       </div>

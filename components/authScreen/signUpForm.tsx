@@ -6,7 +6,7 @@ import { PlusIcon } from '@heroicons/react/20/solid';
 
 import { SubmitButton } from '@/components/Buttons';
 import { InputField } from '@/components/InputFields';
-import { AtSymbolIcon, FingerPrintIcon, MinusSmallIcon, UserIcon } from '@heroicons/react/24/outline';
+import { AtSymbolIcon, FingerPrintIcon, MinusIcon, MinusSmallIcon, UserIcon } from '@heroicons/react/24/outline';
 
 const SignUpForm = () => {
   const [isCollapsed, setIsCollapsed] = useState(true);
@@ -29,7 +29,6 @@ const SignUpForm = () => {
         <InputField name='password' placeholder='Password' type='password' icon={<FingerPrintIcon />} />
         <InputField name='passwordConfirm' placeholder='Confirm Password' type='password' icon={<FingerPrintIcon />} />
 
-        {/* collapsible field */}
         <div className="relative">
           <div className="relative flex justify-center">
             <button
@@ -47,7 +46,7 @@ const SignUpForm = () => {
                 </>
               ) : (
                 <>
-                  <MinusSmallIcon className="-ml-1 -mr-0.5 h-5 w-5 text-zinc-700 dark:text-zinc-300" aria-hidden="true" />
+                  <MinusIcon className="-ml-1 -mr-0.5 h-5 w-5 text-zinc-700 dark:text-zinc-300" aria-hidden="true" />
                   <span>Company Code</span>
                 </>
               )}
