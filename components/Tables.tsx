@@ -52,12 +52,12 @@ export const Table: React.FC<table> = ({ data, Actions, headers }) => {
                           <React.Fragment key={action.name}>
                             {action.navigateTo && dp.href ? (
                               <Link href={dp.href}>
-                                <div className="px-4 py-1 text-sm font-medium text-blue-700 hover:text-compDarkBlue dark:hover:text-compLightBlue whitespace-nowrap">
+                                <div className="px-4 py-1 text-sm font-medium text-blue-700 dark:text-blue-500 hover:text-compDarkBlue dark:hover:text-compLightBlue whitespace-nowrap">
                                   {action.name}
                                 </div>
                               </Link>
                             ) : (
-                              <span className="px-4 py-1 text-sm font-medium text-blue-700 hover:text-compDarkBlue dark:hover:text-compLightBlue whitespace-nowrap">
+                              <span className="px-4 py-1 text-sm font-medium text-blue-700 dark:text-blue-500 hover:text-compDarkBlue dark:hover:text-compLightBlue whitespace-nowrap">
                                 {action.name}
                               </span>
                             )}

@@ -2,7 +2,7 @@
 
 import { InvertedSubmitButton } from "@/components/Buttons";
 import Breadcrumb from "@/components/navigation/breadcrumbs";
-import { ConfirmModal } from "@/components/popups/Modal";
+import { ConfirmModal } from "@/components/popups/Modals";
 import { ExclamationCircleIcon } from "@heroicons/react/24/solid";
 import { format } from "date-fns";
 import { useState } from "react";

@@ -3,7 +3,7 @@
 import { InvertedSubmitButton, SubmitButton } from "@/components/Buttons";
 import { InputField } from '@/components/InputFields';
 import Breadcrumb from "@/components/navigation/breadcrumbs";
-import { ConfirmModal } from "@/components/popups/Modal";
+import { ConfirmModal } from "@/components/popups/Modals";
 import { UserCircleIcon } from "@heroicons/react/24/outline";
 import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
 import { format } from "date-fns";
