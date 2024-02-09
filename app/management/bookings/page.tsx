@@ -1,4 +1,3 @@
-// TODO: COMPETE THIS PAGE USING BOOKING FORMAT
 'use client';
 
 import { SubmitButton } from '@/components/Buttons';
