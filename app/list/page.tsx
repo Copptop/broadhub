@@ -2,7 +2,7 @@ export default function Page() {
   return (
     <>
       <div>
-        list view
+        List view
       </div>
     </>
   )
