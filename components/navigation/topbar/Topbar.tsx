@@ -10,7 +10,6 @@ import { Dropdown } from '@/components/Dropdowns'
 
 const userNavigation = [
   { name: 'Your profile', href: '/profile' },
-  { name: 'Settings', href: '/settings' },
   { name: 'Sign out', href: '/auth/signin' },
 ]
 

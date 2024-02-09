@@ -101,7 +101,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                       </li>
                       <li className="mt-auto">
                         <Link
-                          href="/settings"
+                          href="/profile"
                           className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-zinc-200 hover:bg-Primary hover:text-zinc-100"
                         >
                           <Cog6ToothIcon
@@ -143,7 +143,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
               </li>
               <li className="mt-auto">
                 <Link
-                  href="/settings"
+                  href="/profile"
                   className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-zinc-200 hover:bg-Primary hover:text-zinc-100"
                 >
                   <Cog6ToothIcon

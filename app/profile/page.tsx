@@ -21,7 +21,7 @@ const User: UserProps = {
   email: 'test@email.com',
   role: 'test role',
   officeLocation: 'Marsh Wall, Canary Wharf',
-  profilePicture: <UserCircleIcon className='h-full' />,
+  profilePicture: <UserCircleIcon className='h-4/6 lg:h-5/6' />,
 };
 
 export default function Page() {
@@ -52,8 +52,7 @@ export default function Page() {
 
 
   const pages = [
-    { name: 'Users', href: '/management/users', current: false },
-    { name: 'User Details', href: `/users/${User.id}`, current: true },
+    { name: 'Profile', href: `/profile`, current: true },
   ];
 
   return (
