@@ -8,7 +8,7 @@ const SignUpPage = () => {
 
   return (
     <>
-      <div className='overflow-y-auto h-[80vh] w-full py-3'>
+      <div className='overflow-y-auto h-[80dvh] w-full py-3'>
         <div className='w-3/4 mx-auto flex flex-col gap-5'>
           <h2 className='text-5xl font-semibold text-center text-zinc-700 dark:text-zinc-300 pb-5'>Sign Up</h2>
           <SignUpForm />

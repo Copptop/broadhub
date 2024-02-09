@@ -31,8 +31,7 @@ const rawData = [
 
 const bookingActions = [
   { name: 'View', navigateTo: true },
-  { name: 'Cancel' },
-  { name: 'Rebook' },
+  { name: 'Rebook', navigateTo: true },
 ]
 
 const bookingsHeaders = [

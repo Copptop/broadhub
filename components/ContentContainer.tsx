@@ -13,7 +13,6 @@ const ContentContainer = ({ children }: ContentContainerProps) => {
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
-  // * This is the content container for all auth pages.
   if (pathname.startsWith('/auth/')) {
     return (
       <>
@@ -22,7 +21,6 @@ const ContentContainer = ({ children }: ContentContainerProps) => {
     );
   }
 
-  // * This the default content container for all pages that are not auth pages.
   return (
     <>
       <div>

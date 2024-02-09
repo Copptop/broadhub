@@ -25,7 +25,7 @@ function classNames(...classes: any[]) {
 
 export default function Dashboard() {
   return (
-    <div className='px-6 py-4 h-[95vh] overflow-y-auto'>
+    <div className='px-6 py-4 h-[95dvh] overflow-y-auto'>
       <DashboardHeader data={upcomingbookings} />
       <div className="py-4 md:grid md:grid-cols-2 md:divide-x md:divide-zinc-200 dark:md:divide-zinc-500">
         <CalendarSection />
