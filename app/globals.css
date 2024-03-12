@@ -24,6 +24,7 @@ input:-webkit-autofill:active {
 
 .meeting_room,
 .office,
+.parking,
 .desk {
   fill: #D3D3D3;
   stroke: #bfbfbf;
@@ -32,6 +33,7 @@ input:-webkit-autofill:active {
 
 .meeting_room.booked,
 .office.booked,
+.parking.booked,
 .desk.booked {
   opacity: 0.5;
   fill: red;
@@ -39,6 +41,7 @@ input:-webkit-autofill:active {
 
 .meeting_room:hover,
 .office:hover,
+.parking:hover,
 .desk:hover path,
 .desk:hover rect {
   stroke: #333;
@@ -49,10 +52,14 @@ input:-webkit-autofill:active {
 
 .meeting_room.booked:hover,
 .office.booked:hover,
+.parking.booked:hover,
 .desk.booked:hover {
   fill: #ff9999;
 }
 
+.meeting_room,
+.office,
+.parking,
 .desk {
   cursor: pointer;
 }
@@ -75,4 +82,28 @@ input:-webkit-autofill:active {
 .desk.booked path,
 .desk.booked rect {
   fill: red;
+}
+
+.parking {
+  cursor: pointer;
+  fill: #D3D3D3;
+  stroke: #bfbfbf;
+  pointer-events: all;
+}
+
+.parking:hover {
+  stroke: #333;
+  stroke-width: 3px;
+  opacity: 0.5;
+  fill: #0066FF !important;
+}
+
+.parking.booked {
+  cursor: grab;
+  opacity: 0.5;
+  fill: red;
+}
+
+.parking.booked:hover {
+  fill: #ff9999;
 }
