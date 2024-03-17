@@ -1,8 +1,29 @@
 'use client'
 
-import React, { useRef, useEffect } from 'react';
+import { SubmitButton, InvertedSubmitButton } from '@/components/Buttons';
+import { Transition, Dialog } from '@headlessui/react';
+import { XMarkIcon, HeartIcon, ComputerDesktopIcon } from '@heroicons/react/24/solid';
+import { stat } from 'fs';
+import Image from 'next/image';
+import React, { useState, useRef, useEffect, Fragment } from 'react';
+
+interface clickedData {
+  id: string;
+  name: string;
+  type: string;
+  isFavorite: boolean;
+  bookings: bookingData[];
+}
+
+interface bookingData {
+  startDateTime: string;
+  endDateTime: string;
+}
 
 export function F_1() {
+  const [open, setOpen] = useState(false);
+  const [clickedData, setClickedData] = useState<clickedData>();
+
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -102,7 +123,44 @@ export function F_1() {
       svg.addEventListener('touchend', onPointerUp);
       svg.addEventListener('touchmove', onPointerMove);
     }
+
   }, []);
+
+  const loadClickedData = (id: string) => {
+    const data: clickedData = {
+      id: id,
+      name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
+      isFavorite: false,
+      type: "Parking Space",
+      bookings: [
+        { startDateTime: "2022-01-01 10:00", endDateTime: "2022-01-01 11:00" },
+        { startDateTime: "2022-01-01 11:00", endDateTime: "2022-01-01 12:00" },
+        { startDateTime: "2022-01-01 12:00", endDateTime: "2022-01-01 13:00" },
+        { startDateTime: "2022-01-01 13:00", endDateTime: "2022-01-01 14:00" },
+        { startDateTime: "2022-01-01 14:00", endDateTime: "2022-01-01 15:00" },
+        { startDateTime: "2022-01-01 15:00", endDateTime: "2022-01-01 16:00" },
+        { startDateTime: "2022-01-01 16:00", endDateTime: "2022-01-01 17:00" },
+        { startDateTime: "2022-01-01 17:00", endDateTime: "2022-01-01 18:00" },
+      ]
+    }
+    return data;
+  }
+
+  const onClickSlideOverHandler = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    const clickedElement = event.currentTarget as unknown as HTMLElement;
+    const status = clickedElement.getAttribute("class");
+    if (!status?.includes(" booked")) {
+      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? ""));
+      setOpen(true);
+    }
+  }
+
+  const faveriteButtonHandler = () => {
+    if (clickedData) {
+      setClickedData({ ...clickedData, isFavorite: !clickedData.isFavorite });
+      console.log(clickedData.isFavorite);
+    }
+  }
 
   return (
     <>
@@ -361,7 +419,7 @@ export function F_1() {
             </g>
           </g>
           <g id="Permitted-Parking">
-            <g id="bay-64" className="parking booked" transform="matrix(0.0964275,0,0,0.0964275,194.598,815.835)">
+            <g id="bay-64" className="parking booked" transform="matrix(0.0964275,0,0,0.0964275,194.598,815.835)" onClick={onClickSlideOverHandler} >
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257C699.62,427.301 699.62,578.38 699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268L533.052,161.268Z"
@@ -374,7 +432,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-69" className="parking partiallybooked" transform="matrix(0.0964275,0,0,0.0964275,479.108,815.835)">
+            <g id="bay-69" className="parking partiallybooked" transform="matrix(0.0964275,0,0,0.0964275,479.108,815.835)" onClick={onClickSlideOverHandler} >
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257L699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268L533.052,161.268Z"
@@ -387,7 +445,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-68" className="parking" transform="matrix(0.0964275,0,0,0.0964275,422.206,815.835)">
+            <g id="bay-68" className="parking favourite" transform="matrix(0.0964275,0,0,0.0964275,422.206,815.835)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257C699.62,427.301 699.62,578.38 699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268L533.052,161.268Z"
@@ -400,7 +458,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-65" className="parking" transform="matrix(0.0964275,0,0,0.0964275,251.5,815.835)">
+            <g id="bay-65" className="parking" transform="matrix(0.0964275,0,0,0.0964275,251.5,815.835)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257C699.62,427.301 699.62,578.38 699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268C533.041,161.268 533.047,161.268 533.052,161.268Z"
@@ -413,7 +471,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-66" className="parking" transform="matrix(0.0964275,0,0,0.0964275,308.402,815.835)">
+            <g id="bay-66" className="parking" transform="matrix(0.0964275,0,0,0.0964275,308.402,815.835)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257C699.62,427.301 699.62,578.38 699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268C533.041,161.268 533.047,161.268 533.052,161.268Z"
@@ -426,7 +484,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-67" className="parking" transform="matrix(0.0964275,0,0,0.0964275,365.304,815.835)">
+            <g id="bay-67" className="parking" transform="matrix(0.0964275,0,0,0.0964275,365.304,815.835)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257C699.62,427.301 699.62,578.38 699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268C533.041,161.268 533.047,161.268 533.052,161.268Z"
@@ -439,7 +497,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-52" className="parking" transform="matrix(0.0964275,0,0,0.0664764,477.966,609.422)">
+            <g id="bay-52" className="parking" transform="matrix(0.0964275,0,0,0.0664764,477.966,609.422)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C625.045,161.268 699.62,261.273 699.62,384.636C699.62,460.483 699.62,545.199 699.62,621.045C699.62,744.408 625.045,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C441.043,844.414 366.468,744.408 366.468,621.045C366.468,545.199 366.468,460.483 366.468,384.636C366.468,261.273 441.043,161.268 533.036,161.268C533.041,161.268 533.047,161.268 533.052,161.268Z"
@@ -452,7 +510,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-51" className="parking" transform="matrix(0.0964275,0,0,0.0664764,420.673,609.422)">
+            <g id="bay-51" className="parking" transform="matrix(0.0964275,0,0,0.0664764,420.673,609.422)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C625.045,161.268 699.62,261.273 699.62,384.636C699.62,460.483 699.62,545.199 699.62,621.045C699.62,744.408 625.045,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C441.043,844.414 366.468,744.408 366.468,621.045C366.468,545.199 366.468,460.483 366.468,384.636C366.468,261.273 441.043,161.268 533.036,161.268C533.041,161.268 533.047,161.268 533.052,161.268Z"
@@ -465,7 +523,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-49" className="parking" transform="matrix(0.0964275,0,0,0.0664764,306.087,609.422)">
+            <g id="bay-49" className="parking" transform="matrix(0.0964275,0,0,0.0664764,306.087,609.422)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C625.045,161.268 699.62,261.273 699.62,384.636C699.62,460.483 699.62,545.199 699.62,621.045C699.62,744.408 625.045,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C441.043,844.414 366.468,744.408 366.468,621.045C366.468,545.199 366.468,460.483 366.468,384.636C366.468,261.273 441.043,161.268 533.036,161.268C533.041,161.268 533.047,161.268 533.052,161.268Z"
@@ -478,7 +536,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-50" className="parking" transform="matrix(0.0964275,0,0,0.0664764,363.38,609.422)">
+            <g id="bay-50" className="parking" transform="matrix(0.0964275,0,0,0.0664764,363.38,609.422)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C625.045,161.268 699.62,261.273 699.62,384.636C699.62,460.483 699.62,545.199 699.62,621.045C699.62,744.408 625.045,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C441.043,844.414 366.468,744.408 366.468,621.045C366.468,545.199 366.468,460.483 366.468,384.636C366.468,261.273 441.043,161.268 533.036,161.268C533.041,161.268 533.047,161.268 533.052,161.268Z"
@@ -491,7 +549,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-48" className="parking" transform="matrix(0.0964275,0,0,0.0664764,248.794,609.422)">
+            <g id="bay-48" className="parking" transform="matrix(0.0964275,0,0,0.0664764,248.794,609.422)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C625.045,161.268 699.62,261.273 699.62,384.636C699.62,460.483 699.62,545.199 699.62,621.045C699.62,744.408 625.045,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C441.043,844.414 366.468,744.408 366.468,621.045C366.468,545.199 366.468,460.483 366.468,384.636C366.468,261.273 441.043,161.268 533.036,161.268C533.041,161.268 533.047,161.268 533.052,161.268Z"
@@ -504,7 +562,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-47" className="parking" transform="matrix(0.0964275,0,0,0.0664764,191.502,609.422)">
+            <g id="bay-47" className="parking" transform="matrix(0.0964275,0,0,0.0664764,191.502,609.422)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C625.045,161.268 699.62,261.273 699.62,384.636C699.62,460.483 699.62,545.199 699.62,621.045C699.62,744.408 625.045,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C441.043,844.414 366.468,744.408 366.468,621.045C366.468,545.199 366.468,460.483 366.468,384.636C366.468,261.273 441.043,161.268 533.036,161.268C533.041,161.268 533.047,161.268 533.052,161.268Z"
@@ -517,7 +575,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-4" className="parking" transform="matrix(0.0881016,0,0,0.0881016,309.467,181.625)">
+            <g id="bay-4" className="parking" transform="matrix(0.0881016,0,0,0.0881016,309.467,181.625)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.059,161.268C577.234,161.268 619.599,177.491 650.836,206.368C682.072,235.246 699.62,274.412 699.62,315.25C699.62,427.297 699.62,578.384 699.62,690.431C699.62,731.27 682.072,770.436 650.836,799.313C619.599,828.19 577.234,844.414 533.059,844.414C533.049,844.414 533.039,844.414 533.029,844.414C488.854,844.414 446.489,828.19 415.252,799.313C384.016,770.436 366.468,731.27 366.468,690.431C366.468,578.384 366.468,427.297 366.468,315.25C366.468,274.412 384.016,235.246 415.252,206.368C446.489,177.491 488.854,161.268 533.029,161.268C533.039,161.268 533.049,161.268 533.059,161.268Z"
@@ -530,7 +588,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-5" className="parking" transform="matrix(0.0881016,0,0,0.0881016,366.485,181.625)">
+            <g id="bay-5" className="parking" transform="matrix(0.0881016,0,0,0.0881016,366.485,181.625)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.059,161.268C577.234,161.268 619.599,177.491 650.836,206.368C682.072,235.246 699.62,274.412 699.62,315.25C699.62,427.297 699.62,578.384 699.62,690.431C699.62,731.27 682.072,770.436 650.836,799.313C619.599,828.19 577.234,844.414 533.059,844.414C533.049,844.414 533.039,844.414 533.029,844.414C488.854,844.414 446.489,828.19 415.252,799.313C384.016,770.436 366.468,731.27 366.468,690.431C366.468,578.384 366.468,427.297 366.468,315.25C366.468,274.412 384.016,235.246 415.252,206.368C446.489,177.491 488.854,161.268 533.029,161.268C533.039,161.268 533.049,161.268 533.059,161.268Z"
@@ -1389,7 +1447,117 @@ export function F_1() {
           </g>
         </g>
       </svg >
+      <Transition.Root show={open} as={Fragment}>
+        <Dialog as="div" className="relative z-1" onClose={setOpen}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-in-out duration-500"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in-out duration-500"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-zinc-500 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-hidden">
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+                <Transition.Child
+                  as={Fragment}
+                  enter="transform transition ease-in-out duration-500 sm:duration-700"
+                  enterFrom="translate-x-full"
+                  enterTo="translate-x-0"
+                  leave="transform transition ease-in-out duration-500 sm:duration-700"
+                  leaveFrom="translate-x-0"
+                  leaveTo="translate-x-full"
+                >
+                  <Dialog.Panel className="pointer-events-auto relative w-96">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-in-out duration-500"
+                      enterFrom="opacity-0"
+                      enterTo="opacity-100"
+                      leave="ease-in-out duration-500"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                    >
+                      <div className="absolute left-0 top-[70px] -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
+                        <SubmitButton
+                          type="button"
+                          className=""
+                          onClick={() => setOpen(false)}
+                        >
+                          <span className="absolute -inset-2.5" />
+                          <span className="sr-only">Close panel</span>
+                          <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                        </SubmitButton>
+                      </div>
+                    </Transition.Child>
+                    <div className=" h-screen pt-[70px]  overflow-y-auto bg-white dark:bg-zinc-800 p-8">
+                      <div className="space-y-6 pb-16">
+                        <>
+                          <div>
+                            <div className="aspect-h-7 aspect-w-10 block w-full overflow-hidden rounded-lg">
+                              <ComputerDesktopIcon width={420} height={320} className=' fill-zinc-200' />
+                            </div>
+                            <div className="mt-4 flex items-start justify-between">
+                              <div>
+                                <h2 className="text-base font-semibold leading-6 text-zinc-800 dark:text-zinc-300">
+                                  <span className="sr-only">Details for </span>{clickedData?.id}
+                                </h2>
+                                <p className="text-sm font-medium text-zinc-500">{clickedData?.type}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={faveriteButtonHandler}
+                                className="relative ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              >
+                                <span className="absolute -inset-1.5" />
+                                <HeartIcon className={clickedData?.isFavorite ? "h-6 w-6 text-blue-600" : "h-6 w-6"} aria-hidden="true" />
+                                <span className="sr-only">Favorite</span>
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
+                            <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
+                              {clickedData?.bookings.map((booking, index) => (
+                                <div key={index} className="py-3 flex justify-between text-sm font-medium">
+                                  <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
+                                  <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
+                                  <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
+                                </div>
+                              ))}
+                            </dl>
+                          </div>
+                          <div className="flex">
+                            <SubmitButton
+                              type="button"
+                              className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                            >
+                              Book
+                            </SubmitButton>
+                            <InvertedSubmitButton
+                              type="button"
+                              className="ml-3 flex-1 rounded-md bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-semibold text-zinc-800 dark:text-zinc-300 shadow-sm ring-1 ring-inset ring-zinc-300 hover:bg-zinc-50"
+                            >
+                              Cancel
+                            </InvertedSubmitButton>
+                          </div>
+                        </>
+                      </div>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
     </>
+
   )
 }
 

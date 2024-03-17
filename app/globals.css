@@ -46,9 +46,11 @@ input:-webkit-autofill:active {
 .office.booked circle,
 .desk.booked path {
   pointer-events: none;
-  opacity: 0.37;
-  stroke: #565656;
-  fill: red;
+  fill: #f39a9a;
+}
+
+.favourite path {
+  stroke: #0f38f1 !important;
 }
 
 .meeting_room.partiallybooked path,
