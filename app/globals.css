@@ -22,88 +22,61 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: rgb(212 212 216 / var(--tw-text-opacity));
 }
 
-.meeting_room,
-.office,
-.parking,
-.desk {
-  fill: #D3D3D3;
-  stroke: #bfbfbf;
-  pointer-events: all;
-}
-
-.meeting_room.booked,
-.office.booked,
-.parking.booked,
-.desk.booked {
-  opacity: 0.5;
-  fill: red;
-}
-
-.meeting_room:hover,
-.office:hover,
-.parking:hover,
-.desk:hover path,
-.desk:hover rect {
-  stroke: #333;
-  stroke-width: 3px;
-  opacity: 0.5;
-  fill: #0066FF !important;
-}
-
-.meeting_room.booked:hover,
-.office.booked:hover,
-.parking.booked:hover,
-.desk.booked:hover {
-  fill: #ff9999;
+.MapSelectable:hover {
+  opacity: 70%;
 }
 
 .meeting_room,
-.office,
 .parking,
+.office,
 .desk {
   cursor: pointer;
 }
 
-.desk path,
-.desk rect {
-  fill: #d8d8d8;
-  stroke: #000;
+.meeting_room:hover path,
+.parking:hover path,
+.office:hover circle,
+.desk:hover path {
+  cursor: pointer;
+  fill: #3498db;
 }
 
-.desk-bkg {
-  fill: none !important;
-  stroke: none !important;
-}
-
-.desk.booked {
+.meeting_room.booked path,
+.parking.booked path,
+.office.booked circle,
+.desk.booked path {
   pointer-events: none;
-}
-
-.desk.booked path,
-.desk.booked rect {
+  opacity: 0.37;
+  stroke: #565656;
   fill: red;
 }
 
-.parking {
-  cursor: pointer;
-  fill: #D3D3D3;
-  stroke: #bfbfbf;
-  pointer-events: all;
+.meeting_room.partiallybooked path,
+.parking.partiallybooked path,
+.office.partiallybooked circle,
+.desk.partiallybooked path {
+  stroke: #565656;
+  fill: rgb(241, 241, 138) !important;
 }
 
-.parking:hover {
-  stroke: #333;
-  stroke-width: 3px;
-  opacity: 0.5;
-  fill: #0066FF !important;
+.meeting_room.personallybooked path,
+.parking.personallybooked path,
+.office.personallybooked circle,
+.desk.personallybooked path {
+  stroke: #565656;
+  fill: #0d4eaf !important;
 }
 
-.parking.booked {
-  cursor: grab;
-  opacity: 0.5;
-  fill: red;
+.meeting_room.partiallybooked:hover path,
+.parking.partiallybooked:hover path,
+.office.partiallybooked:hover circle,
+.desk.partiallybooked:hover path {
+  opacity: 0.7;
 }
 
-.parking.booked:hover {
-  fill: #ff9999;
+.meeting_room.personallybooked:hover path,
+.parking.personallybooked:hover path,
+.office.personallybooked:hover circle,
+.desk.personallybooked:hover path {
+  opacity: 0.7;
 }

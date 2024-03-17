@@ -374,7 +374,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-69" className="parking" transform="matrix(0.0964275,0,0,0.0964275,479.108,815.835)">
+            <g id="bay-69" className="parking partiallybooked" transform="matrix(0.0964275,0,0,0.0964275,479.108,815.835)">
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257L699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268L533.052,161.268Z"
@@ -1556,15 +1556,15 @@ export function F0() {
           </g>
           <g transform="matrix(1,0,0,1,-18.0889,8)">
             <g id="Offices">
-              <g id="0.116" className="office" transform="matrix(0.110414,0,0,0.111269,454.168,483.168)">
+              <g id="0.116" className="office booked" transform="matrix(0.110414,0,0,0.111269,454.168,483.168)">
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   stroke-width="36.09px" />
               </g>
-              <g id="0.119" className="office" transform="matrix(0.110414,0,0,0.111269,675.587,483.168)">
+              <g id="0.119" className="office partiallybooked" transform="matrix(0.110414,0,0,0.111269,675.587,483.168)">
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   stroke-width="36.09px" />
               </g>
-              <g id="0.118" className="office" transform="matrix(0.110414,0,0,0.111269,604.709,483.168)">
+              <g id="0.118" className="office personallybooked" transform="matrix(0.110414,0,0,0.111269,604.709,483.168)">
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   stroke-width="36.09px" />
               </g>
@@ -1582,17 +1582,17 @@ export function F0() {
               </g>
             </g>
             <g id="Meeting-Rooms">
-              <g id="0.101" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,433.163,526.726)">
+              <g id="0.101" className="meeting_room booked" transform="matrix(0.110978,0,0,0.109699,433.163,526.726)">
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" stroke-width="36.25px" />
               </g>
-              <g id="0.106" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,563.27,842.912)">
+              <g id="0.106" className="meeting_room partiallybooked" transform="matrix(0.110978,0,0,0.109699,563.27,842.912)">
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" stroke-width="36.25px" />
               </g>
-              <g id="0.105" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,752.12,851.473)">
+              <g id="0.105" className="meeting_room personallybooked" transform="matrix(0.110978,0,0,0.109699,752.12,851.473)">
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" stroke-width="36.25px" />
@@ -1619,7 +1619,7 @@ export function F0() {
               </g>
             </g>
             <g>
-              <g id="0.071" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
+              <g id="0.071" className="desk booked" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1631,7 +1631,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.076" className="desk"
+              <g id="0.076" className="desk partiallybooked"
                 transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
@@ -1644,7 +1644,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.073" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
+              <g id="0.073" className="desk personallybooked" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
