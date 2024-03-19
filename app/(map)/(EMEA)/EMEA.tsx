@@ -249,7 +249,7 @@ export default function WorldMap() {
               fill="#ececec" fill-rule="nonzero" stroke="#000" stroke-width="0.2px" />
           </g>
           <g id="Selectable" transform="matrix(1,0,0,1,-7.64954,10.6098)">
-            <Link className='MapSelectable' href='UK' className='MapSelectable'>
+            <Link className='MapSelectable' href='UK' >
               <g id="UK" transform="matrix(1,0,0,1,-874.55,-69.4098)">
                 <path
                   d="M956.7,158.2L953.2,157L950.2,157.1L951.4,153.8L950.5,150.6L954.5,150.3L959.4,154.1L956.7,158.2Z"
@@ -262,7 +262,7 @@ export default function WorldMap() {
                   fill="#ececec" fill-rule="nonzero" stroke="#1d4ed8" stroke-width="0.67px" />
                 l</g>
             </Link>
-            <Link className='MapSelectable' href='EMEA/Paris' className='MapSelectable'>
+            <Link className='MapSelectable' href='EMEA/Paris'>
               <g id="Paris" transform="matrix(1,0,0,1,-61.5005,-51.9689)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -274,7 +274,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='EMEA/Frankfurt' className='MapSelectable'>
+            <Link className='MapSelectable' href='EMEA/Frankfurt' >
               <g id="Frankfurt" transform="matrix(1,0,0,1,-24.9818,-63.8641)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -286,7 +286,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='EMEA/Prague' className='MapSelectable'>
+            <Link className='MapSelectable' href='EMEA/Prague'>
               <g id="Prague" transform="matrix(1,0,0,1,0.559475,-67.6522)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -298,7 +298,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='EMEA/Cluj' className='MapSelectable'>
+            <Link className='MapSelectable' href='EMEA/Cluj'>
               <g id="Cluj" transform="matrix(1,0,0,1,48.3995,-44.3342)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -310,7 +310,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='EMEA/Berlin' className='MapSelectable'>
+            <Link className='MapSelectable' href='EMEA/Berlin'>
               <g id="Berlin" transform="matrix(1,0,0,1,-10.3745,-81.9737)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -322,7 +322,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='EMEA/Gdansk' className='MapSelectable'>
+            <Link className='MapSelectable' href='EMEA/Gdansk'>
               <g id="Gdansk" transform="matrix(1,0,0,1,15.1667,-91.2323)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -334,7 +334,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='EMEA/Stockholm' className='MapSelectable'>
+            <Link className='MapSelectable' href='EMEA/Stockholm'>
               <g id="Stockholm" transform="matrix(1,0,0,1,3.85063,-125.523)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
