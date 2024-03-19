@@ -7,6 +7,8 @@ import { stat } from 'fs';
 import Image from 'next/image';
 import React, { useState, useRef, useEffect, Fragment } from 'react';
 
+import BookingNotification from '@/components/popups/Notfication'
+
 interface clickedData {
   id: string;
   name: string;
@@ -23,6 +25,7 @@ interface bookingData {
 export function F_1() {
   const [open, setOpen] = useState(false);
   const [clickedData, setClickedData] = useState<clickedData>();
+  const [showNotification, setShowNotification] = useState(false);
 
   const svgRef = useRef<SVGSVGElement>(null);
 
@@ -1536,12 +1539,17 @@ export function F_1() {
                             <SubmitButton
                               type="button"
                               className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                              onClick={() => {
+                                setOpen(false);
+                                setShowNotification(true)
+                              }}
                             >
                               Book
                             </SubmitButton>
                             <InvertedSubmitButton
                               type="button"
                               className="ml-3 flex-1 rounded-md bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-semibold text-zinc-800 dark:text-zinc-300 shadow-sm ring-1 ring-inset ring-zinc-300 hover:bg-zinc-50"
+                              onClick={() => setOpen(false)}
                             >
                               Cancel
                             </InvertedSubmitButton>
@@ -1556,6 +1564,8 @@ export function F_1() {
           </div>
         </Dialog>
       </Transition.Root>
+      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} datetime={'test'} />}
+
     </>
 
   )
