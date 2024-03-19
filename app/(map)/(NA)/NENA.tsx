@@ -116,7 +116,7 @@ export default function WorldMap() {
               fill="#ececec" stroke="#000" stroke-width="0.2px" />
           </g>
           <g id="Selectable">
-            <Link className='MapSelectable' href='NENA/Mt-Laurel' className='MapSelectable'>
+            <Link className='MapSelectable' href='NENA/Mt-Laurel'>
               <g id="Mt-Laurel" transform="matrix(0.321561,0,0,0.321561,-52.6124,-12.7827)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -128,7 +128,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NENA/South-Windsor' className='MapSelectable'>
+            <Link className='MapSelectable' href='NENA/South-Windsor'>
               <g id="South-Windsor" transform="matrix(0.321561,0,0,0.321561,-25.3603,-26.9562)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -140,7 +140,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NENA/Boston' className='MapSelectable'>
+            <Link className='MapSelectable' href='NENA/Boston' >
               <g id="Boston" transform="matrix(0.321561,0,0,0.321561,-1.70002,-41.6311)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -152,7 +152,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NENA/Andover' className='MapSelectable'>
+            <Link className='MapSelectable' href='NENA/Andover' >
               <g id="Andover" transform="matrix(0.321561,0,0,0.321561,-1.01587,-48.9857)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -164,7 +164,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NENA/Lake-Success' className='MapSelectable'>
+            <Link className='MapSelectable' href='NENA/Lake-Success' >
               <g id="Lake-Success" transform="matrix(0.321561,0,0,0.321561,-32.715,-16.5976)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -176,7 +176,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NENA/Edgewood-1' className='MapSelectable'>
+            <Link className='MapSelectable' href='NENA/Edgewood-1' >
               <g id="Edgewood-1" transform="matrix(0.321561,0,0,0.321561,-36.219,-16.0845)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -188,7 +188,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NENA/Edgewood-2' className='MapSelectable'>
+            <Link className='MapSelectable' href='NENA/Edgewood-2'>
               <g id="Edgewood-2-" transform="matrix(0.321561,0,0,0.321561,-39.723,-16.0845)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -200,7 +200,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NENA/Thrid-Avenue' className='MapSelectable'>
+            <Link className='MapSelectable' href='NENA/Thrid-Avenue' >
               <g id="Thrid-Avenue" transform="matrix(0.321561,0,0,0.321561,-43.1438,-16.8936)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -213,7 +213,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NENA/Gateway-Center' className='MapSelectable'>
+            <Link className='MapSelectable' href='NENA/Gateway-Center' >
               <g id="Gateway-Center" transform="matrix(0.321561,0,0,0.321561,-39.723,-20.8351)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
