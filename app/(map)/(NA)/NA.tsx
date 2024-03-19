@@ -234,7 +234,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NA/El-Dorado' className='MapSelectable'>
+            <Link className='MapSelectable' href='NA/El-Dorado' >
               <g id="El-Dorado" transform="matrix(1,0,0,1,-26.0211,66.458)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -246,7 +246,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NA/Denver' className='MapSelectable'>
+            <Link className='MapSelectable' href='NA/Denver'>
               <g id="Denver" transform="matrix(1,0,0,1,44.2374,65.4094)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -258,7 +258,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NA/Kansas-City' className='MapSelectable'>
+            <Link className='MapSelectable' href='NA/Kansas-City'>
               <g id="Kansas-City" transform="matrix(1,0,0,1,90.9016,71.7012)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -270,7 +270,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NA/Coppell' className='MapSelectable'>
+            <Link className='MapSelectable' href='NA/Coppell'>
               <g id="Coppell" transform="matrix(1,0,0,1,70.9775,100.539)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -282,7 +282,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NA/Toronto' className='MapSelectable'>
+            <Link className='MapSelectable' href='NA/Toronto'>
               <g id="Toronto" transform="matrix(1,0,0,1,196.814,34.999)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -295,7 +295,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NA/Pittsburgh' className='MapSelectable'>
+            <Link className='MapSelectable' href='NA/Pittsburgh' >
               <g id="Pittsburgh" transform="matrix(1,0,0,1,179.511,62.7878)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -307,7 +307,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NA/Markham' className='MapSelectable'>
+            <Link className='MapSelectable' href='NA/Markham' >
               <g id="Markham" transform="matrix(1,0,0,1,216.738,26.6099)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -319,7 +319,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NA/Ottawa' className='MapSelectable'>
+            <Link className='MapSelectable' href='NA/Ottawa'>
               <g id="Ottawa" transform="matrix(1,0,0,1,236.662,20.3181)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
@@ -331,7 +331,7 @@ export default function WorldMap() {
                 </g>
               </g>
             </Link>
-            <Link className='MapSelectable' href='NA/Phoenix' className='MapSelectable'>
+            <Link className='MapSelectable' href='NA/Phoenix'>
               <g id="Phoenix" transform="matrix(1,0,0,1,0.719066,99.4899)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
