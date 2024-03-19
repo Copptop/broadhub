@@ -216,12 +216,12 @@ export default function WorldMap() {
             </g>
           </g>
           <g id="Selectable">
-            <Link className='MapSelectable' href='NENA' className='MapSelectable'>
+            <Link className='MapSelectable' href='NENA'>
               <path id="NE"
                 d="M385.2,221.5L389.2,222L393.8,219.9L394.4,217.4L394.2,216.5L401,212.1L403.7,211L411.5,210.9L420.8,210.9L421.9,209.4L423.6,209.1L426.1,208.1L428.9,205.2L432.1,200.3L437.6,195.6L438.7,197.2L442.4,196.2L444,198L441.1,206.5L443.3,210.1L443.5,212.2L437.1,215.2L431.1,217.4L425.1,219.3L421.1,223.1L419.8,224.5L418.6,227.9L419.3,231.2L421.4,231.4L421.6,229.1L422.7,230.5L421.7,232.3L417.9,233.3L415.4,233.2L411.2,234.3L408.9,234.6L405.8,234.9L400.8,236.8L408.9,235.6L410,236.8L402.1,238.7L398.8,238.7L399.2,237.9L397.1,239.7L398.5,240L396,244.6L390.7,249.5L390.8,247.8L389.7,247.5L388.5,245.9L388.5,249.4L389.5,250.5L388.9,252.9L386.5,255.4L382,260.5L381.6,260.3L384.5,255.9L382.5,253.5L383.5,248.1L385.2,221.5ZM383.5,248.1L385.2,221.5L383.5,248.1Z"
                 fill="#ececec" fill-rule="nonzero" stroke="#1d4ed8" stroke-width="0.67px" />
             </Link>
-            <Link className='MapSelectable' href='NA/Vancouver' className='MapSelectable'>
+            <Link className='MapSelectable' href='NA/Vancouver' >
               <g id="Vancouver" transform="matrix(1,0,0,1,-2.57712,0)">
                 <path d="M181.45,175.089L186.432,180.072L181.45,185.054L176.468,180.072L181.45,175.089Z"
                   fill="#1d4ed8" />
