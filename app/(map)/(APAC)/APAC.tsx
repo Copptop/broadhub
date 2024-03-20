@@ -54,37 +54,30 @@ export default function WorldMap() {
 
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-
+    
       const pointerPosition = getPointFromEvent(event);
-
+    
       if (!svg) return;
-
+    
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
-
-      const CTM = svg.getScreenCTM()!;
-      const point = svg.createSVGPoint();
-      point.x = pointerPosition.x;
-      point.y = pointerPosition.y;
-      point.matrixTransform(CTM.inverse());
-
+    
       const viewBox = svg.viewBox.baseVal;
-      const newScale = viewBox.width * zoomSpeed / svg.width.baseVal.value;
-      const newViewBoxWidth = svg.width.baseVal.value * newScale;
-      const newViewBoxHeight = svg.height.baseVal.value * newScale;
-      const newViewBoxX = pointerPosition.x - (pointerPosition.x - viewBox.x) * newScale;
-      const newViewBoxY = pointerPosition.y - (pointerPosition.y - viewBox.y) * newScale;
-
-      viewBox.x = newViewBoxX;
-      viewBox.y = newViewBoxY;
-      viewBox.width = newViewBoxWidth;
-      viewBox.height = newViewBoxHeight;
-
+      const newScale = viewBox.width * zoomSpeed / viewBox.width;
+      const deltaWidth = viewBox.width * (newScale - 1);
+      const deltaHeight = viewBox.height * (newScale - 1);
+    
+      viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
+      viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
+      viewBox.width *= newScale;
+      viewBox.height *= newScale;
+    
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-
+    
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
+    
 
     if (svg.PointerEvent) {
       svg.addEventListener('pointerdown', onPointerDown);
@@ -107,9 +100,9 @@ export default function WorldMap() {
 
   return (
     <>
-      <svg ref={svgRef} id="map" width="100%" height="100%" viewBox="0 0 468 406" version="1.1" xmlns="http://www.w3.org/2000/svg"
+      <svg ref={svgRef} id="map_plane" width="100%" height="100%" viewBox="0 0 468 406" version="1.1" xmlns="http://www.w3.org/2000/svg"
         fill-rule="evenodd" clip-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <g id="APAC">
+        <g id="svgbounds">
           <g transform="matrix(1,0,0,1,-1317.8,-155.1)">
             <path id="BD"
               d="M1500.6,360.3L1501.2,364.9L1499.1,363.9L1500.2,369.1L1498.1,365.8L1497.3,362.5L1495.8,359.4L1493,355.7L1487.8,355.4L1488.7,358.1L1487.5,361.6L1484.9,360.3L1484.3,361.5L1482.6,360.8L1480.4,360.2L1478.8,354.9L1476.2,350.1L1476.5,346.2L1472.8,344.5L1473.7,342.2L1476.7,339.8L1472.1,336.4L1473.3,332L1478.2,334.8L1480.9,335.1L1482.1,339.6L1487.5,340.5L1492.6,340.4L1496,341.5L1494.4,346.9L1492,347.3L1490.8,350.9L1494.4,354.3L1494.7,350.1L1496.2,350.1L1500.6,360.3Z"

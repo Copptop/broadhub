@@ -28,7 +28,7 @@ export default function Page({ params }: { params: { region: string } }) {
   }
   return (
     <>
-      {map_to_render}
+    <div className="h-[85vh] py-4">{map_to_render}</div>
     </>
   )
 }

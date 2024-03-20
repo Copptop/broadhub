@@ -54,37 +54,30 @@ export default function WorldMap() {
 
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-
+    
       const pointerPosition = getPointFromEvent(event);
-
+    
       if (!svg) return;
-
+    
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
-
-      const CTM = svg.getScreenCTM()!;
-      const point = svg.createSVGPoint();
-      point.x = pointerPosition.x;
-      point.y = pointerPosition.y;
-      point.matrixTransform(CTM.inverse());
-
+    
       const viewBox = svg.viewBox.baseVal;
-      const newScale = viewBox.width * zoomSpeed / svg.width.baseVal.value;
-      const newViewBoxWidth = svg.width.baseVal.value * newScale;
-      const newViewBoxHeight = svg.height.baseVal.value * newScale;
-      const newViewBoxX = pointerPosition.x - (pointerPosition.x - viewBox.x) * newScale;
-      const newViewBoxY = pointerPosition.y - (pointerPosition.y - viewBox.y) * newScale;
-
-      viewBox.x = newViewBoxX;
-      viewBox.y = newViewBoxY;
-      viewBox.width = newViewBoxWidth;
-      viewBox.height = newViewBoxHeight;
-
+      const newScale = viewBox.width * zoomSpeed / viewBox.width;
+      const deltaWidth = viewBox.width * (newScale - 1);
+      const deltaHeight = viewBox.height * (newScale - 1);
+    
+      viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
+      viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
+      viewBox.width *= newScale;
+      viewBox.height *= newScale;
+    
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-
+    
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
+    
 
     if (svg.PointerEvent) {
       svg.addEventListener('pointerdown', onPointerDown);
@@ -107,9 +100,9 @@ export default function WorldMap() {
 
   return (
     <>
-      <svg ref={svgRef} id="map" width="auto" height="100%" viewBox="0 0 2000 857" version="1.1" xmlns="http://www.w3.org/2000/svg"
+      <svg ref={svgRef} id="map_plane" width="auto" height="100%" viewBox="0 0 2000 857" version="1.1" xmlns="http://www.w3.org/2000/svg"
         fill-rule="evenodd" clip-rule="evenodd" stroke-linecap="round" stroke-linejoin="round">
-        <g id="Map">
+        <g id="svgbounds" >
           <Link className='MapSelectable' href='map/NA'>
             <g id="NA" className="region">
               <g id="Canada">

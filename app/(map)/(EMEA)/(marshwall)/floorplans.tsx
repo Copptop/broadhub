@@ -77,37 +77,30 @@ export function F_1() {
 
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-
+    
       const pointerPosition = getPointFromEvent(event);
-
+    
       if (!svg) return;
-
+    
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
-
-      const CTM = svg.getScreenCTM()!;
-      const point = svg.createSVGPoint();
-      point.x = pointerPosition.x;
-      point.y = pointerPosition.y;
-      point.matrixTransform(CTM.inverse());
-
+    
       const viewBox = svg.viewBox.baseVal;
-      const newScale = viewBox.width * zoomSpeed / svg.width.baseVal.value;
-      const newViewBoxWidth = svg.width.baseVal.value * newScale;
-      const newViewBoxHeight = svg.height.baseVal.value * newScale;
-      const newViewBoxX = pointerPosition.x - (pointerPosition.x - viewBox.x) * newScale;
-      const newViewBoxY = pointerPosition.y - (pointerPosition.y - viewBox.y) * newScale;
-
-      viewBox.x = newViewBoxX;
-      viewBox.y = newViewBoxY;
-      viewBox.width = newViewBoxWidth;
-      viewBox.height = newViewBoxHeight;
-
+      const newScale = viewBox.width * zoomSpeed / viewBox.width;
+      const deltaWidth = viewBox.width * (newScale - 1);
+      const deltaHeight = viewBox.height * (newScale - 1);
+    
+      viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
+      viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
+      viewBox.width *= newScale;
+      viewBox.height *= newScale;
+    
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-
+    
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
+    
 
     if (svg.PointerEvent) {
       svg.addEventListener('pointerdown', onPointerDown);
@@ -126,7 +119,6 @@ export function F_1() {
       svg.addEventListener('touchend', onPointerUp);
       svg.addEventListener('touchmove', onPointerMove);
     }
-
   }, []);
 
   const loadClickedData = (id: string) => {
@@ -167,8 +159,8 @@ export function F_1() {
 
   return (
     <>
-      <svg ref={svgRef} id="map" preserveAspectRatio="xMidYMid meet" viewBox="28 164 1080 1080" width="100%" fillRule="evenodd" clipRule="evenodd" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="1.5" xmlns="http://www.w3.org/2000/svg">
-        <g>
+      <svg ref={svgRef} id="map_plane" preserveAspectRatio="xMidYMid meet" viewBox="28 164 1080 1080" width="100%" fillRule="evenodd" clipRule="evenodd" strokeLinecap="round" strokeLinejoin="round" strokeMiterlimit="1.5" xmlns="http://www.w3.org/2000/svg">
+        <g id="svgbounds">
           <g id="Walls">
             <path
               d="M881.785,914.339L1049.02,914.339C1054.32,914.339 1059.41,912.232 1063.16,908.481C1066.91,904.73 1069.02,899.643 1069.02,894.339C1069.02,789.854 1069.02,307.536 1069.02,203.051C1069.02,197.747 1066.91,192.659 1063.16,188.909C1059.41,185.158 1054.32,183.051 1049.02,183.051C906.337,183.051 48.508,183.051 48.508,183.051L48.508,894.339C48.508,899.643 50.616,904.73 54.366,908.481C58.117,912.232 63.204,914.339 68.508,914.339C182.625,914.339 746.357,914.339 746.357,914.339"
@@ -1575,109 +1567,102 @@ export function F0() {
   const svgRef = useRef<SVGSVGElement>(null)
 
   useEffect(() => {
-    const svg = svgRef.current as any
-    if (!svg) return
+    const svg = svgRef.current as any;
+    if (!svg) return;
 
     const getPointFromEvent = (event: MouseEvent | TouchEvent) => {
-      const point = svg.createSVGPoint()
+      const point = svg.createSVGPoint();
       if ((event as TouchEvent).targetTouches) {
-        point.x = (event as TouchEvent).targetTouches[0].clientX
-        point.y = (event as TouchEvent).targetTouches[0].clientY
+        point.x = (event as TouchEvent).targetTouches[0].clientX;
+        point.y = (event as TouchEvent).targetTouches[0].clientY;
       } else {
-        point.x = (event as MouseEvent).clientX
-        point.y = (event as MouseEvent).clientY
+        point.x = (event as MouseEvent).clientX;
+        point.y = (event as MouseEvent).clientY;
       }
 
-      const invertedSVGMatrix = svg.getScreenCTM()!.inverse()
+      const invertedSVGMatrix = svg.getScreenCTM()!.inverse();
 
-      return point.matrixTransform(invertedSVGMatrix)
-    }
+      return point.matrixTransform(invertedSVGMatrix);
+    };
 
-    let isPointerDown = false
-    let pointerOrigin: SVGPoint
+    let isPointerDown = false;
+    let pointerOrigin: SVGPoint;
 
     const onPointerDown = (event: MouseEvent | TouchEvent) => {
-      isPointerDown = true
-      pointerOrigin = getPointFromEvent(event)
-      svg.style.cursor = 'grabbing'
-    }
+      isPointerDown = true;
+      pointerOrigin = getPointFromEvent(event);
+      svg.style.cursor = 'grabbing';
+    };
 
     const onPointerMove = (event: MouseEvent | TouchEvent) => {
       if (!isPointerDown) {
-        return
+        return;
       }
-      event.preventDefault()
-
-      const pointerPosition = getPointFromEvent(event)
-      const viewBox = svg.viewBox.baseVal
-
-      viewBox.x -= pointerPosition.x - pointerOrigin.x
-      viewBox.y -= pointerPosition.y - pointerOrigin.y
-    }
-
-    const onPointerUp = () => {
-      isPointerDown = false
-      svg.style.cursor = 'grab'
-    }
-
-    const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
 
       const pointerPosition = getPointFromEvent(event);
+      const viewBox = svg.viewBox.baseVal;
 
+      viewBox.x -= pointerPosition.x - pointerOrigin.x;
+      viewBox.y -= pointerPosition.y - pointerOrigin.y;
+    };
+
+    const onPointerUp = () => {
+      isPointerDown = false;
+      svg.style.cursor = 'grab';
+    };
+
+    const onPointerWheel = (event: WheelEvent | TouchEvent) => {
+      event.preventDefault();
+    
+      const pointerPosition = getPointFromEvent(event);
+    
       if (!svg) return;
-
+    
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
-
-      const CTM = svg.getScreenCTM()!;
-      const point = svg.createSVGPoint();
-      point.x = pointerPosition.x;
-      point.y = pointerPosition.y;
-      point.matrixTransform(CTM.inverse());
-
+    
       const viewBox = svg.viewBox.baseVal;
-      const newScale = viewBox.width * zoomSpeed / svg.width.baseVal.value;
-      const newViewBoxWidth = svg.width.baseVal.value * newScale;
-      const newViewBoxHeight = svg.height.baseVal.value * newScale;
-      const newViewBoxX = pointerPosition.x - (pointerPosition.x - viewBox.x) * newScale;
-      const newViewBoxY = pointerPosition.y - (pointerPosition.y - viewBox.y) * newScale;
-
-      viewBox.x = newViewBoxX;
-      viewBox.y = newViewBoxY;
-      viewBox.width = newViewBoxWidth;
-      viewBox.height = newViewBoxHeight;
-
+      const newScale = viewBox.width * zoomSpeed / viewBox.width;
+      const deltaWidth = viewBox.width * (newScale - 1);
+      const deltaHeight = viewBox.height * (newScale - 1);
+    
+      viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
+      viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
+      viewBox.width *= newScale;
+      viewBox.height *= newScale;
+    
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-
+    
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
+    
 
     if (svg.PointerEvent) {
-      svg.addEventListener('pointerdown', onPointerDown)
-      svg.addEventListener('pointerup', onPointerUp)
-      svg.addEventListener('pointerleave', onPointerUp)
-      svg.addEventListener('pointermove', onPointerMove)
-      svg.addEventListener('wheel', onPointerWheel)
+      svg.addEventListener('pointerdown', onPointerDown);
+      svg.addEventListener('pointerup', onPointerUp);
+      svg.addEventListener('pointerleave', onPointerUp);
+      svg.addEventListener('pointermove', onPointerMove);
+      svg.addEventListener('wheel', onPointerWheel);
     } else {
-      svg.addEventListener('mousedown', onPointerDown)
-      svg.addEventListener('mouseup', onPointerUp)
-      svg.addEventListener('mouseleave', onPointerUp)
-      svg.addEventListener('mousemove', onPointerMove)
-      svg.addEventListener('wheel', onPointerWheel)
+      svg.addEventListener('mousedown', onPointerDown);
+      svg.addEventListener('mouseup', onPointerUp);
+      svg.addEventListener('mouseleave', onPointerUp);
+      svg.addEventListener('mousemove', onPointerMove);
+      svg.addEventListener('wheel', onPointerWheel);
 
-      svg.addEventListener('touchstart', onPointerDown)
-      svg.addEventListener('touchend', onPointerUp)
-      svg.addEventListener('touchmove', onPointerMove)
+      svg.addEventListener('touchstart', onPointerDown);
+      svg.addEventListener('touchend', onPointerUp);
+      svg.addEventListener('touchmove', onPointerMove);
     }
-  }, [])
+  }, []);
 
   return (
     <>
-      <svg ref={svgRef} id="map" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="7 102 1080 1080" version="1.1" xmlns="http://www.w3.org/2000/svg"
+      <svg ref={svgRef} id="map_plane" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="7 102 1080 1080" version="1.1" xmlns="http://www.w3.org/2000/svg"
         fill-rule="evenodd" clip-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5">
-        <g transform="matrix(1,0,0,1,0.0009,-0.00021)">
+        <g id="svgbounds" transform="matrix(1,0,0,1,0.0009,-0.00021)">
           <g id="Walls" transform="matrix(1,0,0,1,4.8191,2.92221)">
             <path
               d="M892.736,289.656L1034.09,289.656C1045.14,289.656 1054.09,298.61 1054.09,309.656L1054.09,615.256C1054.09,620.56 1051.99,625.647 1048.23,629.398C1044.48,633.149 1039.4,635.256 1034.09,635.256L881.292,635.256L881.292,937.894C881.292,948.939 872.338,957.894 861.292,957.894L382.892,957.894C371.847,957.894 362.892,948.939 362.892,937.894L362.892,504.598C362.892,493.552 353.938,484.598 342.892,484.598L200.05,484.598L200.05,380.918L36.27,380.918C30.966,380.918 25.878,378.811 22.128,375.06C18.377,371.309 16.27,366.222 16.27,360.918L16.27,116.262L872.736,116.262C878.04,116.262 883.127,118.369 886.878,122.12C890.629,125.87 892.736,130.958 892.736,136.262L892.736,400.626"
@@ -2899,37 +2884,30 @@ export function F3() {
 
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-
+    
       const pointerPosition = getPointFromEvent(event);
-
+    
       if (!svg) return;
-
+    
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
-
-      const CTM = svg.getScreenCTM()!;
-      const point = svg.createSVGPoint();
-      point.x = pointerPosition.x;
-      point.y = pointerPosition.y;
-      point.matrixTransform(CTM.inverse());
-
+    
       const viewBox = svg.viewBox.baseVal;
-      const newScale = viewBox.width * zoomSpeed / svg.width.baseVal.value;
-      const newViewBoxWidth = svg.width.baseVal.value * newScale;
-      const newViewBoxHeight = svg.height.baseVal.value * newScale;
-      const newViewBoxX = pointerPosition.x - (pointerPosition.x - viewBox.x) * newScale;
-      const newViewBoxY = pointerPosition.y - (pointerPosition.y - viewBox.y) * newScale;
-
-      viewBox.x = newViewBoxX;
-      viewBox.y = newViewBoxY;
-      viewBox.width = newViewBoxWidth;
-      viewBox.height = newViewBoxHeight;
-
+      const newScale = viewBox.width * zoomSpeed / viewBox.width;
+      const deltaWidth = viewBox.width * (newScale - 1);
+      const deltaHeight = viewBox.height * (newScale - 1);
+    
+      viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
+      viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
+      viewBox.width *= newScale;
+      viewBox.height *= newScale;
+    
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-
+    
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
+    
 
     if (svg.PointerEvent) {
       svg.addEventListener('pointerdown', onPointerDown);
@@ -2952,9 +2930,9 @@ export function F3() {
 
   return (
     <>
-      <svg ref={svgRef} id="map" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="47 225 1080 1080" version="1.1" xmlns="http://www.w3.org/2000/svg"
+      <svg ref={svgRef} id="map_plane" preserveAspectRatio="xMidYMid meet" width="100%" height="100%" viewBox="47 225 1080 1080" version="1.1" xmlns="http://www.w3.org/2000/svg"
         fill-rule="evenodd" clip-rule="evenodd" stroke-linecap="round" stroke-linejoin="round" stroke-miterlimit="1.5">
-        <g transform="matrix(1,0,0,1,47.0336,1.62725)">
+        <g id="svgbounds" transform="matrix(1,0,0,1,47.0336,1.62725)">
           <g id="Walls">
             <path
               d="M20.329,245.491L945.604,245.491C956.649,245.491 965.604,254.446 965.604,265.491C965.604,355.364 965.604,721.382 965.604,811.254C965.604,822.3 956.649,831.254 945.604,831.254C822.049,831.254 163.884,831.254 40.329,831.254C29.283,831.254 20.329,822.3 20.329,811.254C20.329,708.58 20.329,245.491 20.329,245.491"
