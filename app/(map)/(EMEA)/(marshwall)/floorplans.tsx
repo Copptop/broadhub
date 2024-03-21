@@ -77,30 +77,30 @@ export function F_1() {
 
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-    
+
       const pointerPosition = getPointFromEvent(event);
-    
+
       if (!svg) return;
-    
+
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
-    
+
       const viewBox = svg.viewBox.baseVal;
       const newScale = viewBox.width * zoomSpeed / viewBox.width;
       const deltaWidth = viewBox.width * (newScale - 1);
       const deltaHeight = viewBox.height * (newScale - 1);
-    
+
       viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
       viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
       viewBox.width *= newScale;
       viewBox.height *= newScale;
-    
+
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-    
+
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
-    
+
 
     if (svg.PointerEvent) {
       svg.addEventListener('pointerdown', onPointerDown);
@@ -119,14 +119,28 @@ export function F_1() {
       svg.addEventListener('touchend', onPointerUp);
       svg.addEventListener('touchmove', onPointerMove);
     }
+
   }, []);
 
   const loadClickedData = (id: string) => {
+    let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
+    if (type === "desk") {
+      type = "Desk";
+    } else if (type === "meeting_room") {
+      type = "Meeting Room";
+    } else if (type === "office") {
+      type = "Office";
+    } else if (type === "parking") {
+      type = "Parking";
+    } else {
+      type = "";
+    }
+
     const data: clickedData = {
       id: id,
       name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
       isFavorite: false,
-      type: "Parking Space",
+      type: type,
       bookings: [
         { startDateTime: "2022-01-01 10:00", endDateTime: "2022-01-01 11:00" },
         { startDateTime: "2022-01-01 11:00", endDateTime: "2022-01-01 12:00" },
@@ -150,7 +164,7 @@ export function F_1() {
     }
   }
 
-  const faveriteButtonHandler = () => {
+  const faveHandler = () => {
     if (clickedData) {
       setClickedData({ ...clickedData, isFavorite: !clickedData.isFavorite });
       console.log(clickedData.isFavorite);
@@ -1506,7 +1520,7 @@ export function F_1() {
                               </div>
                               <button
                                 type="button"
-                                onClick={faveriteButtonHandler}
+                                onClick={faveHandler}
                                 className="relative ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                               >
                                 <span className="absolute -inset-1.5" />
@@ -1557,13 +1571,14 @@ export function F_1() {
         </Dialog>
       </Transition.Root>
       {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} datetime={'test'} />}
-
     </>
-
   )
 }
 
 export function F0() {
+  const [open, setOpen] = useState(false);
+  const [clickedData, setClickedData] = useState<clickedData>();
+  const [showNotification, setShowNotification] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null)
 
   useEffect(() => {
@@ -1614,30 +1629,30 @@ export function F0() {
 
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-    
+
       const pointerPosition = getPointFromEvent(event);
-    
+
       if (!svg) return;
-    
+
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
-    
+
       const viewBox = svg.viewBox.baseVal;
       const newScale = viewBox.width * zoomSpeed / viewBox.width;
       const deltaWidth = viewBox.width * (newScale - 1);
       const deltaHeight = viewBox.height * (newScale - 1);
-    
+
       viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
       viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
       viewBox.width *= newScale;
       viewBox.height *= newScale;
-    
+
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-    
+
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
-    
+
 
     if (svg.PointerEvent) {
       svg.addEventListener('pointerdown', onPointerDown);
@@ -1656,7 +1671,58 @@ export function F0() {
       svg.addEventListener('touchend', onPointerUp);
       svg.addEventListener('touchmove', onPointerMove);
     }
+
+
   }, []);
+
+  const loadClickedData = (id: string) => {
+    let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
+    if (type === "desk") {
+      type = "Desk";
+    } else if (type === "meeting_room") {
+      type = "Meeting Room";
+    } else if (type === "office") {
+      type = "Office";
+    } else if (type === "parking") {
+      type = "Parking";
+    } else {
+      type = "";
+    }
+
+    const data: clickedData = {
+      id: id,
+      name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
+      isFavorite: false,
+      type: type,
+      bookings: [
+        { startDateTime: "2022-01-01 10:00", endDateTime: "2022-01-01 11:00" },
+        { startDateTime: "2022-01-01 11:00", endDateTime: "2022-01-01 12:00" },
+        { startDateTime: "2022-01-01 12:00", endDateTime: "2022-01-01 13:00" },
+        { startDateTime: "2022-01-01 13:00", endDateTime: "2022-01-01 14:00" },
+        { startDateTime: "2022-01-01 14:00", endDateTime: "2022-01-01 15:00" },
+        { startDateTime: "2022-01-01 15:00", endDateTime: "2022-01-01 16:00" },
+        { startDateTime: "2022-01-01 16:00", endDateTime: "2022-01-01 17:00" },
+        { startDateTime: "2022-01-01 17:00", endDateTime: "2022-01-01 18:00" },
+      ]
+    }
+    return data;
+  }
+
+  const onClickSlideOverHandler = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    const clickedElement = event.currentTarget as unknown as HTMLElement;
+    const status = clickedElement.getAttribute("class");
+    if (!status?.includes(" booked")) {
+      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? ""));
+      setOpen(true);
+    }
+  }
+
+  const faveHandler = () => {
+    if (clickedData) {
+      setClickedData({ ...clickedData, isFavorite: !clickedData.isFavorite });
+      console.log(clickedData.isFavorite);
+    }
+  }
 
   return (
     <>
@@ -1719,70 +1785,70 @@ export function F0() {
           </g>
           <g transform="matrix(1,0,0,1,-18.0889,8)">
             <g id="Offices">
-              <g id="0.116" className="office booked" transform="matrix(0.110414,0,0,0.111269,454.168,483.168)">
+              <g id="0.116" className="office booked" transform="matrix(0.110414,0,0,0.111269,454.168,483.168)" onClick={onClickSlideOverHandler} >
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   stroke-width="36.09px" />
               </g>
-              <g id="0.119" className="office partiallybooked" transform="matrix(0.110414,0,0,0.111269,675.587,483.168)">
+              <g id="0.119" className="office partiallybooked" transform="matrix(0.110414,0,0,0.111269,675.587,483.168)" onClick={onClickSlideOverHandler} >
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   stroke-width="36.09px" />
               </g>
-              <g id="0.118" className="office personallybooked" transform="matrix(0.110414,0,0,0.111269,604.709,483.168)">
+              <g id="0.118" className="office personallybooked" transform="matrix(0.110414,0,0,0.111269,604.709,483.168)" onClick={onClickSlideOverHandler} >
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   stroke-width="36.09px" />
               </g>
-              <g id="0.117" className="office" transform="matrix(0.110414,0,0,0.111269,529.663,483.168)">
+              <g id="0.117" className="office" transform="matrix(0.110414,0,0,0.111269,529.663,483.168)" onClick={onClickSlideOverHandler} >
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   stroke-width="36.09px" />
               </g>
-              <g id="0.109" className="office" transform="matrix(0.110414,0,0,0.111269,278.682,327.355)">
+              <g id="0.109" className="office" transform="matrix(0.110414,0,0,0.111269,278.682,327.355)" onClick={onClickSlideOverHandler} >
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   stroke-width="36.09px" />
               </g>
-              <g id="0.110" className="office" transform="matrix(0.110414,0,0,0.111269,367.041,327.355)">
+              <g id="0.110" className="office" transform="matrix(0.110414,0,0,0.111269,367.041,327.355)" onClick={onClickSlideOverHandler} >
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   stroke-width="36.09px" />
               </g>
             </g>
             <g id="Meeting-Rooms">
-              <g id="0.101" className="meeting_room booked" transform="matrix(0.110978,0,0,0.109699,433.163,526.726)">
+              <g id="0.101" className="meeting_room booked" transform="matrix(0.110978,0,0,0.109699,433.163,526.726)" onClick={onClickSlideOverHandler} >
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" stroke-width="36.25px" />
               </g>
-              <g id="0.106" className="meeting_room partiallybooked" transform="matrix(0.110978,0,0,0.109699,563.27,842.912)">
+              <g id="0.106" className="meeting_room partiallybooked" transform="matrix(0.110978,0,0,0.109699,563.27,842.912)" onClick={onClickSlideOverHandler} >
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" stroke-width="36.25px" />
               </g>
-              <g id="0.105" className="meeting_room personallybooked" transform="matrix(0.110978,0,0,0.109699,752.12,851.473)">
+              <g id="0.105" className="meeting_room personallybooked" transform="matrix(0.110978,0,0,0.109699,752.12,851.473)" onClick={onClickSlideOverHandler} >
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" stroke-width="36.25px" />
               </g>
-              <g id="0.103" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,634.499,624.666)">
+              <g id="0.103" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,634.499,624.666)" onClick={onClickSlideOverHandler} >
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" stroke-width="36.25px" />
               </g>
-              <g id="0.104" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,634.499,713.647)">
+              <g id="0.104" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,634.499,713.647)" onClick={onClickSlideOverHandler} >
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" stroke-width="36.25px" />
               </g>
-              <g id="0.102" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,491.718,657.659)">
+              <g id="0.102" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,491.718,657.659)" onClick={onClickSlideOverHandler} >
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" stroke-width="36.25px" />
               </g>
-              <g id="0.108" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,115.831,271.386)">
+              <g id="0.108" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,115.831,271.386)" onClick={onClickSlideOverHandler} >
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" stroke-width="36.25px" />
               </g>
             </g>
             <g>
-              <g id="0.071" className="desk booked" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
+              <g id="0.071" className="desk booked" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)" onClick={onClickSlideOverHandler}>
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1794,8 +1860,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.076" className="desk partiallybooked"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
+              <g id="0.076" className="desk partiallybooked" transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)" onClick={onClickSlideOverHandler}>
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1807,7 +1872,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.073" className="desk personallybooked" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
+              <g id="0.073" className="desk personallybooked" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)" onClick={onClickSlideOverHandler}>
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1819,8 +1884,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.074" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
+              <g id="0.074" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1832,8 +1896,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.075" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
+              <g id="0.075" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1845,8 +1908,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.072" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
+              <g id="0.072" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1860,7 +1922,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,1,210.837,168.55)">
-              <g id="0.066" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
+              <g id="0.066" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1872,8 +1934,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.061" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
+              <g id="0.061" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1885,7 +1946,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.064" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
+              <g id="0.064" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1897,8 +1958,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.063" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
+              <g id="0.063" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1910,8 +1970,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.062" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
+              <g id="0.062" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1923,8 +1982,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.065" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
+              <g id="0.065" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1938,7 +1996,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,1,305.909,168.55)">
-              <g id="0.060" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
+              <g id="0.060" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1950,8 +2008,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.055" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
+              <g id="0.055" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1963,7 +2020,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.058" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
+              <g id="0.058" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1975,8 +2032,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.057" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
+              <g id="0.057" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1988,8 +2044,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.056" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
+              <g id="0.056" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2001,8 +2056,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.059" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
+              <g id="0.059" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2016,7 +2070,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,1,406.079,168.55)">
-              <g id="0.054" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
+              <g id="0.054" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2028,8 +2082,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.049" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
+              <g id="0.049" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2041,7 +2094,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.052" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
+              <g id="0.052" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2053,8 +2106,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.051" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
+              <g id="0.051" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2066,8 +2118,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.050" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
+              <g id="0.050" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2079,8 +2130,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.052" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
+              <g id="0.052" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2094,7 +2144,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,1,124.713,171.98)">
-              <g id="0.067" className="desk" transform="matrix(0.0463762,0,0,0.0463762,647.933,286.449)">
+              <g id="0.067" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,647.933,286.449)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2106,8 +2156,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.069" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,737.63,288.365)">
+              <g id="0.069" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,737.63,288.365)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2119,8 +2168,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.070" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,735.714,377.513)">
+              <g id="0.070" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,735.714,377.513)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2132,8 +2180,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.068" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,646.017,375.597)">
+              <g id="0.068" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,646.017,375.597)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2147,7 +2194,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,1,509.248,168.55)">
-              <g id="0.048" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
+              <g id="0.048" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2159,8 +2206,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.043" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,167.986)">
+              <g id="0.043" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,167.986)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2172,7 +2218,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.046" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
+              <g id="0.046" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2184,8 +2230,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.045" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
+              <g id="0.045" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2197,8 +2242,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.044" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
+              <g id="0.044" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2210,8 +2254,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.047" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
+              <g id="0.047" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2225,7 +2268,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,1,89,0)">
-              <g id="0.077" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
+              <g id="0.077" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2237,8 +2280,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.082" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
+              <g id="0.082" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2250,7 +2292,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.079" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
+              <g id="0.079" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2262,8 +2304,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.080" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
+              <g id="0.080" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2275,8 +2316,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.081" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
+              <g id="0.081" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2288,8 +2328,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.078" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
+              <g id="0.078" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2303,7 +2342,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,1,-56,0)">
-              <g id="0.023" className="desk" transform="matrix(0.0463762,0,0,0.0463762,562.854,199.854)">
+              <g id="0.023" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,562.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2315,8 +2354,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.022" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,560.938,207.047)">
+              <g id="0.022" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,560.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2328,7 +2366,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.021" className="desk" transform="matrix(0.0463762,0,0,0.0463762,562.854,117.9)">
+              <g id="0.021" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,562.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2342,7 +2380,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,1,93.6553,0)">
-              <g id="0.030" className="desk" transform="matrix(0.0463762,0,0,0.0463762,562.854,199.854)">
+              <g id="0.030" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,562.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2354,8 +2392,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.031" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,560.938,207.047)">
+              <g id="0.031" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,560.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2367,7 +2404,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.032" className="desk" transform="matrix(0.0463762,0,0,0.0463762,562.854,117.9)">
+              <g id="0.032" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,562.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2381,7 +2418,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(-1,0,0,1,1348.89,-5.68434e-14)">
-              <g id="0.035" className="desk" transform="matrix(0.0463762,0,0,0.0463762,562.854,199.854)">
+              <g id="0.035" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,562.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2393,8 +2430,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.034" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,560.938,207.047)">
+              <g id="0.034" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,560.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2406,7 +2442,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.033" className="desk" transform="matrix(0.0463762,0,0,0.0463762,562.854,117.9)">
+              <g id="0.033" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,562.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2420,7 +2456,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,1,321,0)">
-              <g id="0.026" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
+              <g id="0.026" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2432,8 +2468,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.027" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
+              <g id="0.027" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2445,7 +2480,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.024" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
+              <g id="0.024" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2457,8 +2492,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.029" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
+              <g id="0.029" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2470,8 +2504,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.028" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
+              <g id="0.028" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2483,8 +2516,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.025" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
+              <g id="0.025" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2498,7 +2530,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,1,561,0)">
-              <g id="0.039" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
+              <g id="0.039" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2510,8 +2542,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.040" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
+              <g id="0.040" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2523,7 +2554,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.037" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
+              <g id="0.037" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2535,8 +2566,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.042" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
+              <g id="0.042" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2548,8 +2578,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.041" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
+              <g id="0.041" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2561,8 +2590,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.038" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
+              <g id="0.038" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2576,7 +2604,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(-1,-1.22465e-16,1.22465e-16,-1,746.094,367.84)">
-              <g id="0.018" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
+              <g id="0.018" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2588,8 +2616,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.017" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
+              <g id="0.017" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2601,7 +2628,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.020" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
+              <g id="0.020" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2613,8 +2640,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.015" className="desk"
-                transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
+              <g id="0.015" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,201.77)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2626,8 +2652,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.016" className="desk"
-                transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
+              <g id="0.016" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0463762,-5.67945e-18,5.67945e-18,-0.0463762,329.635,208.963)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2639,8 +2664,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" stroke-width="21.56px" />
                 </g>
               </g>
-              <g id="0.019" className="desk"
-                transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
+              <g id="0.019" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2654,8 +2678,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,0.74097,-3.29901,33.6591)">
-              <g id="0.091" className="desk"
-                transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,302.458)">
+              <g id="0.091" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,302.458)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2665,8 +2688,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.092" className="desk"
-                transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,259.651)">
+              <g id="0.092" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,259.651)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2676,8 +2698,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.093" className="desk"
-                transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,216.844)">
+              <g id="0.093" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,216.844)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2687,8 +2708,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.094" className="desk"
-                transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,174.037)">
+              <g id="0.094" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,174.037)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2698,7 +2718,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.095" className="desk" transform="matrix(0.0483318,0,0,0.0483318,40.2727,121.928)">
+              <g id="0.095" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0483318,0,0,0.0483318,40.2727,121.928)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2708,7 +2728,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.096" className="desk" transform="matrix(0.0483318,0,0,0.0483318,40.2727,164.609)">
+              <g id="0.096" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0483318,0,0,0.0483318,40.2727,164.609)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2718,7 +2738,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.097" className="desk" transform="matrix(0.0483318,0,0,0.0483318,40.2727,207.29)">
+              <g id="0.097" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0483318,0,0,0.0483318,40.2727,207.29)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2728,7 +2748,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.098" className="desk" transform="matrix(0.0483318,0,0,0.0483318,40.2727,249.97)">
+              <g id="0.098" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0483318,0,0,0.0483318,40.2727,249.97)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2740,7 +2760,7 @@ export function F0() {
               </g>
             </g>
             <g transform="matrix(1,0,0,0.74097,84.2748,33.6591)">
-              <g id="0.087" className="desk" transform="matrix(0.0483318,0,0,0.0483318,40.2727,121.928)">
+              <g id="0.087" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0483318,0,0,0.0483318,40.2727,121.928)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2750,7 +2770,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.090" className="desk" transform="matrix(0.0483318,0,0,0.0483318,40.2727,249.97)">
+              <g id="0.090" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0483318,0,0,0.0483318,40.2727,249.97)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2760,7 +2780,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.088" className="desk" transform="matrix(0.0483318,0,0,0.0483318,40.2727,164.609)">
+              <g id="0.088" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0483318,0,0,0.0483318,40.2727,164.609)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2770,7 +2790,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.089" className="desk" transform="matrix(0.0483318,0,0,0.0483318,40.2727,207.29)">
+              <g id="0.089" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0483318,0,0,0.0483318,40.2727,207.29)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2780,8 +2800,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.084" className="desk"
-                transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,259.651)">
+              <g id="0.084" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,259.651)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2791,8 +2810,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.083" className="desk"
-                transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,302.458)">
+              <g id="0.083" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,302.458)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2802,8 +2820,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.085" className="desk"
-                transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,216.844)">
+              <g id="0.085" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,216.844)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2813,8 +2830,7 @@ export function F0() {
                   d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955L468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045L228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955L443.824,451.955ZM277.265,451.955L277.265,628.045"
                   fill="#ebebeb" stroke="#565656" stroke-width="23.51px" />
               </g>
-              <g id="0.086" className="desk"
-                transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,174.037)">
+              <g id="0.086" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0483318,-5.91894e-18,5.91894e-18,-0.0483318,131.098,174.037)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414L388.448,844.414C376.309,844.414 366.468,835.316 366.468,824.093L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268Z"
@@ -2828,12 +2844,129 @@ export function F0() {
           </g>
         </g>
       </svg>
-    </>
+      <Transition.Root show={open} as={Fragment}>
+        <Dialog as="div" className="relative z-1" onClose={setOpen}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-in-out duration-500"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in-out duration-500"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-zinc-500 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
 
+          <div className="fixed inset-0 overflow-hidden">
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+                <Transition.Child
+                  as={Fragment}
+                  enter="transform transition ease-in-out duration-500 sm:duration-700"
+                  enterFrom="translate-x-full"
+                  enterTo="translate-x-0"
+                  leave="transform transition ease-in-out duration-500 sm:duration-700"
+                  leaveFrom="translate-x-0"
+                  leaveTo="translate-x-full"
+                >
+                  <Dialog.Panel className="pointer-events-auto relative w-96">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-in-out duration-500"
+                      enterFrom="opacity-0"
+                      enterTo="opacity-100"
+                      leave="ease-in-out duration-500"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                    >
+                      <div className="absolute left-0 top-[70px] -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
+                        <SubmitButton
+                          type="button"
+                          className=""
+                          onClick={() => setOpen(false)}
+                        >
+                          <span className="absolute -inset-2.5" />
+                          <span className="sr-only">Close panel</span>
+                          <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                        </SubmitButton>
+                      </div>
+                    </Transition.Child>
+                    <div className=" h-screen pt-[70px]  overflow-y-auto bg-white dark:bg-zinc-800 p-8">
+                      <div className="space-y-6 pb-16">
+                        <>
+                          <div>
+                            <div className="aspect-h-7 aspect-w-10 block w-full overflow-hidden rounded-lg">
+                              <ComputerDesktopIcon width={420} height={320} className=' fill-zinc-200' />
+                            </div>
+                            <div className="mt-4 flex items-start justify-between">
+                              <div>
+                                <h2 className="text-base font-semibold leading-6 text-zinc-800 dark:text-zinc-300">
+                                  <span className="sr-only">Details for </span>{clickedData?.id}
+                                </h2>
+                                <p className="text-sm font-medium text-zinc-500">{clickedData?.type}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={faveHandler}
+                                className="relative ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              >
+                                <span className="absolute -inset-1.5" />
+                                <HeartIcon className={clickedData?.isFavorite ? "h-6 w-6 text-blue-600" : "h-6 w-6"} aria-hidden="true" />
+                                <span className="sr-only">Favorite</span>
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
+                            <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
+                              {clickedData?.bookings.map((booking, index) => (
+                                <div key={index} className="py-3 flex justify-between text-sm font-medium">
+                                  <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
+                                  <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
+                                  <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
+                                </div>
+                              ))}
+                            </dl>
+                          </div>
+                          <div className="flex">
+                            <SubmitButton
+                              type="button"
+                              className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                              onClick={() => {
+                                setOpen(false);
+                                setShowNotification(true)
+                              }}
+                            >
+                              Book
+                            </SubmitButton>
+                            <InvertedSubmitButton
+                              type="button"
+                              className="ml-3 flex-1 rounded-md bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-semibold text-zinc-800 dark:text-zinc-300 shadow-sm ring-1 ring-inset ring-zinc-300 hover:bg-zinc-50"
+                              onClick={() => setOpen(false)}
+                            >
+                              Cancel
+                            </InvertedSubmitButton>
+                          </div>
+                        </>
+                      </div>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
+      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} datetime={'test'} />}
+    </>
   )
 }
 
 export function F3() {
+  const [open, setOpen] = useState(false);
+  const [clickedData, setClickedData] = useState<clickedData>();
+  const [showNotification, setShowNotification] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
@@ -2884,30 +3017,30 @@ export function F3() {
 
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-    
+
       const pointerPosition = getPointFromEvent(event);
-    
+
       if (!svg) return;
-    
+
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
-    
+
       const viewBox = svg.viewBox.baseVal;
       const newScale = viewBox.width * zoomSpeed / viewBox.width;
       const deltaWidth = viewBox.width * (newScale - 1);
       const deltaHeight = viewBox.height * (newScale - 1);
-    
+
       viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
       viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
       viewBox.width *= newScale;
       viewBox.height *= newScale;
-    
+
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
-    
+
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
-    
+
 
     if (svg.PointerEvent) {
       svg.addEventListener('pointerdown', onPointerDown);
@@ -2926,7 +3059,58 @@ export function F3() {
       svg.addEventListener('touchend', onPointerUp);
       svg.addEventListener('touchmove', onPointerMove);
     }
+
+
   }, []);
+
+  const loadClickedData = (id: string) => {
+    let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
+    if (type === "desk") {
+      type = "Desk";
+    } else if (type === "meeting_room") {
+      type = "Meeting Room";
+    } else if (type === "office") {
+      type = "Office";
+    } else if (type === "parking") {
+      type = "Parking";
+    } else {
+      type = "";
+    }
+
+    const data: clickedData = {
+      id: id,
+      name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
+      isFavorite: false,
+      type: type,
+      bookings: [
+        { startDateTime: "2022-01-01 10:00", endDateTime: "2022-01-01 11:00" },
+        { startDateTime: "2022-01-01 11:00", endDateTime: "2022-01-01 12:00" },
+        { startDateTime: "2022-01-01 12:00", endDateTime: "2022-01-01 13:00" },
+        { startDateTime: "2022-01-01 13:00", endDateTime: "2022-01-01 14:00" },
+        { startDateTime: "2022-01-01 14:00", endDateTime: "2022-01-01 15:00" },
+        { startDateTime: "2022-01-01 15:00", endDateTime: "2022-01-01 16:00" },
+        { startDateTime: "2022-01-01 16:00", endDateTime: "2022-01-01 17:00" },
+        { startDateTime: "2022-01-01 17:00", endDateTime: "2022-01-01 18:00" },
+      ]
+    }
+    return data;
+  }
+
+  const onClickSlideOverHandler = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
+    const clickedElement = event.currentTarget as unknown as HTMLElement;
+    const status = clickedElement.getAttribute("class");
+    if (!status?.includes(" booked")) {
+      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? ""));
+      setOpen(true);
+    }
+  }
+
+  const faveHandler = () => {
+    if (clickedData) {
+      setClickedData({ ...clickedData, isFavorite: !clickedData.isFavorite });
+      console.log(clickedData.isFavorite);
+    }
+  }
 
   return (
     <>
@@ -2956,27 +3140,27 @@ export function F3() {
             <path d="M603.544,405.844L603.544,245.491" fill="none" stroke="#565656" stroke-width="4px" />
           </g>
           <g id="Meeting-Rooms">
-            <g id="3.101" className="meeting_room" transform="matrix(0.14129,0,0,0.139662,22.4029,215.525)">
+            <g id="3.101" className="meeting_room" transform="matrix(0.14129,0,0,0.139662,22.4029,215.525)" onClick={onClickSlideOverHandler}>
               <path
                 d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                 fill="#ebebeb" stroke="#565656" stroke-width="25.63px" />
             </g>
-            <g id="3.102" className="meeting_room booked" transform="matrix(0.14129,0,0,0.139662,22.4029,316.196)">
+            <g id="3.102" className="meeting_room booked" transform="matrix(0.14129,0,0,0.139662,22.4029,316.196)" onClick={onClickSlideOverHandler}>
               <path
                 d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                 fill="#ebebeb" stroke="#565656" stroke-width="25.63px" />
             </g>
           </g>
           <g id="Offices">
-            <g id="3.104" className="office" transform="matrix(0.12315,0,0,0.124104,884.894,257.625)">
+            <g id="3.104" className="office" transform="matrix(0.12315,0,0,0.124104,884.894,257.625)" onClick={onClickSlideOverHandler}>
               <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656" stroke-width="32.36px" />
             </g>
-            <g id="3.103" className="office" transform="matrix(0.12315,0,0,0.124104,884.894,340.193)">
+            <g id="3.103" className="office" transform="matrix(0.12315,0,0,0.124104,884.894,340.193)" onClick={onClickSlideOverHandler}>
               <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656" stroke-width="32.36px" />
             </g>
           </g>
           <g transform="matrix(-1,1.22465e-16,-1.22465e-16,-1,489.675,1310.69)">
-            <g id="3.018" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="3.018" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2988,8 +3172,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.017" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="3.017" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3001,7 +3184,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.016" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="3.016" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3013,7 +3196,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.007" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
+            <g id="3.007" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3025,8 +3208,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.008" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
+            <g id="3.008" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3038,7 +3220,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.009" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
+            <g id="3.009" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3052,7 +3234,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(-1,1.22465e-16,-1.22465e-16,-1,1053.4,1310.69)">
-            <g id="0.074" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="0.074" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3064,8 +3246,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.075" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="0.075" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3077,7 +3258,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.076" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="0.076" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3089,7 +3270,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.074" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
+            <g id="0.074" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3101,8 +3282,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.075" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
+            <g id="0.075" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3114,7 +3294,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.076" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
+            <g id="0.076" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3128,7 +3308,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(-1,1.22465e-16,-1.22465e-16,-1,940.651,1310.69)">
-            <g id="0.073" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="0.073" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3140,8 +3320,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.072" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="0.072" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3153,7 +3332,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.071" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="0.071" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3165,7 +3344,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.060" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
+            <g id="0.060" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3177,8 +3356,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.061" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
+            <g id="0.061" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3190,7 +3368,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.062" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
+            <g id="0.062" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3204,7 +3382,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(-1,1.22465e-16,-1.22465e-16,-1,827.907,1310.69)">
-            <g id="0.059" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="0.059" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3216,8 +3394,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.058" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="0.058" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3229,7 +3406,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.057" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="0.057" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3241,7 +3418,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.047" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
+            <g id="3.047" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3253,8 +3430,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.048" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
+            <g id="3.048" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3266,7 +3442,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.049" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
+            <g id="3.049" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3280,7 +3456,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(-1,1.22465e-16,-1.22465e-16,-1,715.163,1310.69)">
-            <g id="3.046" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="3.046" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3292,8 +3468,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.045" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="3.045" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3305,7 +3480,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.044" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="3.044" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3317,7 +3492,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.033" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
+            <g id="3.033" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3329,8 +3504,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.034" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
+            <g id="3.034" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3342,7 +3516,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.035" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
+            <g id="3.035" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3356,7 +3530,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(-1,1.22465e-16,-1.22465e-16,-1,602.419,1310.69)">
-            <g id="3.032" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="3.032" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3368,8 +3542,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.031" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="3.031" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3381,7 +3554,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.030" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="3.030" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3393,7 +3566,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.019" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
+            <g id="3.019" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3405,8 +3578,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.020" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
+            <g id="3.020" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3418,7 +3590,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.021" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
+            <g id="3.021" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3432,7 +3604,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(-1,1.22465e-16,-1.22465e-16,-1,376.931,1310.69)">
-            <g id="3.004" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="3.004" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3444,8 +3616,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.005" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="3.005" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3457,7 +3628,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.006" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="3.006" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3469,7 +3640,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.003" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
+            <g id="3.003" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3481,8 +3652,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.002" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
+            <g id="3.002" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3494,7 +3664,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.001" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
+            <g id="3.001" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3508,7 +3678,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,1,2.30148,-3.06864)">
-            <g id="3.012" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="3.012" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3520,8 +3690,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.011" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="3.011" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3533,7 +3702,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.010" className="desk" transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="3.010" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3545,7 +3714,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.013" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
+            <g id="3.013" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3557,8 +3726,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.014" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
+            <g id="3.014" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3570,7 +3738,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.015" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
+            <g id="3.015" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3584,8 +3752,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,1,0.352479,0)">
-            <g id="3.023" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
+            <g id="3.023" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3597,7 +3764,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.022" className="desk" transform="matrix(0.0540943,0,0,0.0540943,334.983,578.916)">
+            <g id="3.022" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,334.983,578.916)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3609,8 +3776,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.028" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
+            <g id="3.028" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3622,7 +3788,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.029" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
+            <g id="3.029" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3634,8 +3800,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.025" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
+            <g id="3.025" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3647,7 +3812,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.024" className="desk" transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
+            <g id="3.024" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3659,7 +3824,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.026" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,437.399,434.466)">
+            <g id="3.026" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,437.399,434.466)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3671,8 +3836,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.027" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,538.617)">
+            <g id="3.027" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,538.617)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3686,8 +3850,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,1,117.679,-1.5293)">
-            <g id="3.037" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
+            <g id="3.037" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3699,7 +3862,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.036" className="desk" transform="matrix(0.0540943,0,0,0.0540943,334.983,578.916)">
+            <g id="3.036" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,334.983,578.916)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3711,8 +3874,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.042" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
+            <g id="3.042" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3724,7 +3886,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.043" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
+            <g id="3.043" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3736,8 +3898,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.039" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
+            <g id="3.039" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3749,7 +3910,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.038" className="desk" transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
+            <g id="3.038" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3761,8 +3922,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.040" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,490.653)">
+            <g id="3.040" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3774,7 +3934,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="3.041" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,437.399,482.43)">
+            <g id="3.041" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,437.399,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3788,8 +3948,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,1,352.333,-1.5293)">
-            <g id="0.064" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
+            <g id="0.064" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3801,7 +3960,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.063" className="desk" transform="matrix(0.0540943,0,0,0.0540943,334.983,578.916)">
+            <g id="0.063" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,334.983,578.916)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3813,8 +3972,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.069" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
+            <g id="0.069" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3826,7 +3984,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.070" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
+            <g id="0.070" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3838,8 +3996,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.066" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
+            <g id="0.066" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3851,7 +4008,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.065" className="desk" transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
+            <g id="0.065" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3863,8 +4020,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.067" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,490.653)">
+            <g id="0.067" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3876,7 +4032,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.068" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,437.399,482.43)">
+            <g id="0.068" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,437.399,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3890,8 +4046,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,1,235.006,-1.5293)">
-            <g id="0.050" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
+            <g id="0.050" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3903,8 +4058,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.055" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
+            <g id="0.055" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3916,7 +4070,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.056" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
+            <g id="0.056" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3928,8 +4082,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.052" className="desk"
-              transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
+            <g id="0.052" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3941,7 +4094,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.051" className="desk" transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
+            <g id="0.051" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3953,8 +4106,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.053" className="desk"
-              transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,490.653)">
+            <g id="0.053" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3966,7 +4118,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" stroke-width="18.49px" />
               </g>
             </g>
-            <g id="0.054" className="desk" transform="matrix(-0.0540943,0,0,0.0540943,437.399,482.43)">
+            <g id="0.054" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,437.399,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3980,7 +4132,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,1,1.9179,-12.0433)">
-            <g id="0.079" className="desk" transform="matrix(0.0611036,0,0,0.0518511,796.566,499.597)">
+            <g id="0.079" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,499.597)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -3990,7 +4142,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="17.65px" />
             </g>
-            <g id="0.077" className="desk" transform="matrix(0.0611036,0,0,0.0518511,796.566,590.875)">
+            <g id="0.077" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,590.875)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4000,7 +4152,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="17.65px" />
             </g>
-            <g id="0.080" className="desk" transform="matrix(0.0611036,0,0,0.0518511,796.566,453.958)">
+            <g id="0.080" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,453.958)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4010,7 +4162,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="17.65px" />
             </g>
-            <g id="0.078" className="desk" transform="matrix(0.0611036,0,0,0.0518511,796.566,545.236)">
+            <g id="0.078" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,545.236)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4020,7 +4172,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="17.65px" />
             </g>
-            <g id="0.082" className="desk" transform="matrix(-0.0611036,0,0,0.0518511,911.299,499.597)">
+            <g id="0.082" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,499.597)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4030,7 +4182,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="17.65px" />
             </g>
-            <g id="0.084" className="desk" transform="matrix(-0.0611036,0,0,0.0518511,911.299,590.875)">
+            <g id="0.084" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,590.875)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4040,7 +4192,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="17.65px" />
             </g>
-            <g id="0.0811" className="desk" transform="matrix(-0.0611036,0,0,0.0518511,911.299,453.958)">
+            <g id="0.0811" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,453.958)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4050,7 +4202,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="17.65px" />
             </g>
-            <g id="0.083" className="desk" transform="matrix(-0.0611036,0,0,0.0518511,911.299,545.236)">
+            <g id="0.083" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,545.236)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4062,8 +4214,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,0.925782,-4.5853,20.771)">
-            <g id="3.208" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
+            <g id="3.208" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4073,8 +4224,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.209" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
+            <g id="3.209" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4084,8 +4234,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.207" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
+            <g id="3.207" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4095,8 +4244,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.211" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
+            <g id="3.211" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4106,8 +4254,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.210" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
+            <g id="3.210" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4117,8 +4264,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.212" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
+            <g id="3.212" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4130,8 +4276,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,0.925782,-4.5853,108.566)">
-            <g id="3.202" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
+            <g id="3.202" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4141,8 +4286,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.203" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
+            <g id="3.203" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4152,8 +4296,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.201" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
+            <g id="3.201" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4163,8 +4306,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.205" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
+            <g id="3.205" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4174,8 +4316,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.204" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
+            <g id="3.204" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4185,8 +4326,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.206" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
+            <g id="3.206" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4198,8 +4338,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(6.12323e-17,1,-0.925782,5.66878e-17,1077.01,25.1025)">
-            <g id="3.220" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
+            <g id="3.220" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4209,8 +4348,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.219" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
+            <g id="3.219" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4220,8 +4358,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.221" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
+            <g id="3.221" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4231,8 +4368,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.223" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
+            <g id="3.223" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4242,8 +4378,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.224" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
+            <g id="3.224" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4253,8 +4388,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.222" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
+            <g id="3.222" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4266,8 +4400,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(6.12323e-17,1,-0.925782,5.66878e-17,971.067,25.1025)">
-            <g id="3.214" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
+            <g id="3.214" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4277,8 +4410,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.213" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
+            <g id="3.213" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4288,8 +4420,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.215" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
+            <g id="3.215" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4299,8 +4430,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.217" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
+            <g id="3.217" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4310,8 +4440,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.218" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
+            <g id="3.218" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4321,8 +4450,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="3.216" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
+            <g id="3.216" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4334,8 +4462,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(6.12323e-17,1,-0.925782,5.66878e-17,1176.57,459.393)">
-            <g id="0.089" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
+            <g id="0.089" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4345,8 +4472,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="0.090" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
+            <g id="0.090" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4356,8 +4482,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="0.088" className="desk"
-              transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
+            <g id="0.088" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4367,8 +4492,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="0.092" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
+            <g id="0.092" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4378,8 +4502,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="0.091" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
+            <g id="0.091" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4389,8 +4512,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" stroke-width="18.43px" />
             </g>
-            <g id="0.093" className="desk"
-              transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
+            <g id="0.093" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4403,6 +4525,121 @@ export function F3() {
           </g>
         </g>
       </svg>
+      <Transition.Root show={open} as={Fragment}>
+        <Dialog as="div" className="relative z-1" onClose={setOpen}>
+          <Transition.Child
+            as={Fragment}
+            enter="ease-in-out duration-500"
+            enterFrom="opacity-0"
+            enterTo="opacity-100"
+            leave="ease-in-out duration-500"
+            leaveFrom="opacity-100"
+            leaveTo="opacity-0"
+          >
+            <div className="fixed inset-0 bg-zinc-500 bg-opacity-75 transition-opacity" />
+          </Transition.Child>
+
+          <div className="fixed inset-0 overflow-hidden">
+            <div className="absolute inset-0 overflow-hidden">
+              <div className="pointer-events-none fixed inset-y-0 right-0 flex max-w-full pl-10">
+                <Transition.Child
+                  as={Fragment}
+                  enter="transform transition ease-in-out duration-500 sm:duration-700"
+                  enterFrom="translate-x-full"
+                  enterTo="translate-x-0"
+                  leave="transform transition ease-in-out duration-500 sm:duration-700"
+                  leaveFrom="translate-x-0"
+                  leaveTo="translate-x-full"
+                >
+                  <Dialog.Panel className="pointer-events-auto relative w-96">
+                    <Transition.Child
+                      as={Fragment}
+                      enter="ease-in-out duration-500"
+                      enterFrom="opacity-0"
+                      enterTo="opacity-100"
+                      leave="ease-in-out duration-500"
+                      leaveFrom="opacity-100"
+                      leaveTo="opacity-0"
+                    >
+                      <div className="absolute left-0 top-[70px] -ml-8 flex pr-2 pt-4 sm:-ml-10 sm:pr-4">
+                        <SubmitButton
+                          type="button"
+                          className=""
+                          onClick={() => setOpen(false)}
+                        >
+                          <span className="absolute -inset-2.5" />
+                          <span className="sr-only">Close panel</span>
+                          <XMarkIcon className="h-6 w-6" aria-hidden="true" />
+                        </SubmitButton>
+                      </div>
+                    </Transition.Child>
+                    <div className=" h-screen pt-[70px]  overflow-y-auto bg-white dark:bg-zinc-800 p-8">
+                      <div className="space-y-6 pb-16">
+                        <>
+                          <div>
+                            <div className="aspect-h-7 aspect-w-10 block w-full overflow-hidden rounded-lg">
+                              <ComputerDesktopIcon width={420} height={320} className=' fill-zinc-200' />
+                            </div>
+                            <div className="mt-4 flex items-start justify-between">
+                              <div>
+                                <h2 className="text-base font-semibold leading-6 text-zinc-800 dark:text-zinc-300">
+                                  <span className="sr-only">Details for </span>{clickedData?.id}
+                                </h2>
+                                <p className="text-sm font-medium text-zinc-500">{clickedData?.type}</p>
+                              </div>
+                              <button
+                                type="button"
+                                onClick={faveHandler}
+                                className="relative ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                              >
+                                <span className="absolute -inset-1.5" />
+                                <HeartIcon className={clickedData?.isFavorite ? "h-6 w-6 text-blue-600" : "h-6 w-6"} aria-hidden="true" />
+                                <span className="sr-only">Favorite</span>
+                              </button>
+                            </div>
+                          </div>
+                          <div>
+                            <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
+                            <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
+                              {clickedData?.bookings.map((booking, index) => (
+                                <div key={index} className="py-3 flex justify-between text-sm font-medium">
+                                  <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
+                                  <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
+                                  <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
+                                </div>
+                              ))}
+                            </dl>
+                          </div>
+                          <div className="flex">
+                            <SubmitButton
+                              type="button"
+                              className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+                              onClick={() => {
+                                setOpen(false);
+                                setShowNotification(true)
+                              }}
+                            >
+                              Book
+                            </SubmitButton>
+                            <InvertedSubmitButton
+                              type="button"
+                              className="ml-3 flex-1 rounded-md bg-white dark:bg-zinc-800 px-3 py-2 text-sm font-semibold text-zinc-800 dark:text-zinc-300 shadow-sm ring-1 ring-inset ring-zinc-300 hover:bg-zinc-50"
+                              onClick={() => setOpen(false)}
+                            >
+                              Cancel
+                            </InvertedSubmitButton>
+                          </div>
+                        </>
+                      </div>
+                    </div>
+                  </Dialog.Panel>
+                </Transition.Child>
+              </div>
+            </div>
+          </div>
+        </Dialog>
+      </Transition.Root>
+      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} datetime={'test'} />}
     </>
   )
 }

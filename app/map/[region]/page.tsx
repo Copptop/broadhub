@@ -6,6 +6,7 @@ import NENA from '@/app/(map)/(NA)/NENA'
 import EMEA from '@/app/(map)/(EMEA)/EMEA'
 import UK from '@/app/(map)/(EMEA)/UK'
 import APAC from '@/app/(map)/(APAC)/APAC'
+import Breadcrumb from '@/components/navigation/breadcrumbs'
 
 
 export default function Page({ params }: { params: { region: string } }) {
@@ -28,7 +29,8 @@ export default function Page({ params }: { params: { region: string } }) {
   }
   return (
     <>
-    <div className="h-[85vh] py-4">{map_to_render}</div>
+      <Breadcrumb pages={[{ name: 'Map', href: '/map', current: false }, { name: params.region, href: `/map/${params.region}`, current: true }]} />
+      <div className="h-[85vh] py-4">{map_to_render}</div>
     </>
   )
 }

@@ -1,6 +1,6 @@
 
 
-import { ChevronDownIcon } from "@heroicons/react/24/solid";
+import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 import React, { ReactNode } from "react";
 interface table {
@@ -9,9 +9,9 @@ interface table {
   Actions?: Array<any>;
 }
 
-export const Table: React.FC<table> = ({ data, Actions, headers }) => {
-  if (Actions && !headers.some(header => header.name === "Actions")) {
-    headers.push({ name: "Actions", sortable: false });
+export function Table(dataFeed: table) {
+  if (dataFeed.Actions && !dataFeed.headers.some(header => header.name === "Actions")) {
+    dataFeed.headers.push({ name: "Actions", sortable: false });
   }
 
   return (
@@ -22,7 +22,7 @@ export const Table: React.FC<table> = ({ data, Actions, headers }) => {
             <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-500 font-semibold text-zinc-700 dark:text-zinc-300">
               <thead className="sticky top-0 z-10 bg-white dark:bg-zinc-900">
                 <tr>
-                  {headers.map((header) => (
+                  {dataFeed.headers.map((header) => (
                     <th key={header.name} scope="col" className="sticky top-0 py-3.5 px-4 text-center text-sm sm:px-1 content-center ">
                       {header.sortable !== false ? (
                         <div className="group inline-flex">
@@ -39,7 +39,7 @@ export const Table: React.FC<table> = ({ data, Actions, headers }) => {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-500 text-zinc-500 dark:text-zinc-500 text-center font-normal">
-                {data.map((dp) => (
+                {dataFeed.data.map((dp) => (
                   <tr key={dp.id} className="">
                     {Object.entries(dp)
                       .filter(([key]) => key !== "href")
@@ -50,7 +50,7 @@ export const Table: React.FC<table> = ({ data, Actions, headers }) => {
                       ))}
                     <td className="relative whitespace-nowrap py-4 px-4 text-right text-sm sm:px-1">
                       <div className="flex justify-center">
-                        {Actions!.map((action) => (
+                        {dataFeed.Actions!.map((action) => (
                           <React.Fragment key={action.name}>
                             {action.navigateTo && dp.href ? (
                               <Link href={dp.href}>
@@ -77,3 +77,47 @@ export const Table: React.FC<table> = ({ data, Actions, headers }) => {
     </>
   );
 };
+
+interface list_table {
+  headers: Array<String>;
+  data: Array<any>;
+}
+
+export function List_Table(dataFeed: list_table) {
+  return (
+    <>
+      <div className="flex my-8 h-[80dvh] overflow-auto">
+        <div className="w-full my-2 overflow-x-auto sm:mx-6 lg:mx-8">
+          <div className="inline-block min-w-full py-2 align-middle sm:px-6 lg:px-8">
+            <table className="min-w-full divide-y divide-zinc-200 dark:divide-zinc-500 font-semibold text-zinc-700 dark:text-zinc-300">
+              <thead className="sticky text-left top-0 z-10 bg-white dark:bg-zinc-900">
+                <tr>
+                  {dataFeed.headers.map((header) => (
+                    <th key={header.toString()} scope="col" className="sticky top-0 py-3.5 px-4 text-sm sm:px-1 ">
+                      <span>{header}</span>
+                    </th>
+                  ))}
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-zinc-200 dark:divide-zinc-500 text-zinc-500 dark:text-zinc-500 font-normal">
+                {dataFeed.data.map((dp, index) => (
+                  <tr key={index}>
+                    <Link href={`/list/${dp}`}>
+                      <span className="flex items-center justify-end">
+                        <td className="flex-none whitespace-nowrap px-4 py-4 sm:px-1 text-sm">
+                          {dp}
+                        </td>
+                        <div className="flex-auto" />
+                        <ArrowRightIcon className="flex-none size-6 " />
+                      </span>
+                    </Link>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </>
+  );
+}

@@ -11,6 +11,7 @@ import {
   UsersIcon,
 } from '@heroicons/react/24/outline'
 import { SubmitButton } from '@/components/Buttons'
+import Breadcrumb from '@/components/navigation/breadcrumbs'
 
 const floors = [
   {
@@ -34,6 +35,7 @@ function classNames(...classes: string[]) {
 export default function Page({ params }: { params: { region: string, location: string } }) {
   return (
     <>
+      <Breadcrumb pages={[{ name: 'Map', href: '/map', current: false }, { name: params.region, href: `/map/${params.region}`, current: false }, { name: params.location, href: `/map/${params.region}/${params.location}`, current: true }]} />
       <div className="flex justify-center p-10 space-x-8">
         {floors!.map((floor) => (
           <Link key={floor.title} href={`/map/${params.region}/${params.location}/${floor.href}`}>
