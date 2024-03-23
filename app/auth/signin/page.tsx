@@ -8,7 +8,7 @@ const SignInPage = () => {
 
   return (
     <>
-      <div className='overflow-y-auto h-[80ddvh] w-full py-3'>
+      <div className='overflow-y-auto w-full py-3'>
         <div className='w-3/4 mx-auto flex flex-col gap-5'>
           <VerticalLogo className='self-center w-2/3 h-auto' />
           <SignInForm />

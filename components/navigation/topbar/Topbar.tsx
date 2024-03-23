@@ -47,7 +47,7 @@ const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
           <span className="sr-only">Open user menu</span>
           <Image
             className="h-8 w-8 rounded-full bg-zinc-50"
-            src="/components/branding/logo.svg"
+            src="C:\REPOS\broadhub\components\branding\logo.svg"
             alt=""
             width={32}
             height={32}

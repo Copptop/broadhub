@@ -22,57 +22,63 @@ input:-webkit-autofill:active {
   -webkit-text-fill-color: rgb(212 212 216 / var(--tw-text-opacity));
 }
 
+.MapSelectable:hover {
+  opacity: 70%;
+}
+
 .meeting_room,
+.parking,
 .office,
-.desk {
-  fill: #D3D3D3;
-  stroke: #bfbfbf;
-  pointer-events: all;
-}
-
-.meeting_room.booked,
-.office.booked,
-.desk.booked {
-  opacity: 0.5;
-  fill: red;
-}
-
-.meeting_room:hover,
-.office:hover,
-.desk:hover path,
-.desk:hover rect {
-  stroke: #333;
-  stroke-width: 3px;
-  opacity: 0.5;
-  fill: #0066FF !important;
-}
-
-.meeting_room.booked:hover,
-.office.booked:hover,
-.desk.booked:hover {
-  fill: #ff9999;
-}
-
 .desk {
   cursor: pointer;
 }
 
-.desk path,
-.desk rect {
-  fill: #d8d8d8;
-  stroke: #000;
+.meeting_room:hover path,
+.parking:hover path,
+.office:hover circle,
+.desk:hover path {
+  cursor: pointer;
+  fill: #3498db;
 }
 
-.desk-bkg {
-  fill: none !important;
-  stroke: none !important;
-}
-
-.desk.booked {
+.meeting_room.booked path,
+.parking.booked path,
+.office.booked circle,
+.desk.booked path {
   pointer-events: none;
+  fill: #f39a9a;
 }
 
-.desk.booked path,
-.desk.booked rect {
-  fill: red;
+.favourite path {
+  stroke: #0f38f1 !important;
+}
+
+.meeting_room.partiallybooked path,
+.parking.partiallybooked path,
+.office.partiallybooked circle,
+.desk.partiallybooked path {
+  stroke: #565656;
+  fill: rgb(241, 241, 138) !important;
+}
+
+.meeting_room.personallybooked path,
+.parking.personallybooked path,
+.office.personallybooked circle,
+.desk.personallybooked path {
+  stroke: #565656;
+  fill: #0d4eaf !important;
+}
+
+.meeting_room.partiallybooked:hover path,
+.parking.partiallybooked:hover path,
+.office.partiallybooked:hover circle,
+.desk.partiallybooked:hover path {
+  opacity: 0.7;
+}
+
+.meeting_room.personallybooked:hover path,
+.parking.personallybooked:hover path,
+.office.personallybooked:hover circle,
+.desk.personallybooked:hover path {
+  opacity: 0.7;
 }

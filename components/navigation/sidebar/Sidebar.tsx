@@ -119,7 +119,7 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
           </div>
         </Dialog>
       </Transition.Root>
-      <div className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
+      <div id='sidebar' className="hidden lg:fixed lg:inset-y-0 lg:z-50 lg:flex lg:w-72 lg:flex-col">
         <div className="flex grow flex-col gap-y-3 overflow-y-auto bg-compLightBlue dark:bg-zinc-800 px-6 pb-4">
           <div className="flex h-16 shrink-0 items-center pb-0">
             <StandardLogo className='w-full h-auto' />
