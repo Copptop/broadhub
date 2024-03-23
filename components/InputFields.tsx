@@ -95,7 +95,7 @@ export function ListBox({ onChange, selectedTime1, selectedTime }: { onChange: (
     <Listbox value={selected} onChange={(value: string) => onChange(value)}>
       {({ open }) => (
         <>
-          <div className="relative pl-2 pr-2 py-1.5">
+          <div className="relative pl-2 pr-2 py-1.5 z-30">
             <Listbox.Button className="relative w-full cursor-default rounded-md bg-white dark:bg-zinc-800 py-1.5 pl-3 pr-10 text-left text-zinc-700 dark:text-zinc-300 shadow-sm ring-1 ring-inset ring-zinc-300 dark:ring-zinc-700 focus:outline-none focus:ring-2 focus:ring-blue-500 sm:text-sm sm:leading-6">
               <span className="flex items-center">
                 <span className="ml-3 block truncate">{selected}</span>
