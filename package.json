@@ -15,7 +15,7 @@
     "@types/node": "20.11.30",
     "@types/react": "18.2.61",
     "@types/react-dom": "18.2.21",
-    "@vercel/analytics": "^1.0.2",
+    "@vercel/analytics": "^1.2.2",
     "@vercel/speed-insights": "^1.0.9",
     "date-fns": "^3.6.0",
     "eslint": "8.56.0",
