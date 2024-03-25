@@ -21,7 +21,7 @@ export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resource
     { name: 'Cancel', href: href },
   ];
 
-  const displayDate = format(datetime, 'EEEE, dd MMM yyy')
+  const displayDate = format(new Date(datetime), 'EEEE, dd MMM yyy')
   const iconComponent = resourceType === 'desk' ? <AcademicCapIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" aria-hidden="true" /> : <ArrowRightEndOnRectangleIcon className="h-5 w-5 text-zinc-300 dark:text-zinc-300" aria-hidden="true" />
 
 

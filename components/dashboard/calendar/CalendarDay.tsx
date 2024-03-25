@@ -21,7 +21,7 @@ const CalendarDay: React.FC<CalendarDayProps> = ({ day, dayIndex, currentMonth }
           (isEqual(day.getDate(), startOfToday().getDate()) && isSameMonth(day, currentMonth)) ? 'text-blue-700 hover:text-blue-800' : '',
         )}
       >
-        <time dateTime={day.toISOString()}>{format(day, 'd')}</time>
+        <time dateTime={day.toISOString()}>{format(new Date(day), 'd')}</time>
       </button>
     </div>
   );

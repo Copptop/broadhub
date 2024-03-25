@@ -6,7 +6,7 @@ import CalendarDay from '@/components/dashboard/calendar/CalendarDay';
 const CalendarSection: React.FC = () => {
   const today = startOfToday();
   const [currentMonth, setCurrentMonth] = useState(today);
-  const firstDayCurrentMonth = parse(format(currentMonth, 'MMM-yyyy'), 'MMM-yyyy', new Date());
+  const firstDayCurrentMonth = parse(format(new Date(currentMonth), 'MMM-yyyy'), 'MMM-yyyy', new Date());
   const days = eachDayOfInterval({
     start: startOfWeek(firstDayCurrentMonth),
     end: endOfWeek(endOfMonth(firstDayCurrentMonth)),

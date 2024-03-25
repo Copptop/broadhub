@@ -29,8 +29,8 @@ const Booking = {
 
 export default function Page() {
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const startDateTime = format(Booking.startDateTime, 'dd MMM yyyy h:mm a');
-  const endDateTime = format(Booking.endDateTime, 'h:mm a');
+  const startDateTime = format(new Date(Booking.startDateTime), 'dd MMM yyyy h:mm a');
+  const endDateTime = format(new Date(Booking.endDateTime), 'h:mm a');
 
   const pages = [
     { name: 'Bookings', href: '/bookings', current: false },
