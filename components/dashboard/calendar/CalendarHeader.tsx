@@ -15,7 +15,7 @@ const CalendarHeader: React.FC<CalendarHeaderProps> = ({ currentMonth, onPreviou
   return (
     <div className="flex items-center text-s font-semibold text-zinc-700 dark:text-zinc-300">
       <h2 className="flex-auto">
-        {format(currentMonth, 'MMMM yyyy')}
+        {format(new Date(currentMonth), 'MMMM yyyy')}
       </h2>
       <button
         type="button"

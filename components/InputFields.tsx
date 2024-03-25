@@ -1,3 +1,5 @@
+'use client'
+
 import { Fragment, useEffect, useState } from 'react'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
@@ -154,3 +156,40 @@ export function ListBox({ onChange, selectedTime1, selectedTime }: { onChange: (
 }
 
 InputField.displayName = 'Input';
+
+
+import { Select, SelectItem } from '@tremor/react';
+
+export function SelectInput() {
+  const [value, setValue] = useState('');
+  return (
+    <div className=" max-w-xs">
+      <label htmlFor="distance" className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">Select Office Location</label>
+      <Select id="distance" name="distance" value={value} onValueChange={setValue} className="mt-2">
+        <SelectItem value="1">
+          Kilometers
+        </SelectItem>
+        <SelectItem value="2">
+          Meters
+        </SelectItem>
+        <SelectItem value="3">
+          Miles
+        </SelectItem>
+        <SelectItem value="4">
+          Nautical Miles
+        </SelectItem>
+      </Select>
+    </div>
+  );
+}
+
+import { DateRangePicker } from '@tremor/react';
+
+export function DateRangePickerComp() {
+  return (
+    <div className=" max-w-md space-y-2">
+      <label htmlFor="distance" className="text-tremor-default text-tremor-content dark:text-dark-tremor-content">Select Date Range</label>
+      <DateRangePicker className="mx-auto max-w-md" />
+    </div>
+  );
+}

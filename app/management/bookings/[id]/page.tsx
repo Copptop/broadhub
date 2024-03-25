@@ -70,8 +70,8 @@ export default function Page() {
   const [editedStartDateTime, setEditedStartDateTime] = useState(initialStartDateTime);
   const [editedEndDateTime, setEditedEndDateTime] = useState(initialEndDateTime);
 
-  const startDateTime = format(editedStartDateTime, 'dd MMM yyyy h:mm a');
-  const endDateTime = format(editedEndDateTime, 'h:mm a');
+  const startDateTime = format(new Date(editedStartDateTime), 'dd MMM yyyy h:mm a');
+  const endDateTime = format(new Date(editedEndDateTime), 'h:mm a');
 
   const pages = [
     { name: 'Bookings', href: '/management/bookings', current: false },

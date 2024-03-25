@@ -34,8 +34,8 @@ export const ScheduleItem: React.FC<ScheduleItemProps> = ({
   ];
   const currentPath = usePathname();
 
-  startDateTime = format(startDateTime, 'd/m/y h:mm a');
-  endDateTime = format(endDateTime, 'h:mm a');
+  startDateTime = format(new Date(startDateTime), 'd/m/y h:mm a');
+  endDateTime = format(new Date(endDateTime), 'h:mm a');
   const iconComponent = resourceType === 'desk' ? <AcademicCapIcon className="h-5 w-5 align-middle rounded-lg text-zinc-700 dark:text-zinc-300 " aria-hidden="true" /> : <ArrowRightEndOnRectangleIcon className="h-5 w-5 align-middle rounded-lg text-zinc-700 dark:text-zinc-300 " aria-hidden="true" />
 
   return (
