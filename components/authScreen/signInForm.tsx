@@ -7,7 +7,7 @@ import { AtSymbolIcon, FingerPrintIcon } from '@heroicons/react/24/outline';
 
 import { SubmitButton, InvertedSubmitButton } from '@/components/Buttons';
 import { InputField } from '@/components/InputFields';
-import { SignIn } from '@/lib/actions/signInHandler';
+import { SignInHandler } from '@/lib/actions/signInHandler';
 import { set } from 'date-fns';
 
 
@@ -20,9 +20,9 @@ export default function SignInForm() {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     startTransition(() => {
-      SignIn({ email: _email.current, password: _password.current })
+      SignInHandler({ email: _email.current, password: _password.current })
         .then((data) => {
-          setError(data.error)
+          setError(data?.error)
         })
     })
   }

@@ -2,13 +2,13 @@
  * Array of routes which dont need authentication
  * @type {string[]}
  */
-export const PublicRoutes = [''];
+export const PublicRoutes = ['/public',];
 
 /**
  * Array of routes which are need for authentication
  * @type {string[]}
  */
-export const AuthRoutes = ['auth/signin', 'auth/signup'];
+export const AuthRoutes = ['/auth/signin', '/auth/signup'];
 
 /**
  * Prefix for API Authentication Routes
@@ -18,6 +18,6 @@ export const APIAuthPrefix = '/api/auth';
 
 /**
  * Default Redirect Route after login
- * @type {string}
+ * @type {string}s
  */
 export const DefaultRedirectRoute = '/';

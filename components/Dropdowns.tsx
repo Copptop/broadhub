@@ -1,5 +1,3 @@
-
-
 import React, { Fragment, ReactNode, forwardRef } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { twMerge } from 'tailwind-merge';
@@ -7,7 +5,8 @@ import Link from 'next/link';
 
 interface DropdownOption {
   name: string;
-  href: string;
+  href?: string;
+  action?: () => void;
 }
 
 export interface DropdownProps extends React.ButtonHTMLAttributes<HTMLButtonElement> { userNavigation: DropdownOption[] }
@@ -37,16 +36,27 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
             {userNavigation.map((item) => (
               <Menu.Item key={item.name}>
                 {({ active }) => (
-                  <Link
-                    href={item.href}
-                    className={twMerge(
-                      active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
-                      'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
-                    )}
-                  >
-                    {item.name}
-                  </Link>
-                )}
+                  !item.href ? (
+                    <button
+                      onClick={item.action}
+                      className={twMerge(
+                        active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
+                        'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
+                      )}
+                    >
+                      {item.name}
+                    </button>
+                  ) : (
+                    <Link
+                      href={item.href}
+                      className={twMerge(
+                        active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
+                        'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
+                      )}
+                    >
+                      {item.name}
+                    </Link>
+                  ))}
               </Menu.Item>
             ))}
           </Menu.Items>
