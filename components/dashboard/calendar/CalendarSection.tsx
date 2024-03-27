@@ -1,3 +1,4 @@
+'use client'
 import React, { useState } from 'react';
 import { startOfToday, startOfWeek, endOfWeek, endOfMonth, parse, add, eachDayOfInterval, format } from 'date-fns';
 import CalendarHeader from '@/components/dashboard/calendar/CalendarHeader';

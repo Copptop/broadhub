@@ -1,33 +1,59 @@
 'use client'
 
-import React, { useState } from 'react';
+import React, { useState, useRef, useTransition } from 'react';
 import Head from 'next/head';
 import { PlusIcon } from '@heroicons/react/20/solid';
 
 import { SubmitButton } from '@/components/Buttons';
 import { InputField } from '@/components/InputFields';
 import { AtSymbolIcon, FingerPrintIcon, MinusIcon, UserIcon } from '@heroicons/react/24/outline';
+import { SignUpHandler } from '@/lib/actions/signUpHandler';
 
-const SignUpForm = () => {
+
+export default function SignUpForm() {
   const [isCollapsed, setIsCollapsed] = useState(true);
+  const [error, setError] = useState<string | undefined>("")
+  const [Sucess, setSucess] = useState<string | undefined>("")
+  const [isPending, startTransition] = useTransition()
+
+  const _name = useRef("")
+  const _email = useRef("")
+  const _emailConfirm = useRef("")
+  const _password = useRef("")
+  const _passwordConfirm = useRef("")
+  const _companyCode = useRef("")
 
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    startTransition(() => {
+      SignUpHandler({ name: _name.current, email: _email.current, emailConfirm: _emailConfirm.current, password: _password.current, passwordConfirm: _passwordConfirm.current, companyCode: _companyCode.current })
+        .then((data) => {
+          setError(data.error);
+          setSucess(data.success);
+          if (!data.error) {
+            _name.current = "";
+            _email.current = "";
+            _emailConfirm.current = "";
+            _password.current = "";
+            _passwordConfirm.current = "";
+            _companyCode.current = "";
+          }
+        })
+    })
+
+  }
   return (
     <>
-      <Head>
-        <title>Sign Up Form</title>
-      </Head>
-
-      <form className='flex flex-col gap-5'>
-
-        <InputField className='outline-0' name='fullname' placeholder='Full Name' type='text' icon={<UserIcon />} />
-        <InputField name='email' placeholder='Email' type='email' icon={<AtSymbolIcon />} />
-        <InputField name='emailConfirm' placeholder='Confirm Email' type='email' icon={<AtSymbolIcon />} />
-        <InputField name='password' placeholder='Password' type='password' icon={<FingerPrintIcon />} />
-        <InputField name='passwordConfirm' placeholder='Confirm Password' type='password' icon={<FingerPrintIcon />} />
+      <form className='flex flex-col gap-5' onSubmit={onSubmit}>
+        <InputField className='outline-0' name='fullname' placeholder='Full Name' type='text' icon={<UserIcon />} onChange={(e) => (_name.current = e.target.value)} disabled={isPending} />
+        <InputField name='email' placeholder='Email' type='email' icon={<AtSymbolIcon />} onChange={(e) => (_email.current = e.target.value)} disabled={isPending} />
+        <InputField name='emailConfirm' placeholder='Confirm Email' type='email' icon={<AtSymbolIcon />} onChange={(e) => (_emailConfirm.current = e.target.value)} disabled={isPending} />
+        <InputField name='password' placeholder='Password' type='password' icon={<FingerPrintIcon />} onChange={(e) => (_password.current = e.target.value)} disabled={isPending} />
+        <InputField name='passwordConfirm' placeholder='Confirm Password' type='password' icon={<FingerPrintIcon />} onChange={(e) => (_passwordConfirm.current = e.target.value)} disabled={isPending} />
 
         <div className="relative">
           <div className="relative flex justify-center">
@@ -54,16 +80,17 @@ const SignUpForm = () => {
           </div>
           <div className={`transition-all duration-700 ease-in-out ${isCollapsed ? 'h-0 overflow-hidden' : 'h-auto'}`}>
             <br />
-            <InputField name='companyCode' placeholder='Company Code' type='text' />
+            <InputField name='companyCode' placeholder='Company Code' type='text' onChange={(e) => (_companyCode.current = e.target.value)} disabled={isPending} />
           </div>
         </div>
 
         <SubmitButton type='submit'>
           Sign Up
         </SubmitButton>
+        {error && <p className='text-red-500 dark:text-red-400'>{error}</p>}
+        {Sucess && <p className='text-green-500 dark:text-green-400'>{Sucess}</p>}
       </form>
     </>
   );
 };
 
-export default SignUpForm;

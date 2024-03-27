@@ -1,5 +1,3 @@
-'use client'
-
 import React from 'react';
 import ScheduleSection from '@/components/dashboard/schedule/ScheduleSection'
 import CalendarSection from '@/components/dashboard/calendar/CalendarSection'
