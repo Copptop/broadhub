@@ -31,39 +31,25 @@ export const SignUpHandler = async (values: SignInValues) => {
 
   if (companyCode) {
     const companyCodeRegex = /^(\d){4}$/;
-    const adminRegex = /^(\d+),hjdsfm958690JKDMSAWILDdhjfgjkhdsgfhjksdsdfdsgf$/
-    const managerRegex = /^(\d+),h5436789hssgdHDDGAHJDfhjksdsdfgjsadsad21e3dsgf$/
-    let role = 'user'
-    let exctractedCompanyCode = companyCode
 
-    if (adminRegex.test(companyCode) || managerRegex.test(companyCode)) {
-      if (adminRegex.test(companyCode)) {
-        const match = companyCode.match(adminRegex)
-        if (match) { exctractedCompanyCode = match[1]; role = "admin" }
-      } else {
-        const match = companyCode.match(managerRegex)
-        if (match) { exctractedCompanyCode = match[1]; role = "manager" }
-      }
-    }
-    if (!companyCodeRegex.test(exctractedCompanyCode)) return { error: "Invalid Company Code" }
+    if (!companyCodeRegex.test(companyCode)) return { error: "Invalid Company Code" }
 
     await db.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        company: exctractedCompanyCode,
-        role,
+        company: companyCode
       }
     })
-    return { success: "User Created" }
+    return { success: "User Created w/ company code" }
   }
 
   await db.user.create({
     data: {
       name,
       email,
-      password: hashedPassword,
+      password: hashedPassword
     }
   })
   return { success: "User Created" }

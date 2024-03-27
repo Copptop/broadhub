@@ -8,9 +8,11 @@ import { SubmitButton } from '@/components/Buttons';
 import { InputField } from '@/components/InputFields';
 import { AtSymbolIcon, FingerPrintIcon, MinusIcon, UserIcon } from '@heroicons/react/24/outline';
 import { SignUpHandler } from '@/lib/actions/signUpHandler';
+import { useRouter } from 'next/navigation';
 
 
 export default function SignUpForm() {
+  const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [error, setError] = useState<string | undefined>("")
   const [Sucess, setSucess] = useState<string | undefined>("")
@@ -28,23 +30,28 @@ export default function SignUpForm() {
   };
 
   const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
     startTransition(() => {
       SignUpHandler({ name: _name.current, email: _email.current, emailConfirm: _emailConfirm.current, password: _password.current, passwordConfirm: _passwordConfirm.current, companyCode: _companyCode.current })
         .then((data) => {
           setError(data.error);
           setSucess(data.success);
-          if (!data.error) {
-            _name.current = "";
-            _email.current = "";
-            _emailConfirm.current = "";
-            _password.current = "";
-            _passwordConfirm.current = "";
-            _companyCode.current = "";
-          }
-        })
-    })
+          if (!data.error && data.success) {
+            _name.current = '';
+            _email.current = '';
+            _emailConfirm.current = '';
+            _password.current = '';
+            _passwordConfirm.current = '';
+            _companyCode.current = '';
 
+            setTimeout(() => {
+              setError(undefined);
+              setSucess(undefined);
+              router.push('/auth/Signin');
+            }, 3500);
+          }
+        });
+    });
   }
   return (
     <>

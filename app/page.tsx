@@ -1,5 +1,5 @@
 import React from 'react';
-import { auth, signOut } from '@/auth';
+import { auth, signOut } from 'auth';
 
 import ScheduleSection from '@/components/dashboard/schedule/ScheduleSection'
 import CalendarSection from '@/components/dashboard/calendar/CalendarSection'

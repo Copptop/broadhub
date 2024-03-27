@@ -27,4 +27,21 @@ export const SignInHandler = async (values: SignInValues) => {
 
     throw error
   }
-} 
+}
+
+export const SignInWithProviderHandler = async (provider: 'okta' | 'github' | 'azure') => {
+  try {
+    await signIn('github', {
+      callbackUrl: DefaultRedirectRoute
+    })
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case "CredentialsSignin": return { error: "Invalid credentials" }
+        default: return { error: "An error occurred" }
+      }
+    }
+
+    throw error
+  }
+}

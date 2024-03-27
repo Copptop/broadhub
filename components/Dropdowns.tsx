@@ -2,11 +2,13 @@ import React, { Fragment, ReactNode, forwardRef } from 'react';
 import { Menu, Transition } from '@headlessui/react';
 import { twMerge } from 'tailwind-merge';
 import Link from 'next/link';
+import { signIn } from "next-auth/react"
+import { DefaultRedirectRoute } from '@/routes';
 
 interface DropdownOption {
   name: string;
   href?: string;
-  action?: () => void;
+  onClick?: () => void;
 }
 
 export interface DropdownProps extends React.ButtonHTMLAttributes<HTMLButtonElement> { userNavigation: DropdownOption[] }
@@ -16,6 +18,12 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
   children,
   userNavigation,
 }, ref) => {
+
+  const onClick = (provider: "okta" | "azure") => {
+    signIn(provider, {
+      callbackUrl: DefaultRedirectRoute
+    })
+  };
   return (
     <>
       <Menu as="div" className={twMerge(className)}>
@@ -36,9 +44,9 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
             {userNavigation.map((item) => (
               <Menu.Item key={item.name}>
                 {({ active }) => (
-                  !item.href ? (
+                  !item.href || item.name === 'Sign out' ? (
                     <button
-                      onClick={item.action}
+                      onClick={() => (onClick('okta'))}
                       className={twMerge(
                         active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
                         'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
