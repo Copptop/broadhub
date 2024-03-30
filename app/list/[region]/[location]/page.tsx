@@ -1,18 +1,6 @@
-import { usePathname, useSearchParams } from 'next/navigation'
-import { useEffect } from 'react'
-import Link from 'next/link'
 
-import {
-  AcademicCapIcon,
-  BanknotesIcon,
-  CheckBadgeIcon,
-  ClockIcon,
-  ReceiptRefundIcon,
-  UsersIcon,
-} from '@heroicons/react/24/outline'
-import { SubmitButton } from '@/components/Buttons'
-import Breadcrumb from '@/components/navigation/breadcrumbs'
 import { List_Table } from '@/components/Tables'
+import Breadcrumb from '@/components/navigation/breadcrumbs'
 
 const headers = ['Floors']
 

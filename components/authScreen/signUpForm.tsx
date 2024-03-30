@@ -1,13 +1,12 @@
 'use client'
 
-import React, { useState, useRef, useTransition } from 'react';
-import Head from 'next/head';
 import { PlusIcon } from '@heroicons/react/20/solid';
+import React, { useRef, useState, useTransition } from 'react';
 
 import { SubmitButton } from '@/components/Buttons';
 import { InputField } from '@/components/InputFields';
-import { AtSymbolIcon, FingerPrintIcon, MinusIcon, UserIcon } from '@heroicons/react/24/outline';
 import { SignUpHandler } from '@/lib/handlers/signUp';
+import { AtSymbolIcon, FingerPrintIcon, MinusIcon, UserIcon } from '@heroicons/react/24/outline';
 import { useRouter } from 'next/navigation';
 
 

@@ -1,10 +1,9 @@
-import React from 'react';
-import { auth, signOut } from 'auth';
+import { signOut } from 'auth';
 
-import ScheduleSection from '@/components/dashboard/schedule/ScheduleSection'
-import CalendarSection from '@/components/dashboard/calendar/CalendarSection'
 import DashboardHeader from '@/components/dashboard/DashboardHeader';
-import { json } from 'stream/consumers';
+import CalendarSection from '@/components/dashboard/calendar/CalendarSection';
+import ScheduleSection from '@/components/dashboard/schedule/ScheduleSection';
+import { currentUser } from '@/lib/hooks/server/use-current-user';
 
 const ondaybookings = [
   { id: 1, resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
@@ -25,10 +24,10 @@ function classNames(...classes: any[]) {
 }
 
 export default async function Dashboard() {
-  const session = await auth()
+  const user = await currentUser()
   return (
     <>
-      <div>{JSON.stringify(session)}</div>
+      <div>{JSON.stringify(user)}</div>
       <form action={async () => { "use server"; await signOut() }}>
         <button type="submit">logout</button>
       </form>

@@ -1,6 +1,6 @@
-import { Fragment, useRef, useState, useEffect, ReactNode } from 'react';
-import { Dialog, Transition } from '@headlessui/react';
 import { InvertedSubmitButton, SubmitButton } from '@/components/Buttons';
+import { Dialog, Transition } from '@headlessui/react';
+import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
 
 export interface ModalProps {
   open: boolean;

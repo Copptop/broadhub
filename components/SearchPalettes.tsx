@@ -1,12 +1,11 @@
 'use client'
 
-import React, { Fragment, useState } from 'react'
 import { Combobox, Dialog, Transition } from '@headlessui/react'
-import { MagnifyingGlassIcon } from '@heroicons/react/20/solid'
+import { ChevronRightIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
 import { UsersIcon } from '@heroicons/react/24/outline'
-import { ChevronRightIcon } from '@heroicons/react/20/solid'
-import Image from 'next/image';
+import Image from 'next/image'
 import Link from 'next/link'
+import { Fragment, useState } from 'react'
 
 const people = [
   {

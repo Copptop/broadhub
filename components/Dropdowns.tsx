@@ -1,9 +1,8 @@
-import React, { Fragment, ReactNode, forwardRef } from 'react';
+import { SignOutHandler } from '@/lib/handlers/signOut';
 import { Menu, Transition } from '@headlessui/react';
-import { twMerge } from 'tailwind-merge';
 import Link from 'next/link';
-import { signIn } from "next-auth/react"
-import { DefaultRedirectRoute } from '@/routes';
+import React, { Fragment, forwardRef } from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface DropdownOption {
   name: string;
@@ -19,11 +18,11 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
   userNavigation,
 }, ref) => {
 
-  const onClick = (provider: "okta" | "azure") => {
-    signIn(provider, {
-      callbackUrl: DefaultRedirectRoute
-    })
-  };
+  const onClick = async () => {
+    console.log("signing out - client side")
+    await SignOutHandler();
+  }
+
   return (
     <>
       <Menu as="div" className={twMerge(className)}>
@@ -45,11 +44,10 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
               <Menu.Item key={item.name}>
                 {({ active }) => (
                   !item.href || item.name === 'Sign out' ? (
-                    <button
-                      onClick={() => (onClick('okta'))}
+                    <button onClick={() => { onClick() }}
                       className={twMerge(
                         active ? 'bg-zinc-100 dark:bg-zinc-700' : '',
-                        'block px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
+                        'block w-full text-left px-3 py-1 text-sm leading-6 text-zinc-800 dark:text-zinc-300 hover:bg-zinc-100 dark:hover:bg-zinc-600 rounded-md'
                       )}
                     >
                       {item.name}

@@ -1,9 +1,7 @@
 import Link from 'next/link';
-import Image from 'next/image';
 
 import NewPasswordForm from '@/components/authScreen/newPasswordForm';
 import { VerticalLogo } from '@/components/logo';
-import { InvertedSubmitButton } from '@/components/Buttons';
 
 export default async function SignInPage() {
 

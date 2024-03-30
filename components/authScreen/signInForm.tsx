@@ -1,8 +1,8 @@
 'use client'
 
 import Image from 'next/image';
-import React, { useRef, useState, useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
+import React, { useRef, useState, useTransition } from 'react';
 
 import { AtSymbolIcon, FingerPrintIcon } from '@heroicons/react/24/outline';
 
@@ -15,6 +15,7 @@ import Link from 'next/link';
 
 export default function SignInForm() {
   const searchParams = useSearchParams()
+  const callbackUrl = searchParams.get('callbackUrl')
   const [error, setError] = useState<string | undefined>("")
   const [success, setSuccess] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
@@ -27,7 +28,7 @@ export default function SignInForm() {
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     startTransition(() => {
-      SignInHandler({ email: _email.current, password: _password.current })
+      SignInHandler({ email: _email.current, password: _password.current }, callbackUrl ?? undefined)
         .then((data) => {
           setError(data?.error)
           setSuccess(data?.success)
@@ -37,7 +38,7 @@ export default function SignInForm() {
 
   const onClick = (provider: 'okta' | 'github' | 'azure') => {
     startTransition(() => {
-      SignInWithProviderHandler('github')
+      SignInWithProviderHandler(provider, callbackUrl ?? undefined)
     })
   }
 

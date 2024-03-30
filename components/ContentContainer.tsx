@@ -1,9 +1,9 @@
 'use client'
 
-import { usePathname } from 'next/navigation';
-import { useState } from 'react';
 import Sidebar from '@/components/navigation/sidebar/Sidebar';
 import TopBar from '@/components/navigation/topbar/Topbar';
+import { usePathname } from 'next/navigation';
+import { useState } from 'react';
 
 interface ContentContainerProps {
   children: React.ReactNode;

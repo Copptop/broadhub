@@ -1,8 +1,8 @@
 'use client'
-import React, { useState } from 'react';
-import { startOfToday, startOfWeek, endOfWeek, endOfMonth, parse, add, eachDayOfInterval, format } from 'date-fns';
-import CalendarHeader from '@/components/dashboard/calendar/CalendarHeader';
 import CalendarDay from '@/components/dashboard/calendar/CalendarDay';
+import CalendarHeader from '@/components/dashboard/calendar/CalendarHeader';
+import { add, eachDayOfInterval, endOfMonth, endOfWeek, format, parse, startOfToday, startOfWeek } from 'date-fns';
+import React, { useState } from 'react';
 
 const CalendarSection: React.FC = () => {
   const today = startOfToday();

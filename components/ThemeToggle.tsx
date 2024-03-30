@@ -1,9 +1,9 @@
 'use client'
 
-import { useEffect, useState } from 'react';
 import { useTheme } from 'next-themes';
+import { useEffect, useState } from 'react';
 
-import { SunIcon, MoonIcon } from '@heroicons/react/24/solid';
+import { MoonIcon, SunIcon } from '@heroicons/react/24/solid';
 
 interface ThemeButtonProps {
   children?: React.ReactNode;

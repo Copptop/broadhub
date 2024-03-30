@@ -1,14 +1,13 @@
 'use client'
 
-import { Fragment, useState } from 'react'
+import { InvertedSubmitButton, SubmitButton } from '@/components/Buttons';
 import { BookingListTable } from "@/components/Tables";
 import DateTimeSelection from "@/components/map/dateTimeSelection";
 import Breadcrumb from "@/components/navigation/breadcrumbs";
-import { set } from 'date-fns';
-import { SubmitButton, InvertedSubmitButton } from '@/components/Buttons';
 import BookingNotification from '@/components/popups/Notfication';
-import { Transition, Dialog } from '@headlessui/react';
-import { XMarkIcon, ComputerDesktopIcon, HeartIcon } from '@heroicons/react/24/solid';
+import { Dialog, Transition } from '@headlessui/react';
+import { ComputerDesktopIcon, HeartIcon, XMarkIcon } from '@heroicons/react/24/solid';
+import { Fragment, useState } from 'react';
 
 const headers = ['Resources', 'Type', 'Status']
 interface clickedData {

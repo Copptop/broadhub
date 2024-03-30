@@ -1,6 +1,5 @@
-import React from 'react';
+import { DateRangePickerComp, SelectInput } from '@/components/InputFields';
 import { AreaChartComp, DonutChartComp } from '@/components/graphing/Graph';
-import { SelectInput, DateRangePickerComp } from '@/components/InputFields';
 
 const stats = [
   { name: 'Total Bookings', stat: '135' },

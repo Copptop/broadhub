@@ -1,19 +1,19 @@
 
 
-import { Fragment } from 'react'
+import { Fragment } from 'react';
 
-import { Dialog, Transition } from '@headlessui/react'
+import { Dialog, Transition } from '@headlessui/react';
 import {
   Cog6ToothIcon,
-  XMarkIcon,
   HomeIcon,
   MapIcon,
   QueueListIcon,
   TicketIcon,
-} from '@heroicons/react/24/outline'
+  XMarkIcon,
+} from '@heroicons/react/24/outline';
 
 import { StandardLogo } from '@/components/logo';
-import { SidebarItem, AdminSidebarItem } from '@/components/navigation/sidebar/SidebarItems'
+import { AdminSidebarItem, SidebarItem } from '@/components/navigation/sidebar/SidebarItems';
 import Link from 'next/link';
 
 const navigation = [

@@ -6,7 +6,6 @@ import { AtSymbolIcon } from '@heroicons/react/24/outline';
 
 import { SubmitButton } from '@/components/Buttons';
 import { InputField } from '@/components/InputFields';
-import { GeneratePR } from '@/lib/handlers/token';
 import { ResetPasswordHandler } from '@/lib/handlers/resetPassword';
 
 

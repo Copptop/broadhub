@@ -1,4 +1,4 @@
-import { ScheduleItem } from '@/components/dashboard/schedule/ScheduleItem'
+import { ScheduleItem } from '@/components/dashboard/schedule/ScheduleItem';
 import { format, startOfToday } from 'date-fns';
 
 interface schedule {

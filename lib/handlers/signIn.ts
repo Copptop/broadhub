@@ -12,7 +12,7 @@ interface SignInValues {
   password: string
 }
 
-export const SignInHandler = async (values: SignInValues) => {
+export const SignInHandler = async (values: SignInValues, callbackUrl?: string) => {
   let validData = true
   const { email, password } = values
   if (!email || !password) { validData = false }
@@ -30,7 +30,8 @@ export const SignInHandler = async (values: SignInValues) => {
   }
 
   try {
-    await signIn("credentials", { email, password, redirectTo: DefaultRedirectRoute })
+    console.log(callbackUrl)
+    await signIn("credentials", { email, password, redirectTo: callbackUrl || DefaultRedirectRoute })
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
@@ -43,10 +44,10 @@ export const SignInHandler = async (values: SignInValues) => {
   }
 }
 
-export const SignInWithProviderHandler = async (provider: 'okta' | 'github' | 'azure') => {
+export const SignInWithProviderHandler = async (provider: 'okta' | 'github' | 'azure', callbackUrl?: string) => {
   try {
     await signIn(provider, {
-      callbackUrl: DefaultRedirectRoute
+      callbackUrl: callbackUrl || DefaultRedirectRoute
     })
   } catch (error) {
     if (error instanceof AuthError) {

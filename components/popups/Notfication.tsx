@@ -1,7 +1,7 @@
-import { Fragment, useState, ReactNode, useRef, useEffect } from 'react'
-import { Transition } from '@headlessui/react'
-import { CheckCircleIcon } from '@heroicons/react/24/outline'
-import { XMarkIcon } from '@heroicons/react/20/solid'
+import { Transition } from '@headlessui/react';
+import { XMarkIcon } from '@heroicons/react/20/solid';
+import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { Fragment, useEffect, useState } from 'react';
 
 export interface NotificationProps {
   show: boolean;

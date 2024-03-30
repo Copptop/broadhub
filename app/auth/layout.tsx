@@ -1,6 +1,6 @@
-import '../globals.css'
-import { ReactNode } from 'react';
 import Image from 'next/image';
+import { ReactNode } from 'react';
+import '../globals.css';
 
 interface RootLayoutProps {
   children: ReactNode;

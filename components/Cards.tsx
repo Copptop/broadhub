@@ -1,10 +1,10 @@
 'use client'
 
-import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, EllipsisVerticalIcon } from '@heroicons/react/24/solid';
-import React from 'react';
-import { format } from 'date-fns';
 import { Dropdown } from '@/components/Dropdowns';
+import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, EllipsisVerticalIcon } from '@heroicons/react/24/solid';
+import { format } from 'date-fns';
 import Link from 'next/link';
+import React from 'react';
 
 interface BookingCardProps {
   id: number;

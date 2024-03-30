@@ -1,11 +1,9 @@
 'use client'
 
-import { Fragment, useEffect, useState } from 'react'
+import '@/app/globals.css'
 import { Listbox, Transition } from '@headlessui/react'
 import { CheckIcon, ChevronUpDownIcon } from '@heroicons/react/20/solid'
-import '@/app/globals.css'
-import React, { forwardRef, Ref } from 'react';
-import { set } from 'date-fns';
+import React, { Fragment, Ref, forwardRef, useEffect, useState } from 'react'
 
 export interface InputFieldProps extends React.InputHTMLAttributes<HTMLInputElement> {
   name?: string;
@@ -158,7 +156,7 @@ export function ListBox({ onChange, selectedTime1, selectedTime }: { onChange: (
 InputField.displayName = 'Input';
 
 
-import { Select, SelectItem } from '@tremor/react';
+import { Select, SelectItem } from '@tremor/react'
 
 export function SelectInput() {
   const [value, setValue] = useState('');
@@ -183,7 +181,7 @@ export function SelectInput() {
   );
 }
 
-import { DateRangePicker } from '@tremor/react';
+import { DateRangePicker } from '@tremor/react'
 
 export function DateRangePickerComp() {
   return (

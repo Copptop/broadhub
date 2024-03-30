@@ -1,6 +1,6 @@
-import React from 'react';
-import Link from 'next/link';
 import { SubmitButton } from '@/components/Buttons';
+import Link from 'next/link';
+import React from 'react';
 
 interface EmailVerificationTemplateTemplateProps {
   vt: string;

@@ -1,16 +1,14 @@
 'use client'
 
-import Image from 'next/image';
-import React, { useRef, useState, useTransition } from 'react';
 import { useSearchParams } from 'next/navigation';
+import React, { useRef, useState, useTransition } from 'react';
 
 import { AtSymbolIcon, FingerPrintIcon } from '@heroicons/react/24/outline';
 
-import { InvertedSubmitButton, SubmitButton } from '@/components/Buttons';
+import { SubmitButton } from '@/components/Buttons';
 import { InputField } from '@/components/InputFields';
-import { SignInHandler, SignInWithProviderHandler } from '@/lib/handlers/signIn';
-import Link from 'next/link';
 import { NewPassword } from '@/lib/handlers/token';
+import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 
 

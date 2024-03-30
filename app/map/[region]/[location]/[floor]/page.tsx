@@ -1,10 +1,9 @@
 'use client'
 
-import { F_1, F0, F3 } from '@/app/(map)/(EMEA)/(marshwall)/floorplans'
+import { F0, F3, F_1 } from '@/app/(map)/(EMEA)/(marshwall)/floorplans'
 import WorldMap from '@/app/(map)/worldmap'
-import Breadcrumb from '@/components/navigation/breadcrumbs'
-import { pages } from 'next/dist/build/templates/app-page'
 import DateTimeSelection from '@/components/map/dateTimeSelection'
+import Breadcrumb from '@/components/navigation/breadcrumbs'
 
 import { useState } from 'react'
 
