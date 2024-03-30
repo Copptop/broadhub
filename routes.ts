@@ -10,10 +10,12 @@ export const PublicRoutes = ['/public',];
  */
 export const AuthRoutes = [
   "/auth/signin",
-  "/auth/signip",
+  "/auth/signup",
   "/auth/error",
-  "/auth/reset",
-  "/auth/new-password"];
+  "/auth/verify-email",
+  "/auth/reset-password",
+  "/auth/new-password",
+];
 
 /**
  * Prefix for API Authentication Routes

@@ -4,7 +4,7 @@ import Github from "next-auth/providers/github";
 import Credentials from "next-auth/providers/credentials"
 
 import type { NextAuthConfig } from "next-auth"
-import { getUserViaEmail } from "./lib/database/users"
+import { getUser_Email } from "./lib/database/users"
 
 import bcrypt from "bcryptjs"
 interface SignInValues {
@@ -14,10 +14,10 @@ interface SignInValues {
 
 export default {
   providers: [
-    Okta({ clientId: process.env.OKTA_CLIENT_ID, clientSecret: process.env.OKTA_CLIENT_SECRET, issuer: process.env.OKTA_CLIENT_ISSUER }),
+    Okta({ clientId: process.env.AUTH_OKTA_ID, clientSecret: process.env.AUTH_OKTA_SECRET, issuer: process.env.AUTH_OKTA_ISSUER }),
     Github({
-      clientId: process.env.GITHUB_CLIENT_ID,
-      clientSecret: process.env.GITHUB_CLIENT_SECRET,
+      clientId: process.env.AUTH_GITHUB_ID,
+      clientSecret: process.env.AUTH_GITHUB_SECRET,
     }),
     Credentials({
       credentials: {
@@ -30,7 +30,7 @@ export default {
         if (!email || !password) { validData = false }
         if (!validData) return null
 
-        const user = await getUserViaEmail(email as string)
+        const user = await getUser_Email(email as string)
         if (!user || !user.password) return null
 
         const passCheck = await bcrypt.compare(password as string, user.password)

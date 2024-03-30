@@ -7,7 +7,7 @@ import { PlusIcon } from '@heroicons/react/20/solid';
 import { SubmitButton } from '@/components/Buttons';
 import { InputField } from '@/components/InputFields';
 import { AtSymbolIcon, FingerPrintIcon, MinusIcon, UserIcon } from '@heroicons/react/24/outline';
-import { SignUpHandler } from '@/lib/actions/signUpHandler';
+import { SignUpHandler } from '@/lib/handlers/signUp';
 import { useRouter } from 'next/navigation';
 
 
@@ -15,7 +15,7 @@ export default function SignUpForm() {
   const router = useRouter();
   const [isCollapsed, setIsCollapsed] = useState(true);
   const [error, setError] = useState<string | undefined>("")
-  const [Sucess, setSucess] = useState<string | undefined>("")
+  const [success, setSuccess] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
 
   const _name = useRef("")
@@ -35,7 +35,7 @@ export default function SignUpForm() {
       SignUpHandler({ name: _name.current, email: _email.current, emailConfirm: _emailConfirm.current, password: _password.current, passwordConfirm: _passwordConfirm.current, companyCode: _companyCode.current })
         .then((data) => {
           setError(data.error);
-          setSucess(data.success);
+          setSuccess(data.success);
           if (!data.error && data.success) {
             _name.current = '';
             _email.current = '';
@@ -46,7 +46,7 @@ export default function SignUpForm() {
 
             setTimeout(() => {
               setError(undefined);
-              setSucess(undefined);
+              setSuccess(undefined);
               router.push('/auth/Signin');
             }, 3500);
           }
@@ -94,8 +94,8 @@ export default function SignUpForm() {
         <SubmitButton type='submit'>
           Sign Up
         </SubmitButton>
-        {error && <p className='text-red-500 dark:text-red-400'>{error}</p>}
-        {Sucess && <p className='text-green-500 dark:text-green-400'>{Sucess}</p>}
+        {error && <p className='text-red-500 dark:text-red-400 py-4'>{error}</p>}
+        {success && <p className='text-green-500 dark:text-green-400 py-4'>{success}</p>}
       </form>
     </>
   );

@@ -16,6 +16,7 @@
     "@types/node": "20.11.30",
     "@types/react": "18.2.61",
     "@types/react-dom": "18.2.21",
+    "@types/uuid": "^9.0.8",
     "@vercel/analytics": "^1.2.2",
     "@vercel/speed-insights": "^1.0.9",
     "bcryptjs": "^2.4.3",
@@ -28,8 +29,10 @@
     "nodemailer": "^6.9.9",
     "react": "18.2.0",
     "react-dom": "18.2.0",
+    "resend": "^3.2.0",
     "tailwind-merge": "^2.2.1",
-    "typescript": "5.3.3"
+    "typescript": "5.3.3",
+    "uuid": "^9.0.1"
   },
   "devDependencies": {
     "@headlessui/react": "^1.7.17",

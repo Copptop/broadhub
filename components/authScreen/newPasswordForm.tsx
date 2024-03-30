@@ -10,11 +10,14 @@ import { InvertedSubmitButton, SubmitButton } from '@/components/Buttons';
 import { InputField } from '@/components/InputFields';
 import { SignInHandler, SignInWithProviderHandler } from '@/lib/handlers/signIn';
 import Link from 'next/link';
+import { NewPassword } from '@/lib/handlers/token';
+import { useRouter } from 'next/navigation';
 
 
 
-export default function SignInForm() {
+export default function NewPasswordForm() {
   const searchParams = useSearchParams()
+  const router = useRouter()
   const [error, setError] = useState<string | undefined>("")
   const [success, setSuccess] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
@@ -23,21 +26,42 @@ export default function SignInForm() {
 
   const _email = useRef("")
   const _password = useRef("")
+  const _passwordConf = useRef("")
 
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
-    startTransition(() => {
-      SignInHandler({ email: _email.current, password: _password.current })
-        .then((data) => {
-          setError(data?.error)
-          setSuccess(data?.success)
-        })
-    })
-  }
 
-  const onClick = (provider: 'okta' | 'github' | 'azure') => {
+    if (_password.current !== _passwordConf.current) {
+      setError("Passwords do not match")
+      return
+    }
+
+    if (!_email.current || !_passwordConf.current) {
+      setError("Please fill in all fields")
+      return
+    }
+
+    if (searchParams.get('token') === null) {
+      setError("No Token Provided");
+      return
+    }
+
     startTransition(() => {
-      SignInWithProviderHandler('github')
+      NewPassword(searchParams.get('token') as string, _email.current, _passwordConf.current)
+        .then((data) => {
+          setError(data?.error),
+            setSuccess(data?.success)
+
+          if (!data.error && data.success) {
+
+            setTimeout(() => {
+              setError(undefined);
+              setSuccess(undefined);
+              router.push('/auth/Signin');
+            }, 3500);
+          }
+        })
+
     })
   }
 
@@ -45,7 +69,8 @@ export default function SignInForm() {
     <>
       <form className='flex flex-col gap-5' onSubmit={onSubmit}>
         <InputField name='email' placeholder='Email' type='email' icon={<AtSymbolIcon />} onChange={(e) => (_email.current = e.target.value)} disabled={isPending} />
-        <InputField name='password' placeholder='Password' type='password' icon={<FingerPrintIcon />} onChange={(e) => (_password.current = e.target.value)} disabled={isPending} />
+        <InputField name='password' placeholder='New Password' type='password' icon={<FingerPrintIcon />} onChange={(e) => (_password.current = e.target.value)} disabled={isPending} />
+        <InputField name='password' placeholder='New Password' type='password' icon={<FingerPrintIcon />} onChange={(e) => (_passwordConf.current = e.target.value)} disabled={isPending} />
         <SubmitButton type='submit'> Sign In </SubmitButton>
       </form>
       <Link className='text-right text-zinc-500 dark:text-zinc-400 mr-2.5' href={'/auth/reset-password'}>
@@ -54,19 +79,6 @@ export default function SignInForm() {
 
       {(error || urlError) && <p className='text-red-500 dark:text-red-400 py-4'>{error || urlError}</p>}
       {success && <p className='text-green-500 dark:text-green-400 py-4'>{success}</p>}
-
-      <div className="relative mt-2 mb-2">
-        <div className="absolute inset-0 flex items-center" aria-hidden="true">
-          <div className="w-full border-t border-zinc-300 dark:border-zinc-300" />
-        </div>
-        <div className="relative flex justify-center">
-          <span className="bg-white dark:bg-zinc-800 px-2 text-lg text-zinc-500 dark:text-zinc-300">OR</span>
-        </div>
-      </div>
-
-      <InvertedSubmitButton onClick={() => onClick('okta')} >
-        Sign In with Microsoft <Image src={'/(authScreen)/microsoft.svg'} width={25} height={25} alt={''}></Image>
-      </InvertedSubmitButton>
     </>
   );
 }

@@ -1,8 +1,10 @@
 "use server"
 
 import bcrypt from 'bcryptjs'
-import { db } from '@/lib/prisma'
-import { getUserViaEmail } from '@/lib/database/users'
+import { prismaInstance } from '@/lib/prisma'
+import { getUser_Email } from '@/lib/database/users'
+import { GenerateVT } from '@/lib/handlers/token'
+import { sendVT } from '@/lib/handlers/email'
 
 interface SignInValues {
   name: string,
@@ -26,7 +28,7 @@ export const SignUpHandler = async (values: SignInValues) => {
   if (!/[!@#$%^&*]/.test(password) || !/[A-Z]/.test(password)) return { error: "Password must contain at least one special character and one uppercase letter" }
 
   const hashedPassword = await bcrypt.hash(password, 10)
-  const checkUser = await getUserViaEmail(email)
+  const checkUser = await getUser_Email(email)
   if (checkUser) return { error: "User already exists" }
 
   if (companyCode) {
@@ -34,7 +36,7 @@ export const SignUpHandler = async (values: SignInValues) => {
 
     if (!companyCodeRegex.test(companyCode)) return { error: "Invalid Company Code" }
 
-    await db.user.create({
+    await prismaInstance.user.create({
       data: {
         name,
         email,
@@ -42,15 +44,24 @@ export const SignUpHandler = async (values: SignInValues) => {
         company: companyCode
       }
     })
-    return { success: "User Created w/ company code" }
+
+    const vt_user = await GenerateVT(email)
+
+    await sendVT(vt_user.email, vt_user.token)
+
+    return { success: "Confirmation Email Sent w/ company code" }
   }
 
-  await db.user.create({
+  await prismaInstance.user.create({
     data: {
       name,
       email,
       password: hashedPassword
     }
   })
-  return { success: "User Created" }
+
+  const vt_user = await GenerateVT(email)
+  await sendVT(vt_user.email, vt_user.token)
+
+  return { success: "Confirmation Email Sent" }
 }

@@ -1,8 +1,12 @@
 "use server"
 
-import { signIn } from "auth"
+import { GenerateVT } from "@/lib/handlers/token"
 import { DefaultRedirectRoute } from "@/routes"
+import { signIn } from "auth"
 import { AuthError } from "next-auth"
+import { getUser_Email } from "../database/users"
+import { sendVT } from "@/lib/handlers/email"
+
 interface SignInValues {
   email: string
   password: string
@@ -14,6 +18,16 @@ export const SignInHandler = async (values: SignInValues) => {
   if (!email || !password) { validData = false }
 
   if (!validData) { return { error: "Please fill in all fields" } }
+
+  const emailVerfied = await getUser_Email(email)
+  if (!emailVerfied || !emailVerfied.email || !emailVerfied.password) { return { error: "User does not exist" } }
+
+  if (!emailVerfied.emailVerified) {
+    const vt_user = await GenerateVT(email)
+    await sendVT(vt_user.email, vt_user.token)
+
+    return { success: "Email not verified. Confirmation email sent" }
+  }
 
   try {
     await signIn("credentials", { email, password, redirectTo: DefaultRedirectRoute })
@@ -31,7 +45,7 @@ export const SignInHandler = async (values: SignInValues) => {
 
 export const SignInWithProviderHandler = async (provider: 'okta' | 'github' | 'azure') => {
   try {
-    await signIn('github', {
+    await signIn(provider, {
       callbackUrl: DefaultRedirectRoute
     })
   } catch (error) {
@@ -45,3 +59,4 @@ export const SignInWithProviderHandler = async (provider: 'okta' | 'github' | 'a
     throw error
   }
 }
+
