@@ -14,19 +14,23 @@ enum UserRole {
   ADMIN
   MANAGER
   HR
+  IT
   USER
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   password      String?
   emailVerified DateTime?
   image         String?
-  role          UserRole  @default(USER)
-  company       String?
+  role          UserRole   @default(USER)
+  companyCode   String?
   accounts      Account[]
+  Company       Company?   @relation(fields: [companyId], references: [id])
+  companyId     String?
+  Bookings      Bookings[]
 }
 
 model Account {
@@ -64,4 +68,50 @@ model ResetPasswordToken {
   expires DateTime
 
   @@unique([email, token])
+}
+
+model Company {
+  id        String     @id @default(cuid())
+  name      String
+  code      String     @unique
+  logo      String?
+  users     User[]
+  locations Location[]
+
+  @@unique([name, code])
+}
+
+model Location {
+  id        String     @id @default(cuid())
+  name      String
+  region    String
+  companyId String?
+  Company   Company?   @relation(fields: [companyId], references: [id])
+  Resource  Resource[]
+
+  @@unique([name, region])
+}
+
+model Resource {
+  id           String     @id @default(cuid())
+  name         String     @unique
+  locationId   String
+  type         String
+  allowedRoles UserRole[]
+  location     Location   @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  bookings     Bookings[]
+
+  @@unique([name, locationId])
+}
+
+model Bookings {
+  id         String   @id @default(cuid())
+  resourceId String
+  userId     String
+  startTime  DateTime
+  endTime    DateTime
+  resource   Resource @relation(fields: [resourceId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([resourceId, startTime, endTime])
 }
