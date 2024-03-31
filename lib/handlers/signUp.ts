@@ -41,7 +41,7 @@ export const SignUpHandler = async (values: SignInValues) => {
         name,
         email,
         password: hashedPassword,
-        company: companyCode
+        companyCode: companyCode
       }
     })
 
