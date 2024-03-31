@@ -6,6 +6,7 @@ const resend = new resendEmail(process.env.RESEND_API_KEY);
 const domain = process.env.DEPLOYMENT_URL;
 
 export const sendVT = async (email: string, token: string) => {
+  if (domain !== '"http://localhost:3000"') return { error: "Emails Cannot be used on deployed version" }
   const confirmLink = `${domain}/auth/verify-email?token=${token}`
   await resend.emails.send({
     from: "onboarding@resend.dev",
@@ -16,6 +17,7 @@ export const sendVT = async (email: string, token: string) => {
 }
 
 export const sendPR = async (email: string, token: string) => {
+  if (domain !== '"http://localhost:3000"') return { error: "Emails Cannot be used on deployed version" }
   const confirmLink = `${domain}/auth/new-password?token=${token}`
   await resend.emails.send({
     from: "onboarding@resend.dev",
