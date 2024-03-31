@@ -1,8 +1,8 @@
 
 
+import { format, isEqual, isSameMonth, startOfToday } from 'date-fns';
 import React from 'react';
 import { twMerge } from "tailwind-merge";
-import { isToday, isSameMonth, format, isEqual, startOfToday } from 'date-fns';
 
 interface CalendarDayProps {
   day: Date;

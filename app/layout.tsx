@@ -21,7 +21,6 @@ export default function RootLayout({
 }) {
   return (
     <html className="light antialiased" lang="en-GB" suppressHydrationWarning>
-      <head />
       <body className='bg-white dark:bg-zinc-900 overflow-hidden'>
         <Providers>
           <ContentContainer>

@@ -9,6 +9,9 @@ on:
 permissions:
   contents: read
 
+env:
+  AUTH_SECRET: kjdsfjkfjkdsfljdshkf
+
 jobs:
   node:
     runs-on: ubuntu-latest

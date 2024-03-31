@@ -1,5 +1,4 @@
-// This is your Prisma schema file,
-// learn more about it in the docs: https://pris.ly/d/prisma-schema
+// prisma/schema.prisma
 
 generator client {
   provider = "prisma-client-js"
@@ -9,6 +8,29 @@ datasource db {
   provider          = "postgresql"
   url               = env("DATABASE_URL")
   shadowDatabaseUrl = env("SHADOW_DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  MANAGER
+  HR
+  IT
+  USER
+}
+
+model User {
+  id            String     @id @default(cuid())
+  name          String?
+  email         String?    @unique
+  password      String?
+  emailVerified DateTime?
+  image         String?
+  role          UserRole   @default(USER)
+  companyCode   String?
+  accounts      Account[]
+  Company       Company?   @relation(fields: [companyId], references: [id])
+  companyId     String?
+  Bookings      Bookings[]
 }
 
 model Account {
@@ -30,35 +52,66 @@ model Account {
   @@unique([provider, providerAccountId])
 }
 
-model Session {
-  id           String   @id @default(cuid())
-  sessionToken String   @unique
-  userId       String
-  expires      DateTime
-  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+model EmailVerificationToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
 }
 
-enum Role {
-  user
-  admin
+model ResetPasswordToken {
+  id      String   @id @default(cuid())
+  email   String
+  token   String   @unique
+  expires DateTime
+
+  @@unique([email, token])
 }
 
-model User {
-  id            String    @id @default(cuid())
-  name          String?
-  email         String?   @unique
-  password      String?
-  emailVerified DateTime?
-  image         String?
-  role          String    @default("user")
-  accounts      Account[]
-  sessions      Session[]
+model Company {
+  id        String     @id @default(cuid())
+  name      String
+  code      String     @unique
+  logo      String?
+  users     User[]
+  locations Location[]
+
+  @@unique([name, code])
 }
 
-model VerificationToken {
-  identifier String
-  token      String   @unique
-  expires    DateTime
+model Location {
+  id        String     @id @default(cuid())
+  name      String
+  region    String
+  companyId String?
+  Company   Company?   @relation(fields: [companyId], references: [id])
+  Resource  Resource[]
 
-  @@unique([identifier, token])
+  @@unique([name, region])
+}
+
+model Resource {
+  id           String     @id @default(cuid())
+  name         String     @unique
+  locationId   String
+  type         String
+  allowedRoles UserRole[]
+  location     Location   @relation(fields: [locationId], references: [id], onDelete: Cascade)
+  bookings     Bookings[]
+
+  @@unique([name, locationId])
+}
+
+model Bookings {
+  id         String   @id @default(cuid())
+  resourceId String
+  userId     String
+  startTime  DateTime
+  endTime    DateTime
+  resource   Resource @relation(fields: [resourceId], references: [id])
+  user       User     @relation(fields: [userId], references: [id])
+
+  @@unique([resourceId, startTime, endTime])
 }

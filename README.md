@@ -32,3 +32,11 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+
+
+### OAuth2.0 User Info @ Okta 
+  Dev.Coppertop+Broadhub.SkyJackson@gmail.com // OAuthPass
+  Dev.Coppertop+Broadhub.BenGreen@gmail.com // OAuthPass
+  Dev.Coppertop+Broadhub.RebeccaDeer@gmaiI.com // OAuthPass
+  Dev.Coppertop*Broadhub.DaveBIack@gmaiI.com // OAuthPass
+  Dev.Coppertop+Broadhub.JohnDoe@gmail.com // OAuthPass

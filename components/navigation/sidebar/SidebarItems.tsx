@@ -1,9 +1,9 @@
 
 
-import React from 'react';
 import Link from 'next/link';
-import { twMerge } from 'tailwind-merge';
 import { usePathname } from 'next/navigation';
+import React from 'react';
+import { twMerge } from 'tailwind-merge';
 
 interface SidebarItemProps {
   name: string;

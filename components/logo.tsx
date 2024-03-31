@@ -1,4 +1,4 @@
-import React, { HTMLAttributes, HtmlHTMLAttributes, forwardRef } from "react";
+import React, { HTMLAttributes, forwardRef } from "react";
 import { twMerge } from "tailwind-merge";
 
 export interface LogoIconProps extends React.HTMLAttributes<React.ReactNode> { }

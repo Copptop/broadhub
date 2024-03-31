@@ -1,11 +1,11 @@
 'use client'
 
-import React from 'react';
-import { usePathname } from 'next/navigation';
+import { Dropdown } from '@/components/Dropdowns';
 import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, CalendarIcon, EllipsisHorizontalIcon, MapPinIcon } from '@heroicons/react/24/solid';
 import { format } from 'date-fns';
-import { Dropdown } from '@/components/Dropdowns';
 import Link from 'next/link';
+import { usePathname } from 'next/navigation';
+import React from 'react';
 
 interface ScheduleItemProps {
   id: number;

@@ -1,11 +1,10 @@
-import { usePathname, useSearchParams } from 'next/navigation'
 
-import WorldMap from '@/app/(map)/worldmap'
-import NA from '@/app/(map)/(NA)/NA'
-import NENA from '@/app/(map)/(NA)/NENA'
+import APAC from '@/app/(map)/(APAC)/APAC'
 import EMEA from '@/app/(map)/(EMEA)/EMEA'
 import UK from '@/app/(map)/(EMEA)/UK'
-import APAC from '@/app/(map)/(APAC)/APAC'
+import NA from '@/app/(map)/(NA)/NA'
+import NENA from '@/app/(map)/(NA)/NENA'
+import WorldMap from '@/app/(map)/worldmap'
 import Breadcrumb from '@/components/navigation/breadcrumbs'
 
 

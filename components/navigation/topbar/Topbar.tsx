@@ -1,16 +1,13 @@
-'use client'
-import { useState } from 'react'
-import {
-  Bars3Icon,
-  BellIcon
-} from '@heroicons/react/24/outline'
-import { ChevronDownIcon, MagnifyingGlassIcon } from '@heroicons/react/20/solid'
-import Image from 'next/image'
 import { Dropdown } from '@/components/Dropdowns'
+import { ChevronDownIcon } from '@heroicons/react/20/solid'
+import {
+  Bars3Icon
+} from '@heroicons/react/24/outline'
+import Image from 'next/image'
 
 const userNavigation = [
   { name: 'Your profile', href: '/profile' },
-  { name: 'Sign out', href: '/auth/signin' },
+  { name: 'Sign out' }
 ]
 
 interface TopBarProps {
@@ -19,7 +16,6 @@ interface TopBarProps {
 }
 
 const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
-  const [notificationsOpen, setNotificationsOpen] = useState(false);
 
   return (
     <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-zinc-200 dark:border-none bg-white dark:bg-zinc-800 pl-4 shadow-sm dark:shadow-md sm:gap-x-6 sm:pl-6 lg:pl-8 pr-6">
@@ -33,15 +29,6 @@ const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
       </button>
 
       <div className="flex-1 flex justify-end pl-4 sm:pl-6 lg:pl-8">
-
-        <button
-          type="button"
-          className="text-zinc-500 rounded-md hover:text-zinc-800 dark:hover:text-zinc-300 focus:outline-none px-4"
-          onClick={() => setNotificationsOpen(!notificationsOpen)}
-        >
-          <span className="sr-only">View notifications</span>
-          <BellIcon className="h-6 w-6" aria-hidden="true" />
-        </button>
 
         <Dropdown userNavigation={userNavigation} className='relative'>
           <span className="sr-only">Open user menu</span>

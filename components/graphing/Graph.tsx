@@ -1,7 +1,6 @@
 'use client'
 
-import { AreaChart } from '@tremor/react';
-import { DonutChart, Legend } from '@tremor/react';
+import { AreaChart, DonutChart, Legend } from '@tremor/react';
 
 const chartdata = [
   {
