@@ -36,7 +36,7 @@ export default function SignInForm() {
     })
   }
 
-  const onClick = (provider: 'okta' | 'github' | 'azure') => {
+  const onClick = (provider: 'okta' | 'azure') => {
     startTransition(() => {
       SignInWithProviderHandler(provider, callbackUrl ?? undefined)
     })

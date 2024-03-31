@@ -44,7 +44,7 @@ export const SignInHandler = async (values: SignInValues, callbackUrl?: string) 
   }
 }
 
-export const SignInWithProviderHandler = async (provider: 'okta' | 'github' | 'azure', callbackUrl?: string) => {
+export const SignInWithProviderHandler = async (provider: 'okta' | 'azure', callbackUrl?: string) => {
   try {
     await signIn(provider, {
       callbackUrl: callbackUrl || DefaultRedirectRoute
