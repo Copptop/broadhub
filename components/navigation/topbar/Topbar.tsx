@@ -28,8 +28,11 @@ const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
       </button>
 
-      <div className="flex-1 flex justify-end pl-4 sm:pl-6 lg:pl-8">
+      <div className="text-1xl font-bold text-center">
+        **** EMAIL FUNCTION CURRENTLY NOT WORKING ON DEPLOYED VERSION - See report for proof of function ***
+      </div>
 
+      <div className="flex-1 flex justify-end pl-4 sm:pl-6 lg:pl-8">
         <Dropdown userNavigation={userNavigation} className='relative'>
           <span className="sr-only">Open user menu</span>
           <Image
