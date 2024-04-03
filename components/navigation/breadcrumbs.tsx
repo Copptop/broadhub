@@ -1,5 +1,3 @@
-
-
 import { HomeIcon } from '@heroicons/react/24/solid';
 import Link from 'next/link';
 
@@ -13,12 +11,8 @@ interface BreadcrumbProps {
   pages: BreadcrumbElement[];
 }
 
-function classNames(...classes: any[]) {
-  return classes.filter(Boolean).join(' ')
-}
 
 export default function Breadcrumb({ pages }: BreadcrumbProps) {
-
   return (
     <>
       <nav className="flex border-b border-zinc-200 dark:border-none bg-white dark:bg-zinc-800 shadow-sm dark:shadow-md">

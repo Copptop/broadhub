@@ -132,6 +132,7 @@ export default function Schedule({ data }: BookingCardsProps) {
                       isEqual(day, selectedDay) && !isToday(day) && 'bg-blue-400 dark:bg-blue-500',
                       !isEqual(day, selectedDay) && 'hover:bg-gray-200',
                       isToday(day) && ' font-extrabold',
+                      isBefore(day, today) && 'text-zinc-400 dark:text-zinc-600 font-light',
                       'mx-auto flex h-8 w-8 items-center justify-center rounded-lg font-normal hover:bg-zinc-200 hover:text-zinc-900'
                     )}
                   >

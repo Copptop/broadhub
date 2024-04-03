@@ -1,16 +1,31 @@
 import { InvertedSubmitButton, SubmitButton } from '@/components/Buttons';
+import { deleteBooking } from '@/lib/database/bookings';
 import { Dialog, Transition } from '@headlessui/react';
+import { useRouter } from 'next/navigation';
 import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
 
 export interface ModalProps {
   open: boolean;
   onClose: () => void;
+  type?: string;
+  id?: string;
   children?: ReactNode;
 }
 
-export function ConfirmModal({ open, onClose, children }: ModalProps) {
+export function ConfirmModal({ open, onClose, children, type, id }: ModalProps) {
   const [localOpen, setLocalOpen] = useState(open);
   const cancelButtonRef = useRef(null);
+  const router = useRouter();
+
+  async function handleConfirm() {
+    if (type === 'booking') {
+      await deleteBooking(id || '');
+    }
+    setLocalOpen(false);
+    onClose();
+    router.push('/');
+    router.refresh();
+  }
 
   useEffect(() => {
     setLocalOpen(open);
@@ -52,7 +67,7 @@ export function ConfirmModal({ open, onClose, children }: ModalProps) {
                   <SubmitButton
                     type="button"
                     className="inline-flex w-full justify-center rounded-md px-3 py-2 text-sm font-semibold  shadow-sm  sm:col-start-2"
-                    onClick={() => { setLocalOpen(false); onClose(); }}
+                    onClick={() => handleConfirm()}
                     ref={cancelButtonRef}
                   >
                     Confirm

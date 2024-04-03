@@ -24,7 +24,7 @@ export const {
   signOut,
 } = NextAuth({
   adapter: PrismaAdapter(prismaInstance),
-  session: { strategy: "jwt", maxAge: 1 * 60 * 60 },
+  session: { strategy: "jwt", maxAge: 8 * 60 * 60 },
   events: {
     linkAccount: async ({ user }) => {
       await prismaInstance.user.update({
