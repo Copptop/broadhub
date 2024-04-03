@@ -23,7 +23,8 @@ interface Booking {
   resourceType: string;
   startDatetime: string;
   endDatetime: string;
-  location: string
+  location: string;
+  floor: number;
 }
 
 interface BookingCardsProps {
@@ -167,7 +168,6 @@ export default function Schedule({ data }: BookingCardsProps) {
 function BookingElement({ booking }: any) {
   const userNavigation = [
     { name: 'Edit', href: `bookings/${booking.id}` },
-    { name: 'Cancel', href: `bookings/${booking.id}` },
   ];
 
   return (
@@ -198,7 +198,7 @@ function BookingElement({ booking }: any) {
                   <span className="sr-only">Location</span>
                   <MapPinIcon className="size-5" aria-hidden="true" />
                 </dt>
-                <dd>{booking.location}</dd>
+                <dd>{booking.location}, Floor {booking.floor}</dd>
               </div>
             </dl>
           </div>

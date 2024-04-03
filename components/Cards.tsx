@@ -13,14 +13,14 @@ interface BookingCardProps {
   resourceType: string;
   startDatetime: string;
   endDatetime: string;
-  location: string
+  location: string;
+  floor: number;
 }
 
 export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resourceType, startDatetime }) => {
 
   const userNavigation = [
-    { name: 'Edit', href: `/bookings/${id}` },
-    { name: 'Cancel', href: `/bookings/${id}` },
+    { name: 'Edit', href: `/bookings/${id}` }
   ];
 
   const displayDate = format(new Date(startDatetime), 'EEEE, dd MMM yyy')

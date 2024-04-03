@@ -7,7 +7,8 @@ interface Booking {
   resourceType: string;
   startDatetime: string;
   endDatetime: string;
-  location: string
+  location: string;
+  floor: number;
 }
 
 
