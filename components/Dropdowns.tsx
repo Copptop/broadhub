@@ -19,7 +19,6 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
 }, ref) => {
 
   const onClick = async () => {
-    console.log("signing out - client side")
     await SignOutHandler();
   }
 

@@ -36,12 +36,20 @@ export const SignUpHandler = async (values: SignInValues) => {
 
     if (!companyCodeRegex.test(companyCode)) return { error: "Invalid Company Code" }
 
+    const checkCompanyCode = await prismaInstance.company.findFirst({
+      where: {
+        code: companyCode
+      }
+    })
+
+    if (!checkCompanyCode) return { error: "Invalid Company Code" }
+
     await prismaInstance.user.create({
       data: {
         name,
         email,
         password: hashedPassword,
-        companyCode: companyCode
+        companyID: checkCompanyCode.id
       }
     })
 

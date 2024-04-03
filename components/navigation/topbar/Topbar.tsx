@@ -1,4 +1,7 @@
+'use client'
+
 import { Dropdown } from '@/components/Dropdowns'
+import { useCurrentUser } from '@/lib/hooks/use-current-user'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
 import {
   Bars3Icon
@@ -16,6 +19,8 @@ interface TopBarProps {
 }
 
 const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
+
+  const user = useCurrentUser();
 
   return (
     <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-zinc-200 dark:border-none bg-white dark:bg-zinc-800 pl-4 shadow-sm dark:shadow-md sm:gap-x-6 sm:pl-6 lg:pl-8 pr-6">
@@ -45,7 +50,7 @@ const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
           />
           <span className="hidden lg:flex lg:items-center">
             <span className="ml-4 text-sm font-semibold leading-6 text-zinc-800 dark:text-zinc-300" aria-hidden="true">
-              Tom Cook
+              {user?.name}
             </span>
             <ChevronDownIcon className="ml-2 h-5 w-5 text-zinc-500 hover:text-zinc-800 dark:hover:text-zinc-300" aria-hidden="true" />
           </span>

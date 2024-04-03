@@ -10,11 +10,14 @@ import {
   QueueListIcon,
   TicketIcon,
   XMarkIcon,
+  UserIcon
 } from '@heroicons/react/24/outline';
 
 import { StandardLogo } from '@/components/logo';
 import { AdminSidebarItem, SidebarItem } from '@/components/navigation/sidebar/SidebarItems';
 import Link from 'next/link';
+import { useCurrentRole } from '@/lib/hooks/use-current-user';
+import { usePathname } from 'next/navigation';
 
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
@@ -23,16 +26,20 @@ const navigation = [
   { name: 'Previous Bookings', href: '/bookings', icon: TicketIcon },
 ]
 const tools = [
-  { name: 'Analytics', href: '/analytics', initial: 'A' },
-  { name: 'Manage Users', href: '/management/users', initial: 'U' },
-  { name: 'Manage Bookings', href: '/management/bookings', initial: 'B' },
+  { name: 'Analytics', href: '/analytics', initial: 'A', requiredRoles: ['HR', 'ADMIN'] },
+  { name: 'Manage Users', href: '/management/users', initial: 'U', requiredRoles: ['MANAGER', 'HR', 'ADMIN'] },
+  { name: 'Manage Bookings', href: '/management/bookings', initial: 'B', requiredRoles: ['HR', 'ADMIN'] },
 ]
+
+const adminRoles = ['ADMIN', 'HR', 'MANAGER']
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
-
+  const userRole = useCurrentRole()
+  const currentPath = usePathname();
+  const current = currentPath === '/profile';
 
   return (
     <>
@@ -133,24 +140,27 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                   ))}
                 </ul>
               </li>
-              <li>
-                <div className="text-md font-semibold leading-6 text-zinc-200">Your tools</div>
-                <ul role="list" className="-mx-2 mt-2 space-y-1">
-                  {tools.map((tool) => (
-                    <AdminSidebarItem key={tool.name} {...tool} />
-                  ))}
-                </ul>
-              </li>
+              {adminRoles.includes(userRole!) && (
+                <li>
+                  <div className="text-md font-semibold leading-6 text-zinc-200">Your tools</div>
+                  <ul role="list" className="-mx-2 mt-2 space-y-1">
+                    {tools.map((tool) => (
+                      <AdminSidebarItem key={tool.name} {...tool} />
+                    ))}
+                  </ul>
+                </li>
+              )}
+
               <li className="mt-auto">
                 <Link
                   href="/profile"
                   className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-zinc-200 hover:bg-Primary hover:text-zinc-100"
                 >
-                  <Cog6ToothIcon
+                  <UserIcon
                     className="h-6 w-6 shrink-0 text-zinc-300 group-hover:text-zinc-200"
                     aria-hidden="true"
                   />
-                  Settings
+                  Profile
                 </Link>
               </li>
             </ul>

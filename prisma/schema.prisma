@@ -12,25 +12,24 @@ datasource db {
 
 enum UserRole {
   ADMIN
-  MANAGER
   HR
+  MANAGER
   IT
   USER
 }
 
 model User {
-  id            String     @id @default(cuid())
+  id            String    @id @default(cuid())
   name          String?
-  email         String?    @unique
+  email         String?   @unique
   password      String?
   emailVerified DateTime?
   image         String?
-  role          UserRole   @default(USER)
-  companyCode   String?
+  companyID     String?
+  role          UserRole  @default(USER)
+  Company       Company?  @relation(fields: [companyID], references: [id])
   accounts      Account[]
-  Company       Company?   @relation(fields: [companyId], references: [id])
-  companyId     String?
-  Bookings      Bookings[]
+  Booking       Booking[]
 }
 
 model Account {
@@ -71,47 +70,63 @@ model ResetPasswordToken {
 }
 
 model Company {
-  id        String     @id @default(cuid())
-  name      String
-  code      String     @unique
-  logo      String?
-  users     User[]
-  locations Location[]
+  id       String     @id @default(cuid())
+  code     String     @unique
+  name     String
+  logo     String?
+  User     User[]
+  Location Location[]
 
-  @@unique([name, code])
+  @@unique([code, name])
+}
+
+enum Region {
+  APAC
+  UK
+  EMEA
+  NA
+  NENA
 }
 
 model Location {
   id        String     @id @default(cuid())
+  companyID String
   name      String
-  region    String
-  companyId String?
-  Company   Company?   @relation(fields: [companyId], references: [id])
+  region    Region
+  company   Company    @relation(fields: [companyID], references: [id])
   Resource  Resource[]
 
-  @@unique([name, region])
+  @@unique([companyID, name])
+}
+
+enum ResourceType {
+  parking
+  desk
+  meeting_room
+  office
 }
 
 model Resource {
-  id           String     @id @default(cuid())
-  name         String     @unique
-  locationId   String
-  type         String
-  allowedRoles UserRole[]
-  location     Location   @relation(fields: [locationId], references: [id], onDelete: Cascade)
-  bookings     Bookings[]
+  id              String       @id @default(cuid())
+  name            String
+  type            ResourceType
+  restrictedRoles UserRole[]   @default([])
+  locationID      String
+  floor           Int
+  location        Location     @relation(fields: [locationID], references: [id])
+  Booking         Booking[]
 
-  @@unique([name, locationId])
+  @@unique([locationID, name, floor])
 }
 
-model Bookings {
-  id         String   @id @default(cuid())
-  resourceId String
-  userId     String
-  startTime  DateTime
-  endTime    DateTime
-  resource   Resource @relation(fields: [resourceId], references: [id])
-  user       User     @relation(fields: [userId], references: [id])
-
-  @@unique([resourceId, startTime, endTime])
+model Booking {
+  id            String    @id @default(cuid())
+  userID        String
+  resourceID    String
+  start         DateTime
+  end           DateTime
+  user          User      @relation(fields: [userID], references: [id])
+  resource      Resource  @relation(fields: [resourceID], references: [id])
+  bookingMadeAt DateTime  @default(now())
+  lastModifed   DateTime?
 }
