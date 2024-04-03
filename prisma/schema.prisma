@@ -19,17 +19,18 @@ enum UserRole {
 }
 
 model User {
-  id            String    @id @default(cuid())
+  id            String     @id @default(cuid())
   name          String?
-  email         String?   @unique
+  email         String?    @unique
   password      String?
   emailVerified DateTime?
   image         String?
   companyID     String?
-  role          UserRole  @default(USER)
-  Company       Company?  @relation(fields: [companyID], references: [id])
+  role          UserRole   @default(USER)
+  Company       Company?   @relation(fields: [companyID], references: [id])
   accounts      Account[]
   Booking       Booking[]
+  Favorite      Favorite[]
 }
 
 model Account {
@@ -115,6 +116,7 @@ model Resource {
   floor           Int
   location        Location     @relation(fields: [locationID], references: [id])
   Booking         Booking[]
+  Favorite        Favorite[]
 
   @@unique([locationID, name, floor])
 }
@@ -129,4 +131,12 @@ model Booking {
   resource      Resource  @relation(fields: [resourceID], references: [id])
   bookingMadeAt DateTime  @default(now())
   lastModifed   DateTime?
+}
+
+model Favorite {
+  id         String   @id @default(cuid())
+  userID     String
+  resourceID String
+  user       User     @relation(fields: [userID], references: [id])
+  resource   Resource @relation(fields: [resourceID], references: [id])
 }

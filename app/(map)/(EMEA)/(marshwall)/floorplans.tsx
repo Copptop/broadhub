@@ -6,13 +6,34 @@ import { ComputerDesktopIcon, HeartIcon, XMarkIcon } from '@heroicons/react/24/s
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 
 import BookingNotification from '@/components/popups/Notfication';
+import { addFavorite, createBooking, removeFavorite } from '@/lib/database/bookings';
+import { useRouter } from 'next/navigation';
+import { start } from 'repl';
+
+interface dataProps {
+  id: string,
+  startDateTime: Date,
+  endDateTime: Date,
+  resource: string,
+  resourceType: string,
+  location: string
+}
+
+interface favsProps {
+  id: string,
+  resource: string,
+  resourceType: string,
+  location: string
+}
 
 interface clickedData {
   id: string;
   name: string;
   type: string;
+  location: string;
+  favID: string;
   isFavorite: boolean;
-  bookings: bookingData[];
+  bookings?: bookingData[];
 }
 
 interface bookingData {
@@ -20,14 +41,71 @@ interface bookingData {
   endDateTime: string;
 }
 
-export function F_1() {
+function clearStates() {
+  const elements = document.querySelectorAll('.booked, .partiallybooked, .favourite');
+  elements.forEach((element) => {
+    element.classList.remove('booked', 'partiallybooked', 'favourite');
+  });
+}
+
+function addStateToElement(id: string, state: 'booked' | 'partiallybooked' | 'favourite'): void {
+  const element = document.getElementById(id);
+  if (!element) return;
+  const classList = element.classList;
+  classList.remove('booked', 'partiallybooked', 'favourite');
+  classList.add(state);
+
+  if (state === 'booked') {
+    classList.remove('partiallybooked');
+  } else if (state === 'partiallybooked') {
+    classList.remove('booked');
+  }
+}
+
+function addStatesToElements({ data, favs }: { data: Array<dataProps>, favs: Array<favsProps> }): void {
+  console.log(data);
+
+  const times = [
+    "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
+    "17:00", "17:30", "18:00", "18:30", "19:00"
+  ];
+
+
+  clearStates();
+  if (data) {
+    data.sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
+    data.forEach((booking, index, array) => {
+      const currentBookingEnd = new Date(booking.endDateTime).getTime();
+      const nextBookingStart = index < array.length - 1 ? new Date(array[index + 1].startDateTime).getTime() : Infinity;
+
+      if (nextBookingStart > currentBookingEnd) {
+        // There's space between current booking and the next one
+        addStateToElement(booking.resource, 'partiallybooked');
+      } else {
+        // No space, booking is fully booked
+        addStateToElement(booking.resource, 'booked');
+      }
+    });
+  }
+
+  if (!favs) { return; }
+  favs.forEach((fav) => {
+    addStateToElement(fav.resource, 'favourite')
+  });
+}
+
+export function F_1({ data, favs, params, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, date: Date, from: string, to: string }) {
   const [open, setOpen] = useState(false);
   const [clickedData, setClickedData] = useState<clickedData>();
   const [showNotification, setShowNotification] = useState(false);
-
   const svgRef = useRef<SVGSVGElement>(null);
+  const router = useRouter();
+
+  console.log(from)
 
   useEffect(() => {
+    addStatesToElements({ data, favs })
     const svg = svgRef.current as any;
     if (!svg) return;
 
@@ -118,9 +196,9 @@ export function F_1() {
       svg.addEventListener('touchmove', onPointerMove);
     }
 
-  }, []);
+  }, [data, favs]);
 
-  const loadClickedData = (id: string) => {
+  const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
     if (type === "desk") {
       type = "Desk";
@@ -134,21 +212,16 @@ export function F_1() {
       type = "";
     }
 
+    const specifcResoruce = dataArray.filter((item) => item.resource === id).map((item) => { return { startDateTime: item.startDateTime.toString(), endDateTime: item.endDateTime.toString() } });
+
     const data: clickedData = {
       id: id,
       name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
-      isFavorite: false,
+      favID: (favs.find((fav: favsProps) => fav.resource === id)) ? favs.find((fav: favsProps) => fav.resource === id)!.id : "",
+      isFavorite: favs.some((fav) => fav.resource === id)!!!,
       type: type,
-      bookings: [
-        { startDateTime: "2022-01-01 10:00", endDateTime: "2022-01-01 11:00" },
-        { startDateTime: "2022-01-01 11:00", endDateTime: "2022-01-01 12:00" },
-        { startDateTime: "2022-01-01 12:00", endDateTime: "2022-01-01 13:00" },
-        { startDateTime: "2022-01-01 13:00", endDateTime: "2022-01-01 14:00" },
-        { startDateTime: "2022-01-01 14:00", endDateTime: "2022-01-01 15:00" },
-        { startDateTime: "2022-01-01 15:00", endDateTime: "2022-01-01 16:00" },
-        { startDateTime: "2022-01-01 16:00", endDateTime: "2022-01-01 17:00" },
-        { startDateTime: "2022-01-01 17:00", endDateTime: "2022-01-01 18:00" },
-      ]
+      location: params.location,
+      bookings: specifcResoruce
     }
     return data;
   }
@@ -157,16 +230,30 @@ export function F_1() {
     const clickedElement = event.currentTarget as unknown as HTMLElement;
     const status = clickedElement.getAttribute("class");
     if (!status?.includes(" booked")) {
-      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? ""));
+      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? "", data))
       setOpen(true);
     }
   }
 
-  const faveHandler = () => {
-    if (clickedData) {
-      setClickedData({ ...clickedData, isFavorite: !clickedData.isFavorite });
-      console.log(clickedData.isFavorite);
+  async function setFav(id: string, location: string) {
+    if (clickedData?.isFavorite) {
+      await removeFavorite(id, location)
+    } else {
+      await addFavorite(id, location)
     }
+  }
+
+  async function handleBooking(resourceName: string) {
+    await createBooking(resourceName, params.location, date, from, to)
+      .then((data) => {
+        if (!data?.error) {
+          setOpen(false);
+          setShowNotification(true)
+          router.push(`/map/${params.region}/${params.location}/${params.floor}`)
+        } else {
+          alert(data.error)
+        }
+      })
   }
 
   return (
@@ -426,7 +513,7 @@ export function F_1() {
             </g>
           </g>
           <g id="Permitted-Parking">
-            <g id="bay-64" className="parking booked" transform="matrix(0.0964275,0,0,0.0964275,194.598,815.835)" onClick={onClickSlideOverHandler} >
+            <g id="bay-64" className="parking" transform="matrix(0.0964275,0,0,0.0964275,194.598,815.835)" onClick={onClickSlideOverHandler} >
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257C699.62,427.301 699.62,578.38 699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268L533.052,161.268Z"
@@ -439,7 +526,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-69" className="parking partiallybooked" transform="matrix(0.0964275,0,0,0.0964275,479.108,815.835)" onClick={onClickSlideOverHandler} >
+            <g id="bay-69" className="parking" transform="matrix(0.0964275,0,0,0.0964275,479.108,815.835)" onClick={onClickSlideOverHandler} >
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257L699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268L533.052,161.268Z"
@@ -452,7 +539,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-68" className="parking favourite" transform="matrix(0.0964275,0,0,0.0964275,422.206,815.835)" onClick={onClickSlideOverHandler}>
+            <g id="bay-68" className="parking" transform="matrix(0.0964275,0,0,0.0964275,422.206,815.835)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257C699.62,427.301 699.62,578.38 699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268L533.052,161.268Z"
@@ -1518,7 +1605,7 @@ export function F_1() {
                               </div>
                               <button
                                 type="button"
-                                onClick={faveHandler}
+                                onClick={(e) => { setFav(clickedData!.id, clickedData!.location) }}
                                 className="relative ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                               >
                                 <span className="absolute -inset-1.5" />
@@ -1528,24 +1615,28 @@ export function F_1() {
                             </div>
                           </div>
                           <div>
-                            <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
-                            <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
-                              {clickedData?.bookings.map((booking, index) => (
-                                <div key={index} className="py-3 flex justify-between text-sm font-medium">
-                                  <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
-                                  <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
-                                  <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
-                                </div>
-                              ))}
-                            </dl>
+                            {(clickedData && clickedData.bookings && clickedData.bookings?.length > 0) ? (
+                              <>
+                                <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
+                                <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
+                                  {clickedData?.bookings.map((booking, index) => (
+                                    <div key={index} className="py-3 flex justify-between text-sm font-medium">
+                                      <dt className="text-zinc-800 dark:text-zinc-300  text-justify">{booking.startDateTime}</dt>
+                                      <dd className="flex items-center px-2 text-zinc-500 text-justify">to</dd>
+                                      <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
+                                    </div>
+                                  ))}
+                                </dl>
+                              </>
+                            )
+                              : (<></>)}
                           </div>
                           <div className="flex">
                             <SubmitButton
                               type="button"
                               className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                               onClick={() => {
-                                setOpen(false);
-                                setShowNotification(true)
+                                handleBooking(clickedData?.id || "");
                               }}
                             >
                               Book
@@ -1568,18 +1659,20 @@ export function F_1() {
           </div>
         </Dialog>
       </Transition.Root>
-      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} datetime={'test'} />}
+      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} date={date} from={from} to={to} />}
     </>
   )
 }
 
-export function F0() {
-  const [open, setOpen] = useState(false);
-  const [clickedData, setClickedData] = useState<clickedData>();
-  const [showNotification, setShowNotification] = useState(false);
+export function F0({ data, favs, params, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, date: Date, from: string, to: string }) {
+  const [open, setOpen] = useState(false)
+  const [clickedData, setClickedData] = useState<clickedData>()
+  const [showNotification, setShowNotification] = useState(false)
   const svgRef = useRef<SVGSVGElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
+    addStatesToElements({ data, favs })
     const svg = svgRef.current as any;
     if (!svg) return;
 
@@ -1670,10 +1763,9 @@ export function F0() {
       svg.addEventListener('touchmove', onPointerMove);
     }
 
+  }, [data, favs]);
 
-  }, []);
-
-  const loadClickedData = (id: string) => {
+  const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
     if (type === "desk") {
       type = "Desk";
@@ -1687,21 +1779,16 @@ export function F0() {
       type = "";
     }
 
+    const specifcResoruce = dataArray.filter((item) => item.resource === id).map((item) => { return { startDateTime: item.startDateTime.toString(), endDateTime: item.endDateTime.toString() } });
+
     const data: clickedData = {
       id: id,
       name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
-      isFavorite: false,
+      favID: (favs.find((fav: favsProps) => fav.resource === id)) ? favs.find((fav: favsProps) => fav.resource === id)!.id : "",
+      isFavorite: favs.some((fav) => fav.resource === id)!!!,
       type: type,
-      bookings: [
-        { startDateTime: "2022-01-01 10:00", endDateTime: "2022-01-01 11:00" },
-        { startDateTime: "2022-01-01 11:00", endDateTime: "2022-01-01 12:00" },
-        { startDateTime: "2022-01-01 12:00", endDateTime: "2022-01-01 13:00" },
-        { startDateTime: "2022-01-01 13:00", endDateTime: "2022-01-01 14:00" },
-        { startDateTime: "2022-01-01 14:00", endDateTime: "2022-01-01 15:00" },
-        { startDateTime: "2022-01-01 15:00", endDateTime: "2022-01-01 16:00" },
-        { startDateTime: "2022-01-01 16:00", endDateTime: "2022-01-01 17:00" },
-        { startDateTime: "2022-01-01 17:00", endDateTime: "2022-01-01 18:00" },
-      ]
+      location: params.location,
+      bookings: specifcResoruce
     }
     return data;
   }
@@ -1710,16 +1797,23 @@ export function F0() {
     const clickedElement = event.currentTarget as unknown as HTMLElement;
     const status = clickedElement.getAttribute("class");
     if (!status?.includes(" booked")) {
-      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? ""));
+      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? "", data))
       setOpen(true);
     }
   }
 
-  const faveHandler = () => {
-    if (clickedData) {
-      setClickedData({ ...clickedData, isFavorite: !clickedData.isFavorite });
-      console.log(clickedData.isFavorite);
+  async function setFav(id: string, location: string) {
+    if (clickedData?.isFavorite) {
+      await removeFavorite(id, location)
+    } else {
+      await addFavorite(id, location)
     }
+  }
+  async function handleBooking(resourceName: string) {
+    await createBooking(resourceName, params.location, date, from, to)
+    setOpen(false);
+    setShowNotification(true)
+    router.push(`/map/${params.region}/${params.location}/${params.floor}`)
   }
 
   return (
@@ -2906,7 +3000,7 @@ export function F0() {
                               </div>
                               <button
                                 type="button"
-                                onClick={faveHandler}
+                                onClick={(e) => { setFav(clickedData!.id, clickedData!.location) }}
                                 className="relative ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                               >
                                 <span className="absolute -inset-1.5" />
@@ -2916,24 +3010,28 @@ export function F0() {
                             </div>
                           </div>
                           <div>
-                            <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
-                            <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
-                              {clickedData?.bookings.map((booking, index) => (
-                                <div key={index} className="py-3 flex justify-between text-sm font-medium">
-                                  <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
-                                  <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
-                                  <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
-                                </div>
-                              ))}
-                            </dl>
+                            {(clickedData && clickedData.bookings && clickedData.bookings?.length > 0) ? (
+                              <>
+                                <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
+                                <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
+                                  {clickedData?.bookings.map((booking, index) => (
+                                    <div key={index} className="py-3 flex justify-between text-sm font-medium">
+                                      <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
+                                      <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
+                                      <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
+                                    </div>
+                                  ))}
+                                </dl>
+                              </>
+                            )
+                              : (<></>)}
                           </div>
                           <div className="flex">
                             <SubmitButton
                               type="button"
                               className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                               onClick={() => {
-                                setOpen(false);
-                                setShowNotification(true)
+                                handleBooking(clickedData?.id || "");
                               }}
                             >
                               Book
@@ -2956,18 +3054,21 @@ export function F0() {
           </div>
         </Dialog>
       </Transition.Root>
-      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} datetime={'test'} />}
+      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} date={date} from={from} to={to} />}
     </>
   )
 }
 
-export function F3() {
+export function F3({ data, favs, params, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, date: Date, from: string, to: string }) {
   const [open, setOpen] = useState(false);
   const [clickedData, setClickedData] = useState<clickedData>();
   const [showNotification, setShowNotification] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
+  const router = useRouter();
+  const _params = params;
 
   useEffect(() => {
+    addStatesToElements({ data, favs })
     const svg = svgRef.current as any;
     if (!svg) return;
 
@@ -3058,10 +3159,9 @@ export function F3() {
       svg.addEventListener('touchmove', onPointerMove);
     }
 
+  }, [data, favs]);
 
-  }, []);
-
-  const loadClickedData = (id: string) => {
+  const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
     if (type === "desk") {
       type = "Desk";
@@ -3075,21 +3175,16 @@ export function F3() {
       type = "";
     }
 
+    const specifcResoruce = dataArray.filter((item) => item.resource === id).map((item) => { return { startDateTime: item.startDateTime.toString(), endDateTime: item.endDateTime.toString() } });
+
     const data: clickedData = {
       id: id,
       name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
-      isFavorite: false,
+      favID: (favs.find((fav: favsProps) => fav.resource === id)) ? favs.find((fav: favsProps) => fav.resource === id)!.id : "",
+      isFavorite: favs.some((fav) => fav.resource === id)!!!,
       type: type,
-      bookings: [
-        { startDateTime: "2022-01-01 10:00", endDateTime: "2022-01-01 11:00" },
-        { startDateTime: "2022-01-01 11:00", endDateTime: "2022-01-01 12:00" },
-        { startDateTime: "2022-01-01 12:00", endDateTime: "2022-01-01 13:00" },
-        { startDateTime: "2022-01-01 13:00", endDateTime: "2022-01-01 14:00" },
-        { startDateTime: "2022-01-01 14:00", endDateTime: "2022-01-01 15:00" },
-        { startDateTime: "2022-01-01 15:00", endDateTime: "2022-01-01 16:00" },
-        { startDateTime: "2022-01-01 16:00", endDateTime: "2022-01-01 17:00" },
-        { startDateTime: "2022-01-01 17:00", endDateTime: "2022-01-01 18:00" },
-      ]
+      location: params.location,
+      bookings: specifcResoruce
     }
     return data;
   }
@@ -3098,16 +3193,24 @@ export function F3() {
     const clickedElement = event.currentTarget as unknown as HTMLElement;
     const status = clickedElement.getAttribute("class");
     if (!status?.includes(" booked")) {
-      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? ""));
+      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? "", data))
       setOpen(true);
     }
   }
 
-  const faveHandler = () => {
-    if (clickedData) {
-      setClickedData({ ...clickedData, isFavorite: !clickedData.isFavorite });
-      console.log(clickedData.isFavorite);
+  async function setFav(id: string, location: string) {
+    if (clickedData?.isFavorite) {
+      await removeFavorite(id, location)
+    } else {
+      await addFavorite(id, location)
     }
+  }
+
+  async function handleBooking(resourceName: string) {
+    await createBooking(resourceName, params.location, date, from, to)
+    setOpen(false);
+    setShowNotification(true)
+    router.push(`/map/${params.region}/${params.location}/${params.floor}`)
   }
 
   return (
@@ -4587,7 +4690,7 @@ export function F3() {
                               </div>
                               <button
                                 type="button"
-                                onClick={faveHandler}
+                                onClick={(e) => { setFav(clickedData!.id, clickedData!.location) }}
                                 className="relative ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                               >
                                 <span className="absolute -inset-1.5" />
@@ -4597,24 +4700,28 @@ export function F3() {
                             </div>
                           </div>
                           <div>
-                            <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
-                            <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
-                              {clickedData?.bookings.map((booking, index) => (
-                                <div key={index} className="py-3 flex justify-between text-sm font-medium">
-                                  <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
-                                  <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
-                                  <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
-                                </div>
-                              ))}
-                            </dl>
+                            {(clickedData && clickedData.bookings && clickedData.bookings?.length > 0) ? (
+                              <>
+                                <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
+                                <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
+                                  {clickedData?.bookings.map((booking, index) => (
+                                    <div key={index} className="py-3 flex justify-between text-sm font-medium">
+                                      <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
+                                      <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
+                                      <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
+                                    </div>
+                                  ))}
+                                </dl>
+                              </>
+                            )
+                              : (<></>)}
                           </div>
                           <div className="flex">
                             <SubmitButton
                               type="button"
                               className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                               onClick={() => {
-                                setOpen(false);
-                                setShowNotification(true)
+                                handleBooking(clickedData?.id || "");
                               }}
                             >
                               Book
@@ -4637,7 +4744,7 @@ export function F3() {
           </div>
         </Dialog>
       </Transition.Root>
-      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} datetime={'test'} />}
+      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} date={date} from={from} to={to} />}
     </>
   )
 }

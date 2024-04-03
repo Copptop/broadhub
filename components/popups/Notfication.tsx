@@ -1,16 +1,19 @@
 import { Transition } from '@headlessui/react';
 import { XMarkIcon } from '@heroicons/react/20/solid';
 import { CheckCircleIcon } from '@heroicons/react/24/outline';
+import { format } from 'date-fns';
 import { Fragment, useEffect, useState } from 'react';
 
 export interface NotificationProps {
   show: boolean;
   onClose: () => void;
   resources?: String;
-  datetime?: String;
+  date: Date;
+  from: String;
+  to: String;
 }
 
-export default function BookingNotification({ show, onClose, resources, datetime }: NotificationProps) {
+export default function BookingNotification({ show, onClose, resources, date, from, to }: NotificationProps) {
   const [localshow, setLocalShow] = useState(show);
 
   useEffect(() => {
@@ -44,7 +47,8 @@ export default function BookingNotification({ show, onClose, resources, datetime
                   <div className="ml-3 w-0 flex-1 pt-0.5">
                     <p className="text-sm font-semibold text-zinc-700 dark:text-zinc-300">Successfully Booked!</p>
                     <p className="mt-1 text-sm text-zinc-500">You have Successfully Booked {resources}</p>
-                    <p className="mt-1 text-sm text-zinc-500">For {datetime}</p>
+                    <p className="mt-1 text-sm text-zinc-500">For {format(date, 'dd/MM/yyyy')}</p>
+                    <p className="mt-1 text-sm text-zinc-500">Between {from} and {to}</p>
                   </div>
                   <div className="ml-4 flex flex-shrink-0">
                     <button
