@@ -30,7 +30,6 @@ export const SignInHandler = async (values: SignInValues, callbackUrl?: string) 
   }
 
   try {
-    console.log(callbackUrl)
     await signIn("credentials", { email, password, redirectTo: callbackUrl || DefaultRedirectRoute })
   } catch (error) {
     if (error instanceof AuthError) {

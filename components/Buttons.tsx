@@ -18,10 +18,12 @@ export const SubmitButton = forwardRef<HTMLButtonElement, ButtonProps>(({
       className={twMerge(
         `
         w-full
+        h-full
         rounded-lg
         py-3
         text-lg
         font-semibold
+        align-middle
         
         border
         border-compDarkBlue
@@ -43,7 +45,8 @@ export const SubmitButton = forwardRef<HTMLButtonElement, ButtonProps>(({
         dark:hover:from-zinc-800
         dark:hover:to-zincfrom-zinc-800
   
-        
+        items-center self-center 
+
         text-zinc-50
         dark:text-zinc-200
         hover:text-compGreyText

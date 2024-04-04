@@ -6,6 +6,7 @@ import { SpeedInsights } from '@vercel/speed-insights/next';
 import { Providers } from '@/app/providers'
 import ThemeButton from '@/components/ThemeToggle'
 import ContentContainer from '@/components/ContentContainer'
+import { SessionProvider } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] })
 
@@ -22,13 +23,15 @@ export default function RootLayout({
   return (
     <html className="light antialiased" lang="en-GB" suppressHydrationWarning>
       <body className='bg-white dark:bg-zinc-900 overflow-hidden'>
-        <Providers>
-          <ContentContainer>
-            {children}
-            <SpeedInsights />
-          </ContentContainer>
-          <ThemeButton />
-        </Providers>
+        <SessionProvider>
+          <Providers>
+            <ContentContainer>
+              {children}
+              <SpeedInsights />
+            </ContentContainer>
+            <ThemeButton />
+          </Providers>
+        </SessionProvider>
       </body>
       <Analytics />
     </html>

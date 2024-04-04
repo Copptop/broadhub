@@ -1,7 +1,8 @@
 'use client'
 
 import { Dropdown } from '@/components/Dropdowns';
-import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, EllipsisVerticalIcon } from '@heroicons/react/24/solid';
+import { QuestionMarkCircleIcon } from '@heroicons/react/24/outline';
+import { AcademicCapIcon, ArrowRightEndOnRectangleIcon, BriefcaseIcon, ComputerDesktopIcon, EllipsisVerticalIcon, PresentationChartLineIcon, TruckIcon } from '@heroicons/react/24/solid';
 import { format } from 'date-fns';
 import Link from 'next/link';
 import React from 'react';
@@ -10,20 +11,26 @@ interface BookingCardProps {
   id: number;
   resource: string;
   resourceType: string;
-  href: string;
-  datetime: string;
+  startDatetime: string;
+  endDatetime: string;
+  location: string;
+  floor: number;
 }
 
-export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resourceType, href, datetime }) => {
+export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resourceType, startDatetime }) => {
 
   const userNavigation = [
-    { name: 'Edit', href: href },
-    { name: 'Cancel', href: href },
+    { name: 'Edit', href: `/bookings/${id}` }
   ];
 
-  const displayDate = format(new Date(datetime), 'EEEE, dd MMM yyy')
-  const iconComponent = resourceType === 'desk' ? <AcademicCapIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" aria-hidden="true" /> : <ArrowRightEndOnRectangleIcon className="h-5 w-5 text-zinc-300 dark:text-zinc-300" aria-hidden="true" />
+  const displayDate = format(new Date(startDatetime), 'EEEE, dd MMM yyy')
 
+  let iconComponent
+  if (resourceType === 'desk') { iconComponent = <ComputerDesktopIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" /> }
+  else if (resourceType === 'meeting_room') { iconComponent = <PresentationChartLineIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" /> }
+  else if (resourceType === 'office') { iconComponent = <BriefcaseIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" /> }
+  else if (resourceType === 'parking') { iconComponent = <TruckIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" /> }
+  else { iconComponent = <QuestionMarkCircleIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" /> }
 
   return (
     <>
@@ -36,7 +43,7 @@ export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resource
         </div>
         <div className="flex flex-1 items-center justify-between truncate rounded-r-md bg-white dark:border-zinc-800 dark:bg-darkBgSecondary">
           <div className="flex-1 truncate px-4 py-2 text-sm">
-            <Link href={href} className="font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-500">
+            <Link href={`/bookings/${id}`} className="font-semibold text-zinc-700 dark:text-zinc-300 hover:text-zinc-500 dark:hover:text-zinc-500">
               {resource}
             </Link>
             <p className="text-zinc-500 dark:text-zinc-400">{displayDate}</p>

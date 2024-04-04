@@ -253,7 +253,7 @@ export default function WorldMap() {
                 <path id="IE"
                   d="M956.7,158.2L957.4,162.6L953.5,168.1L944.7,171.7L937.9,170.8L942.2,164.4L940.1,158.2L946.8,153.4L950.5,150.6L951.4,153.8L950.2,157.1L953.2,157L956.7,158.2Z"
                   fill="#ececec" fillRule="nonzero" stroke="#1d4ed8" strokeWidth="0.67px" />
-                l</g>
+              </g>
             </Link>
             <Link className='MapSelectable' href='EMEA/Paris'>
               <g id="Paris" transform="matrix(1,0,0,1,-61.5005,-51.9689)">

@@ -24,7 +24,6 @@ export const getVT_EMAIL = async (email: string) => {
 
 export const getPR_TOKEN = async (token: string) => {
   try {
-    console.log(token)
     const pr = await prismaInstance.resetPasswordToken.findUnique({ where: { token: token } })
     return pr
 

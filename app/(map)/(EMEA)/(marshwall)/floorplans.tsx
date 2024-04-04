@@ -6,13 +6,35 @@ import { ComputerDesktopIcon, HeartIcon, XMarkIcon } from '@heroicons/react/24/s
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 
 import BookingNotification from '@/components/popups/Notfication';
+import { createBooking } from '@/lib/database/bookings';
+import { addFavorite, removeFavorite } from '@/lib/database/resources';
+import { useRouter } from 'next/navigation';
+import { start } from 'repl';
+
+interface dataProps {
+  id: string,
+  startDateTime: Date,
+  endDateTime: Date,
+  resource: string,
+  resourceType: string,
+  location: string
+}
+
+interface favsProps {
+  id: string,
+  resource: string,
+  resourceType: string,
+  location: string
+}
 
 interface clickedData {
   id: string;
   name: string;
   type: string;
+  location: string;
+  favID: string;
   isFavorite: boolean;
-  bookings: bookingData[];
+  bookings?: bookingData[];
 }
 
 interface bookingData {
@@ -20,14 +42,68 @@ interface bookingData {
   endDateTime: string;
 }
 
-export function F_1() {
+function clearStates() {
+  const elements = document.querySelectorAll('.booked, .partiallybooked, .favourite');
+  elements.forEach((element) => {
+    element.classList.remove('booked', 'partiallybooked', 'favourite');
+  });
+}
+
+function addStateToElement(id: string, state: 'booked' | 'partiallybooked' | 'favourite'): void {
+  const element = document.getElementById(id);
+  if (!element) return;
+  const classList = element.classList;
+  classList.remove('booked', 'partiallybooked', 'favourite');
+  classList.add(state);
+
+  if (state === 'booked') {
+    classList.remove('partiallybooked');
+  } else if (state === 'partiallybooked') {
+    classList.remove('booked');
+  }
+}
+
+function addStatesToElements({ data, favs }: { data: Array<dataProps>, favs: Array<favsProps> }): void {
+
+  const times = [
+    "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
+    "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
+    "17:00", "17:30", "18:00", "18:30", "19:00"
+  ];
+
+
+  clearStates();
+  if (data) {
+    data.sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
+    data.forEach((booking, index, array) => {
+      const currentBookingEnd = new Date(booking.endDateTime).getTime();
+      const nextBookingStart = index < array.length - 1 ? new Date(array[index + 1].startDateTime).getTime() : Infinity;
+
+      if (nextBookingStart > currentBookingEnd) {
+        // There's space between current booking and the next one
+        addStateToElement(booking.resource, 'partiallybooked');
+      } else {
+        // No space, booking is fully booked
+        addStateToElement(booking.resource, 'booked');
+      }
+    });
+  }
+
+  if (!favs) { return; }
+  favs.forEach((fav) => {
+    addStateToElement(fav.resource, 'favourite')
+  });
+}
+
+export function F_1({ data, favs, params, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, date: Date, from: string, to: string }) {
   const [open, setOpen] = useState(false);
   const [clickedData, setClickedData] = useState<clickedData>();
   const [showNotification, setShowNotification] = useState(false);
-
   const svgRef = useRef<SVGSVGElement>(null);
+  const router = useRouter();
 
   useEffect(() => {
+    addStatesToElements({ data, favs })
     const svg = svgRef.current as any;
     if (!svg) return;
 
@@ -118,9 +194,9 @@ export function F_1() {
       svg.addEventListener('touchmove', onPointerMove);
     }
 
-  }, []);
+  }, [data, favs]);
 
-  const loadClickedData = (id: string) => {
+  const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
     if (type === "desk") {
       type = "Desk";
@@ -134,21 +210,16 @@ export function F_1() {
       type = "";
     }
 
+    const specifcResoruce = dataArray.filter((item) => item.resource === id).map((item) => { return { startDateTime: item.startDateTime.toString(), endDateTime: item.endDateTime.toString() } });
+
     const data: clickedData = {
       id: id,
       name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
-      isFavorite: false,
+      favID: (favs.find((fav: favsProps) => fav.resource === id)) ? favs.find((fav: favsProps) => fav.resource === id)!.id : "",
+      isFavorite: favs.some((fav) => fav.resource === id)!!!,
       type: type,
-      bookings: [
-        { startDateTime: "2022-01-01 10:00", endDateTime: "2022-01-01 11:00" },
-        { startDateTime: "2022-01-01 11:00", endDateTime: "2022-01-01 12:00" },
-        { startDateTime: "2022-01-01 12:00", endDateTime: "2022-01-01 13:00" },
-        { startDateTime: "2022-01-01 13:00", endDateTime: "2022-01-01 14:00" },
-        { startDateTime: "2022-01-01 14:00", endDateTime: "2022-01-01 15:00" },
-        { startDateTime: "2022-01-01 15:00", endDateTime: "2022-01-01 16:00" },
-        { startDateTime: "2022-01-01 16:00", endDateTime: "2022-01-01 17:00" },
-        { startDateTime: "2022-01-01 17:00", endDateTime: "2022-01-01 18:00" },
-      ]
+      location: params.location,
+      bookings: specifcResoruce
     }
     return data;
   }
@@ -157,16 +228,30 @@ export function F_1() {
     const clickedElement = event.currentTarget as unknown as HTMLElement;
     const status = clickedElement.getAttribute("class");
     if (!status?.includes(" booked")) {
-      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? ""));
+      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? "", data))
       setOpen(true);
     }
   }
 
-  const faveHandler = () => {
-    if (clickedData) {
-      setClickedData({ ...clickedData, isFavorite: !clickedData.isFavorite });
-      console.log(clickedData.isFavorite);
+  async function setFav(id: string, location: string) {
+    if (clickedData?.isFavorite) {
+      await removeFavorite(id, location)
+    } else {
+      await addFavorite(id, location)
     }
+  }
+
+  async function handleBooking(resourceName: string) {
+    await createBooking(resourceName, params.location, date, from, to)
+      .then((data) => {
+        if (!data?.error) {
+          setOpen(false);
+          setShowNotification(true)
+          router.push(`/map/${params.region}/${params.location}/${params.floor}`)
+        } else {
+          alert(data.error)
+        }
+      })
   }
 
   return (
@@ -426,7 +511,7 @@ export function F_1() {
             </g>
           </g>
           <g id="Permitted-Parking">
-            <g id="bay-64" className="parking booked" transform="matrix(0.0964275,0,0,0.0964275,194.598,815.835)" onClick={onClickSlideOverHandler} >
+            <g id="bay-64" className="parking" transform="matrix(0.0964275,0,0,0.0964275,194.598,815.835)" onClick={onClickSlideOverHandler} >
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257C699.62,427.301 699.62,578.38 699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268L533.052,161.268Z"
@@ -439,7 +524,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-69" className="parking partiallybooked" transform="matrix(0.0964275,0,0,0.0964275,479.108,815.835)" onClick={onClickSlideOverHandler} >
+            <g id="bay-69" className="parking" transform="matrix(0.0964275,0,0,0.0964275,479.108,815.835)" onClick={onClickSlideOverHandler} >
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257L699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268L533.052,161.268Z"
@@ -452,7 +537,7 @@ export function F_1() {
                   fill="#565656">P</text>
               </g>
             </g>
-            <g id="bay-68" className="parking favourite" transform="matrix(0.0964275,0,0,0.0964275,422.206,815.835)" onClick={onClickSlideOverHandler}>
+            <g id="bay-68" className="parking" transform="matrix(0.0964275,0,0,0.0964275,422.206,815.835)" onClick={onClickSlideOverHandler}>
               <g transform="matrix(1.13736,0,0,1.23027,-66.2644,-78.6308)">
                 <path
                   d="M533.052,161.268C577.229,161.268 619.596,177.492 650.834,206.37C682.071,235.249 699.62,274.416 699.62,315.257C699.62,427.301 699.62,578.38 699.62,690.425C699.62,731.265 682.071,770.433 650.834,799.311C619.596,828.19 577.229,844.414 533.052,844.414C533.047,844.414 533.041,844.414 533.036,844.414C488.859,844.414 446.492,828.19 415.254,799.311C384.017,770.433 366.468,731.265 366.468,690.425C366.468,578.38 366.468,427.301 366.468,315.257C366.468,274.416 384.017,235.249 415.254,206.37C446.492,177.492 488.859,161.268 533.036,161.268L533.052,161.268Z"
@@ -1518,7 +1603,7 @@ export function F_1() {
                               </div>
                               <button
                                 type="button"
-                                onClick={faveHandler}
+                                onClick={(e) => { setFav(clickedData!.id, clickedData!.location) }}
                                 className="relative ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                               >
                                 <span className="absolute -inset-1.5" />
@@ -1528,24 +1613,28 @@ export function F_1() {
                             </div>
                           </div>
                           <div>
-                            <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
-                            <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
-                              {clickedData?.bookings.map((booking, index) => (
-                                <div key={index} className="py-3 flex justify-between text-sm font-medium">
-                                  <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
-                                  <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
-                                  <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
-                                </div>
-                              ))}
-                            </dl>
+                            {(clickedData && clickedData.bookings && clickedData.bookings?.length > 0) ? (
+                              <>
+                                <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
+                                <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
+                                  {clickedData?.bookings.map((booking, index) => (
+                                    <div key={index} className="py-3 flex justify-between text-sm font-medium">
+                                      <dt className="text-zinc-800 dark:text-zinc-300  text-justify">{booking.startDateTime}</dt>
+                                      <dd className="flex items-center px-2 text-zinc-500 text-justify">to</dd>
+                                      <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
+                                    </div>
+                                  ))}
+                                </dl>
+                              </>
+                            )
+                              : (<></>)}
                           </div>
                           <div className="flex">
                             <SubmitButton
                               type="button"
                               className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                               onClick={() => {
-                                setOpen(false);
-                                setShowNotification(true)
+                                handleBooking(clickedData?.id || "");
                               }}
                             >
                               Book
@@ -1568,18 +1657,20 @@ export function F_1() {
           </div>
         </Dialog>
       </Transition.Root>
-      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} datetime={'test'} />}
+      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} date={date} from={from} to={to} />}
     </>
   )
 }
 
-export function F0() {
-  const [open, setOpen] = useState(false);
-  const [clickedData, setClickedData] = useState<clickedData>();
-  const [showNotification, setShowNotification] = useState(false);
+export function F0({ data, favs, params, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, date: Date, from: string, to: string }) {
+  const [open, setOpen] = useState(false)
+  const [clickedData, setClickedData] = useState<clickedData>()
+  const [showNotification, setShowNotification] = useState(false)
   const svgRef = useRef<SVGSVGElement>(null)
+  const router = useRouter()
 
   useEffect(() => {
+    addStatesToElements({ data, favs })
     const svg = svgRef.current as any;
     if (!svg) return;
 
@@ -1670,10 +1761,9 @@ export function F0() {
       svg.addEventListener('touchmove', onPointerMove);
     }
 
+  }, [data, favs]);
 
-  }, []);
-
-  const loadClickedData = (id: string) => {
+  const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
     if (type === "desk") {
       type = "Desk";
@@ -1687,21 +1777,16 @@ export function F0() {
       type = "";
     }
 
+    const specifcResoruce = dataArray.filter((item) => item.resource === id).map((item) => { return { startDateTime: item.startDateTime.toString(), endDateTime: item.endDateTime.toString() } });
+
     const data: clickedData = {
       id: id,
       name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
-      isFavorite: false,
+      favID: (favs.find((fav: favsProps) => fav.resource === id)) ? favs.find((fav: favsProps) => fav.resource === id)!.id : "",
+      isFavorite: favs.some((fav) => fav.resource === id)!!!,
       type: type,
-      bookings: [
-        { startDateTime: "2022-01-01 10:00", endDateTime: "2022-01-01 11:00" },
-        { startDateTime: "2022-01-01 11:00", endDateTime: "2022-01-01 12:00" },
-        { startDateTime: "2022-01-01 12:00", endDateTime: "2022-01-01 13:00" },
-        { startDateTime: "2022-01-01 13:00", endDateTime: "2022-01-01 14:00" },
-        { startDateTime: "2022-01-01 14:00", endDateTime: "2022-01-01 15:00" },
-        { startDateTime: "2022-01-01 15:00", endDateTime: "2022-01-01 16:00" },
-        { startDateTime: "2022-01-01 16:00", endDateTime: "2022-01-01 17:00" },
-        { startDateTime: "2022-01-01 17:00", endDateTime: "2022-01-01 18:00" },
-      ]
+      location: params.location,
+      bookings: specifcResoruce
     }
     return data;
   }
@@ -1710,16 +1795,23 @@ export function F0() {
     const clickedElement = event.currentTarget as unknown as HTMLElement;
     const status = clickedElement.getAttribute("class");
     if (!status?.includes(" booked")) {
-      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? ""));
+      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? "", data))
       setOpen(true);
     }
   }
 
-  const faveHandler = () => {
-    if (clickedData) {
-      setClickedData({ ...clickedData, isFavorite: !clickedData.isFavorite });
-      console.log(clickedData.isFavorite);
+  async function setFav(id: string, location: string) {
+    if (clickedData?.isFavorite) {
+      await removeFavorite(id, location)
+    } else {
+      await addFavorite(id, location)
     }
+  }
+  async function handleBooking(resourceName: string) {
+    await createBooking(resourceName, params.location, date, from, to)
+    setOpen(false);
+    setShowNotification(true)
+    router.push(`/map/${params.region}/${params.location}/${params.floor}`)
   }
 
   return (
@@ -2128,7 +2220,7 @@ export function F0() {
                     fill="#ebebeb" stroke="#565656" strokeWidth="21.56px" />
                 </g>
               </g>
-              <g id="0.052" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
+              <g id="0.053" className="desk" onClick={onClickSlideOverHandler} transform="matrix(2.83972e-18,-0.0463762,0.0463762,2.83972e-18,239.938,207.047)">
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -2906,7 +2998,7 @@ export function F0() {
                               </div>
                               <button
                                 type="button"
-                                onClick={faveHandler}
+                                onClick={(e) => { setFav(clickedData!.id, clickedData!.location) }}
                                 className="relative ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                               >
                                 <span className="absolute -inset-1.5" />
@@ -2916,24 +3008,28 @@ export function F0() {
                             </div>
                           </div>
                           <div>
-                            <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
-                            <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
-                              {clickedData?.bookings.map((booking, index) => (
-                                <div key={index} className="py-3 flex justify-between text-sm font-medium">
-                                  <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
-                                  <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
-                                  <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
-                                </div>
-                              ))}
-                            </dl>
+                            {(clickedData && clickedData.bookings && clickedData.bookings?.length > 0) ? (
+                              <>
+                                <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
+                                <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
+                                  {clickedData?.bookings.map((booking, index) => (
+                                    <div key={index} className="py-3 flex justify-between text-sm font-medium">
+                                      <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
+                                      <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
+                                      <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
+                                    </div>
+                                  ))}
+                                </dl>
+                              </>
+                            )
+                              : (<></>)}
                           </div>
                           <div className="flex">
                             <SubmitButton
                               type="button"
                               className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                               onClick={() => {
-                                setOpen(false);
-                                setShowNotification(true)
+                                handleBooking(clickedData?.id || "");
                               }}
                             >
                               Book
@@ -2956,18 +3052,21 @@ export function F0() {
           </div>
         </Dialog>
       </Transition.Root>
-      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} datetime={'test'} />}
+      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} date={date} from={from} to={to} />}
     </>
   )
 }
 
-export function F3() {
+export function F3({ data, favs, params, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, date: Date, from: string, to: string }) {
   const [open, setOpen] = useState(false);
   const [clickedData, setClickedData] = useState<clickedData>();
   const [showNotification, setShowNotification] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
+  const router = useRouter();
+  const _params = params;
 
   useEffect(() => {
+    addStatesToElements({ data, favs })
     const svg = svgRef.current as any;
     if (!svg) return;
 
@@ -3058,10 +3157,9 @@ export function F3() {
       svg.addEventListener('touchmove', onPointerMove);
     }
 
+  }, [data, favs]);
 
-  }, []);
-
-  const loadClickedData = (id: string) => {
+  const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
     if (type === "desk") {
       type = "Desk";
@@ -3075,21 +3173,16 @@ export function F3() {
       type = "";
     }
 
+    const specifcResoruce = dataArray.filter((item) => item.resource === id).map((item) => { return { startDateTime: item.startDateTime.toString(), endDateTime: item.endDateTime.toString() } });
+
     const data: clickedData = {
       id: id,
       name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
-      isFavorite: false,
+      favID: (favs.find((fav: favsProps) => fav.resource === id)) ? favs.find((fav: favsProps) => fav.resource === id)!.id : "",
+      isFavorite: favs.some((fav) => fav.resource === id)!!!,
       type: type,
-      bookings: [
-        { startDateTime: "2022-01-01 10:00", endDateTime: "2022-01-01 11:00" },
-        { startDateTime: "2022-01-01 11:00", endDateTime: "2022-01-01 12:00" },
-        { startDateTime: "2022-01-01 12:00", endDateTime: "2022-01-01 13:00" },
-        { startDateTime: "2022-01-01 13:00", endDateTime: "2022-01-01 14:00" },
-        { startDateTime: "2022-01-01 14:00", endDateTime: "2022-01-01 15:00" },
-        { startDateTime: "2022-01-01 15:00", endDateTime: "2022-01-01 16:00" },
-        { startDateTime: "2022-01-01 16:00", endDateTime: "2022-01-01 17:00" },
-        { startDateTime: "2022-01-01 17:00", endDateTime: "2022-01-01 18:00" },
-      ]
+      location: params.location,
+      bookings: specifcResoruce
     }
     return data;
   }
@@ -3098,16 +3191,24 @@ export function F3() {
     const clickedElement = event.currentTarget as unknown as HTMLElement;
     const status = clickedElement.getAttribute("class");
     if (!status?.includes(" booked")) {
-      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? ""));
+      setClickedData(loadClickedData(clickedElement.getAttribute("id") ?? "", data))
       setOpen(true);
     }
   }
 
-  const faveHandler = () => {
-    if (clickedData) {
-      setClickedData({ ...clickedData, isFavorite: !clickedData.isFavorite });
-      console.log(clickedData.isFavorite);
+  async function setFav(id: string, location: string) {
+    if (clickedData?.isFavorite) {
+      await removeFavorite(id, location)
+    } else {
+      await addFavorite(id, location)
     }
+  }
+
+  async function handleBooking(resourceName: string) {
+    await createBooking(resourceName, params.location, date, from, to)
+    setOpen(false);
+    setShowNotification(true)
+    router.push(`/map/${params.region}/${params.location}/${params.floor}`)
   }
 
   return (
@@ -3232,7 +3333,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(-1,1.22465e-16,-1.22465e-16,-1,1053.4,1310.69)">
-            <g id="0.074" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="3.087" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3244,7 +3345,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.075" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="3.086" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3256,7 +3357,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.076" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="3.085" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3268,7 +3369,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.074" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
+            <g id="3.074" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3280,7 +3381,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.075" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
+            <g id="3.075" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3292,7 +3393,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.076" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
+            <g id="3.076" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3306,7 +3407,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(-1,1.22465e-16,-1.22465e-16,-1,940.651,1310.69)">
-            <g id="0.073" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="3.073" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3318,7 +3419,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.072" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="3.072" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3330,7 +3431,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.071" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="3.071" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3342,7 +3443,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.060" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
+            <g id="3.060" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3354,7 +3455,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.061" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
+            <g id="3.061" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,319.858,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3366,7 +3467,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.062" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
+            <g id="3.062" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,317.623,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3380,7 +3481,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(-1,1.22465e-16,-1.22465e-16,-1,827.907,1310.69)">
-            <g id="0.059" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
+            <g id="3.059" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,486.057)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3392,7 +3493,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.058" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
+            <g id="3.058" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,213.972,590.208)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3404,7 +3505,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.057" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
+            <g id="3.057" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,216.207,581.985)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3946,7 +4047,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,1,352.333,-1.5293)">
-            <g id="0.064" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
+            <g id="3.064" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3958,7 +4059,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.063" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,334.983,578.916)">
+            <g id="3.063" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,334.983,578.916)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3970,7 +4071,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.069" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
+            <g id="3.069" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3982,7 +4083,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.070" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
+            <g id="3.070" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3994,7 +4095,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.066" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
+            <g id="3.066" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4006,7 +4107,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.065" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
+            <g id="3.065" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4018,7 +4119,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.067" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,490.653)">
+            <g id="3.067" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4030,7 +4131,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.068" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,437.399,482.43)">
+            <g id="3.068" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,437.399,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4044,7 +4145,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,1,235.006,-1.5293)">
-            <g id="0.050" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
+            <g id="3.050" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,332.748,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4056,7 +4157,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.055" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
+            <g id="3.055" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,438.634,587.139)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4068,7 +4169,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.056" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
+            <g id="3.056" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,436.399,578.916)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4080,7 +4181,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.052" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
+            <g id="3.052" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.31232e-18,-0.0540943,0.0540943,3.31232e-18,333.748,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4092,7 +4193,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.051" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
+            <g id="3.051" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0540943,0,0,0.0540943,335.983,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4104,7 +4205,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.053" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,490.653)">
+            <g id="3.053" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.31232e-18,-0.0540943,-0.0540943,3.31232e-18,439.634,490.653)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4116,7 +4217,7 @@ export function F3() {
                   fill="#ebebeb" stroke="#565656" strokeWidth="18.49px" />
               </g>
             </g>
-            <g id="0.054" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,437.399,482.43)">
+            <g id="3.054" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0540943,0,0,0.0540943,437.399,482.43)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -4130,7 +4231,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(1,0,0,1,1.9179,-12.0433)">
-            <g id="0.079" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,499.597)">
+            <g id="3.079" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,499.597)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4140,7 +4241,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="17.65px" />
             </g>
-            <g id="0.077" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,590.875)">
+            <g id="3.077" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,590.875)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4150,7 +4251,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="17.65px" />
             </g>
-            <g id="0.080" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,453.958)">
+            <g id="3.080" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,453.958)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4160,7 +4261,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="17.65px" />
             </g>
-            <g id="0.078" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,545.236)">
+            <g id="3.078" className="desk" onClick={onClickSlideOverHandler} transform="matrix(0.0611036,0,0,0.0518511,796.566,545.236)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4170,7 +4271,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="17.65px" />
             </g>
-            <g id="0.082" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,499.597)">
+            <g id="3.082" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,499.597)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4180,7 +4281,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="17.65px" />
             </g>
-            <g id="0.084" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,590.875)">
+            <g id="3.084" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,590.875)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4190,7 +4291,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="17.65px" />
             </g>
-            <g id="0.0811" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,453.958)">
+            <g id="3.0811" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,453.958)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4200,7 +4301,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="17.65px" />
             </g>
-            <g id="0.083" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,545.236)">
+            <g id="3.083" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,545.236)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
@@ -4460,7 +4561,7 @@ export function F3() {
             </g>
           </g>
           <g transform="matrix(6.12323e-17,1,-0.925782,5.66878e-17,1176.57,459.393)">
-            <g id="0.089" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
+            <g id="3.089" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,265.38,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4470,7 +4571,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="18.43px" />
             </g>
-            <g id="0.090" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
+            <g id="3.090" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,219.741,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4480,7 +4581,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="18.43px" />
             </g>
-            <g id="0.088" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
+            <g id="3.088" className="desk" onClick={onClickSlideOverHandler} transform="matrix(3.74151e-18,-0.0611036,0.0518511,3.17497e-18,311.019,356.945)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4490,7 +4591,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="18.43px" />
             </g>
-            <g id="0.092" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
+            <g id="3.092" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,265.38,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4500,7 +4601,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="18.43px" />
             </g>
-            <g id="0.091" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
+            <g id="3.091" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,219.741,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4510,7 +4611,7 @@ export function F3() {
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="18.43px" />
             </g>
-            <g id="0.093" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
+            <g id="3.093" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-3.74151e-18,0.0611036,0.0518511,3.17497e-18,311.019,242.212)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M603.256,161.268C628.813,161.268 653.324,171.508 671.396,189.735C689.468,207.962 699.62,232.683 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,772.998 689.468,797.719 671.396,815.947C653.324,834.174 628.813,844.414 603.256,844.414C559.13,844.414 506.958,844.414 462.832,844.414C437.275,844.414 412.764,834.174 394.692,815.947C376.62,797.719 366.468,772.998 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,232.683 376.62,207.962 394.692,189.735C412.764,171.508 437.275,161.268 462.832,161.268C506.958,161.268 559.13,161.268 603.256,161.268Z"
@@ -4587,7 +4688,7 @@ export function F3() {
                               </div>
                               <button
                                 type="button"
-                                onClick={faveHandler}
+                                onClick={(e) => { setFav(clickedData!.id, clickedData!.location) }}
                                 className="relative ml-4 flex h-8 w-8 items-center justify-center rounded-full bg-white dark:bg-zinc-800 text-zinc-400 hover:bg-zinc-100 hover:text-zinc-500 focus:outline-none focus:ring-2 focus:ring-blue-500"
                               >
                                 <span className="absolute -inset-1.5" />
@@ -4597,24 +4698,28 @@ export function F3() {
                             </div>
                           </div>
                           <div>
-                            <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
-                            <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
-                              {clickedData?.bookings.map((booking, index) => (
-                                <div key={index} className="py-3 flex justify-between text-sm font-medium">
-                                  <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
-                                  <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
-                                  <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
-                                </div>
-                              ))}
-                            </dl>
+                            {(clickedData && clickedData.bookings && clickedData.bookings?.length > 0) ? (
+                              <>
+                                <h3 className="font-medium text-zinc-800 dark:text-zinc-300">Todays Bookings</h3>
+                                <dl className="mt-2 divide-y divide-zinc-200 border-b border-t border-zinc-200">
+                                  {clickedData?.bookings.map((booking, index) => (
+                                    <div key={index} className="py-3 flex justify-between text-sm font-medium">
+                                      <dt className="text-zinc-800 dark:text-zinc-300">{booking.startDateTime}</dt>
+                                      <dd className="flex items-center space-x-2 text-zinc-500">to</dd>
+                                      <dd className="text-zinc-800 dark:text-zinc-300">{booking.endDateTime}</dd>
+                                    </div>
+                                  ))}
+                                </dl>
+                              </>
+                            )
+                              : (<></>)}
                           </div>
                           <div className="flex">
                             <SubmitButton
                               type="button"
                               className="flex-1 rounded-md bg-blue-600 px-3 py-2 text-sm font-semibold text-white shadow-sm hover:bg-blue-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
                               onClick={() => {
-                                setOpen(false);
-                                setShowNotification(true)
+                                handleBooking(clickedData?.id || "");
                               }}
                             >
                               Book
@@ -4637,7 +4742,7 @@ export function F3() {
           </div>
         </Dialog>
       </Transition.Root>
-      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} datetime={'test'} />}
+      {showNotification && <BookingNotification show={showNotification} onClose={() => setShowNotification(false)} resources={clickedData?.id} date={date} from={from} to={to} />}
     </>
   )
 }
