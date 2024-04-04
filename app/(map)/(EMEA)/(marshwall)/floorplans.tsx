@@ -6,7 +6,8 @@ import { ComputerDesktopIcon, HeartIcon, XMarkIcon } from '@heroicons/react/24/s
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 
 import BookingNotification from '@/components/popups/Notfication';
-import { addFavorite, createBooking, removeFavorite } from '@/lib/database/bookings';
+import { createBooking } from '@/lib/database/bookings';
+import { addFavorite, removeFavorite } from '@/lib/database/resources';
 import { useRouter } from 'next/navigation';
 import { start } from 'repl';
 
@@ -63,7 +64,6 @@ function addStateToElement(id: string, state: 'booked' | 'partiallybooked' | 'fa
 }
 
 function addStatesToElements({ data, favs }: { data: Array<dataProps>, favs: Array<favsProps> }): void {
-  console.log(data);
 
   const times = [
     "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -101,8 +101,6 @@ export function F_1({ data, favs, params, date, from, to }: { data: Array<dataPr
   const [showNotification, setShowNotification] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
   const router = useRouter();
-
-  console.log(from)
 
   useEffect(() => {
     addStatesToElements({ data, favs })

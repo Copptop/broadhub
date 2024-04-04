@@ -92,7 +92,7 @@ export function List_Table(dataFeed: list_table) {
                 <tr>
                   {dataFeed.headers.map((header) => (
                     <th key={header.toString()} scope="col" className="sticky top-0 py-3.5 px-4 text-sm sm:px-1 ">
-                      <span>{header}</span>
+                      <div>{header}</div>
                     </th>
                   ))}
                 </tr>
@@ -101,13 +101,13 @@ export function List_Table(dataFeed: list_table) {
                 {dataFeed.data.map((dp, index) => (
                   <tr key={index}>
                     <Link href={`${dp.href}`}>
-                      <span className="flex items-center justify-end">
+                      <div className="flex items-center justify-end">
                         <td className="flex-none whitespace-nowrap px-4 py-4 sm:px-1 text-sm">
                           {dp.name}
                         </td>
                         <div className="flex-auto" />
                         <ArrowRightIcon className="flex-none size-6 " />
-                      </span>
+                      </div>
                     </Link>
                   </tr>
                 ))}

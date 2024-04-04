@@ -1,6 +1,7 @@
-import MapSelection from '@/components/map/mapSelection'
+import MapSelection from '@/components/map/mapSection'
 import Breadcrumb from '@/components/navigation/breadcrumbs'
-import { getAllBookingsGoingForward, getFavorites } from '@/lib/database/bookings'
+import { getAllBookingsGoingForward } from '@/lib/database/bookings'
+import { getFavorites } from '@/lib/database/resources'
 
 interface dataProps {
   id: string,
