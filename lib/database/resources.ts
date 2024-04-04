@@ -1,8 +1,7 @@
 'use server'
 
 import { prismaInstance } from "@/lib/prisma";
-import { currentUser } from "../hooks/server/use-current-user";
-import { getAllBookingsGoingForward } from "./bookings";
+import { currentUser } from "@/lib/hooks/server/use-current-user";
 
 function formattedDateTime(date: Date, time: string) {
   const [hours, minutes] = time.split(':').map(Number);
@@ -25,11 +24,22 @@ export const getResources = async (location: string, floor: number) => {
         floor: floor
       }
     });
+
     if (!resources) return null;
+
+    const filteredResources = resources.filter(resource => {
+      if (resource.restrictedRoles !== null) {
+        if (resource.restrictedRoles.includes(user.role)) {
+          return false;
+        }
+        return true;
+      }
+      return false;
+    })
 
     let importantBookings = []
 
-    for (const resource of resources) {
+    for (const resource of filteredResources) {
       const booking = await prismaInstance.booking.findMany({
         where: {
           resourceID: resource.id,
@@ -37,11 +47,47 @@ export const getResources = async (location: string, floor: number) => {
       });
       if (booking.length > 0) { importantBookings.push(booking); }
     }
-    return [resources, importantBookings];
+    return [filteredResources, importantBookings];
   } catch (error) {
     return null;
   }
 };
+
+export const getRestrictedResources = async (location: string, floor: number) => {
+  const user = await currentUser();
+  if (!user) return null;
+  try {
+    const resources = await prismaInstance.resource.findMany({
+      where: {
+        location: {
+          name: location
+        },
+        floor: floor
+      }
+    });
+
+    if (!resources) return null;
+
+    const filteredResources = resources.filter(resource => {
+      if (user.role == "ADMIN") return false;
+      if (resource.restrictedRoles.length > 0) {
+        if (resource.restrictedRoles.includes(user.role)) {
+          return false;
+        }
+        return true;
+      }
+      return false;
+    }).map(resource => {
+      return {
+        name: resource.name,
+      }
+    });
+
+    return filteredResources;
+  } catch (error) {
+    return null;
+  }
+}
 
 
 export const getFavorites = async (locationName: string) => {

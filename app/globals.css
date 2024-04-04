@@ -44,7 +44,9 @@ input:-webkit-autofill:active {
 .meeting_room.booked path,
 .parking.booked path,
 .office.booked circle,
-.desk.booked path {
+.desk.booked path,
+.restricted path,
+.restricted circle {
   pointer-events: none;
   fill: #f39a9a;
 }

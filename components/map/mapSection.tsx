@@ -6,7 +6,7 @@ import { ArrowRightIcon, ClockIcon } from "@heroicons/react/24/solid";
 import { DatePicker, DatePickerValue, Select, SelectItem } from '@tremor/react';
 import { addMinutes, addMonths, isAfter, isBefore, isWithinInterval } from "date-fns";
 import { useEffect, useState } from "react";
-import { SubmitButton } from "../Buttons";
+import { SubmitButton } from "@/components/Buttons";
 
 const times = [
   "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -30,7 +30,11 @@ interface favsProps {
   location: string
 }
 
-export default function MapSection({ data, favs, params }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string } }) {
+interface restictedProps {
+  name: string
+}
+
+export default function MapSection({ data, favs, params, restrictedResources }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, restrictedResources: Array<restictedProps> }) {
   const [selectedDate, setSelectedDate] = useState<DatePickerValue>(new Date());
   const [selectorValue1, setSelectorValue1] = useState("08:00");
   const [selectorValue2, setSelectorValue2] = useState("18:00");
@@ -57,16 +61,16 @@ export default function MapSection({ data, favs, params }: { data: Array<dataPro
   useEffect(() => {
     let newMapToRender = null;
     if (params.floor === 'floor-1') {
-      newMapToRender = <F_1 data={_data} favs={_favs} params={params} date={selectedDate || new Date()} from={selectorValue1 || ""} to={selectorValue2 || ""} />;
+      newMapToRender = <F_1 data={_data} favs={_favs} params={params} date={selectedDate || new Date()} from={selectorValue1 || ""} to={selectorValue2 || ""} restrictedResources={restrictedResources} />;
     } else if (params.floor === 'floor0') {
-      newMapToRender = <F0 data={_data} favs={_favs} params={params} date={selectedDate || new Date()} from={selectorValue1 || ""} to={selectorValue2 || ""} />;
+      newMapToRender = <F0 data={_data} favs={_favs} params={params} date={selectedDate || new Date()} from={selectorValue1 || ""} to={selectorValue2 || ""} restrictedResources={restrictedResources} />;
     } else if (params.floor === 'floor3') {
-      newMapToRender = <F3 data={_data} favs={_favs} params={params} date={selectedDate || new Date()} from={selectorValue1 || ""} to={selectorValue2 || ""} />;
+      newMapToRender = <F3 data={_data} favs={_favs} params={params} date={selectedDate || new Date()} from={selectorValue1 || ""} to={selectorValue2 || ""} restrictedResources={restrictedResources} />;
     } else {
       newMapToRender = <WorldMap />;
     }
     setMapToRender(newMapToRender);
-  }, [params.floor, _data, _favs, params, selectedDate, selectorValue1, selectorValue2]);
+  }, [params.floor, _data, _favs, params, selectedDate, selectorValue1, selectorValue2, restrictedResources]);
 
   function formattedDateTime(date: Date, time: string) {
     const [hours, minutes] = time.split(':').map(Number);
