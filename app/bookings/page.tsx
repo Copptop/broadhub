@@ -1,10 +1,5 @@
-'use client';
-
-import { SubmitButton } from '@/components/Buttons';
-import { Table } from '@/components/Tables';
-import { BookingsSearchPalette } from '@/components/searchboxes/BookingsCommandPalettes';
-import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
-import { useState } from 'react';
+import BookingsSection from './bookingsSection';
+import { getUsersBookingHistory } from '@/lib/database/bookings';
 
 const rawData = [
   { id: 1, user: 'Test User', resource: 'Desk 1', resourceType: "desk", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
@@ -29,69 +24,38 @@ const rawData = [
   { id: 20, user: 'Test User', resource: 'Parking 1', resourceType: "parking", resourceLocation: 'Marsh Wall, Canary Wharf', href: 'bookings/1', startDateTime: '2024-01-21T09:00', endDateTime: '2024-01-21T17:00' },
 ];
 
-const bookingActions = [
-  { name: 'View', navigateTo: true },
-  { name: 'Rebook', navigateTo: true },
-]
+interface BookingProps {
+  id: string,
+  resource: string,
+  resourceType: string,
+  resourceLocation: string,
+  startDateTime: Date,
+  endDateTime: Date,
+  href: string,
+  rebookHref: string,
+}
 
-const bookingsHeaders = [
-  { name: 'Resource' },
-  { name: 'Location' },
-  { name: 'Start' },
-  { name: 'End' },
-]
 
-export default function BookingsPage() {
-  const [showCommandPalette, setShowCommandPalette] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
+export default async function BookingsPage() {
 
-  const handleSearchClick = () => {
-    setShowCommandPalette(true);
-  };
+  const rawBookings = await getUsersBookingHistory();
 
-  const handleCloseCommandPalette = () => {
-    setShowCommandPalette(false);
-    setSearchQuery('');
-  };
-
-  const bookings = rawData.map((booking) => {
+  const bookings = rawBookings.map((booking: any) => {
     return {
+      id: booking.id,
       resource: booking.resource,
-      resourceLocation: booking.resourceLocation,
-      startDateTime: booking.startDateTime,
-      endDateTime: booking.endDateTime,
-      href: booking.href,
+      resourceType: booking.resourceType,
+      resourceLocation: `Floor ${booking.floor} at ${booking.location}`,
+      startDateTime: booking.startDatetime,
+      endDateTime: booking.endDatetime,
+      href: `bookings/${booking.id}`,
+      rebookHref: `/map/${booking.region}/${booking.location}/floor${booking.floor}`,
     };
-  });
+  }) as BookingProps[];
 
   return (
     <>
-      <div className="px-6 py-4 ">
-        <div className="">
-          <div className="sm:flex sm:items-center">
-            <div className="sm:flex-auto">
-              <h1 className="text-2xl font-semibold text-zinc-700 dark:text-zinc-300">Previous Bookings</h1>
-              <p className="text-sm text-zinc-600 dark:text-zinc-500">
-                Here&apos;s a list of all your bookings
-              </p>
-            </div>
-            <div className="mt-4 sm:ml-16 sm:mt-0 sm:flex-none">
-              <SubmitButton
-                className='block rounded-md px-3 py-2 shadow-lg text-center text-sm font-semibold marker:focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2'
-                onClick={handleSearchClick}
-              >
-                <MagnifyingGlassIcon className="h-5 w-5 inline-block mr-2 align-middle" aria-hidden="true" />
-                <>Search Bookings</>
-              </SubmitButton>
-            </div>
-          </div>
-          <Table headers={bookingsHeaders} data={bookings} Actions={bookingActions} />
-        </div>
-      </div>
-
-      {showCommandPalette && (
-        <BookingsSearchPalette onClose={handleCloseCommandPalette} data={rawData} />
-      )}
+      <BookingsSection bookings={bookings} />
     </>
   );
 }

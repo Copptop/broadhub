@@ -9,7 +9,7 @@ import { addMinutes, addMonths, isAfter, isBefore, isWithinInterval } from "date
 import { useRouter } from "next/navigation";
 import { Fragment, useEffect, useState } from "react";
 import { InvertedSubmitButton, SubmitButton } from "../Buttons";
-import BookingNotification from "../popups/Notfication";
+import { BookingNotification } from "../popups/Notfication";
 
 const headers = ['Resources', 'Type', 'Status', 'Actions']
 const times = [
@@ -154,13 +154,12 @@ export default function ListSection({ resources, bookings, favs, params }: { res
           coversRange
         ) {
           if (booking.resourceID === resource.id) {
-            console.log("flagged" + resource.name);
-            return false; // If the resource is booked during this time, filter it out
+            return false;
           }
         }
       }
 
-      return true; // Resource is available during this time
+      return true;
     }));
   }
 
@@ -195,12 +194,9 @@ export default function ListSection({ resources, bookings, favs, params }: { res
   }
 
   async function setFav(id: string, location: string) {
-    console.log(clickedData?.isFavorite)
     if (clickedData?.isFavorite) {
-      console.log("removing")
       await removeFavorite(id, location)
     } else {
-      console.log("adding")
       await addFavorite(id, location)
     }
   }

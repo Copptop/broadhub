@@ -9,6 +9,7 @@ import {
 import { BriefcaseIcon, ChatBubbleLeftRightIcon, TruckIcon } from '@heroicons/react/24/outline';
 import { ComputerDesktopIcon } from '@heroicons/react/24/solid';
 import { Fragment, useState } from 'react';
+import Link from 'next/link';
 
 interface Resource {
   id: number;
@@ -16,6 +17,7 @@ interface Resource {
   resourceType: string;
   resourceLocation: string;
   href: string;
+  rebookHref: string,
 }
 interface BookingsSearchPaletteProps<T> {
   data: Array<any>;
@@ -116,7 +118,7 @@ export function BookingsSearchPalette<T>({
             leaveTo="scale-95 backdrop-blur-none"
           >
             <Dialog.Panel className="mx-auto max-w-xl transform divide-y divide-zinc-200 dark:divide-zinc-500 overflow-hidden rounded-xl bg-white dark:border-zinc-600 dark:bg-darkBgSecondary shadow-2xl ring-1 ring-black ring-opacity-5 transition-all">
-              <Combobox onChange={(item: any) => (window.location.href = item.url)}>
+              <Combobox >
                 <div className="relative">
                   <MagnifyingGlassIcon
                     className="pointer-events-none absolute left-4 top-3.5 h-5 w-5 text-zinc-400"
@@ -138,29 +140,30 @@ export function BookingsSearchPalette<T>({
                       <ul>
                         <li>
                           <h2 className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Desks</h2>
-                          <li className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                          <div className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
                             {filteredDeskResources.map((desk) => (
-                              <Combobox.Option
-                                key={desk.id}
-                                value={desk}
-                                className={({ active }) =>
-                                  classNames(
-                                    'flex cursor-default select-none items-center px-4 py-2 ',
-                                    active && 'bg-blue-700 text-zinc-50'
-                                  )
-                                }
-                              >
-                                <>
-                                  <ComputerDesktopIcon
-                                    className={classNames('h-6 w-6 flex-none')}
-                                    aria-hidden="true"
-                                  />
-                                  <span className="ml-3 flex-auto truncate">{desk.resource}</span>
-                                  <span className="ml-1 flex-auto truncate">{desk.resourceLocation}</span>
-                                </>
-                              </Combobox.Option>
+                              <Link key={desk.id} href={desk.href}>
+                                <Combobox.Option
+                                  value={desk}
+                                  className={({ active }) =>
+                                    classNames(
+                                      'flex cursor-default select-none items-center px-4 py-2 ',
+                                      active && 'bg-blue-700 text-zinc-50'
+                                    )
+                                  }
+                                >
+                                  <>
+                                    <ComputerDesktopIcon
+                                      className={classNames('h-6 w-6 flex-none')}
+                                      aria-hidden="true"
+                                    />
+                                    <span className="ml-3 flex-auto truncate">{desk.resource}</span>
+                                    <span className="ml-1 flex-auto truncate">{desk.resourceLocation}</span>
+                                  </>
+                                </Combobox.Option>
+                              </Link>
                             ))}
-                          </li>
+                          </div>
                         </li>
                       </ul>
                     )}
@@ -168,24 +171,25 @@ export function BookingsSearchPalette<T>({
                       <ul>
                         <li>
                           <h2 className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Offices</h2>
-                          <li className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                          <div className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
                             {filteredOfficeResources.map((office) => (
-                              <Combobox.Option
-                                key={office.id}
-                                value={office}
-                                className={({ active }) =>
-                                  classNames(
-                                    'flex cursor-default select-none items-center px-4 py-2',
-                                    active && 'bg-blue-700 text-zinc-50'
-                                  )
-                                }
-                              >
-                                <BriefcaseIcon className={classNames('h-6 w-6 flex-none')} aria-hidden="true" />
-                                <span className="ml-3 flex-auto truncate">{office.resource}</span>
-                                <span className="ml-1 flex-auto truncate">{office.resourceLocation}</span>
-                              </Combobox.Option>
+                              <Link key={office.id} href={office.href}>
+                                <Combobox.Option
+                                  value={office}
+                                  className={({ active }) =>
+                                    classNames(
+                                      'flex cursor-default select-none items-center px-4 py-2',
+                                      active && 'bg-blue-700 text-zinc-50'
+                                    )
+                                  }
+                                >
+                                  <BriefcaseIcon className={classNames('h-6 w-6 flex-none')} aria-hidden="true" />
+                                  <span className="ml-3 flex-auto truncate">{office.resource}</span>
+                                  <span className="ml-1 flex-auto truncate">{office.resourceLocation}</span>
+                                </Combobox.Option>
+                              </Link>
                             ))}
-                          </li>
+                          </div>
                         </li>
                       </ul>
                     )}
@@ -193,24 +197,26 @@ export function BookingsSearchPalette<T>({
                       <ul>
                         <li>
                           <h2 className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Meeting Rooms</h2>
-                          <li className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                          <div className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
                             {filteredMeetingRoomResources.map((room) => (
-                              <Combobox.Option
-                                key={room.id}
-                                value={room}
-                                className={({ active }) =>
-                                  classNames(
-                                    'flex cursor-default select-none items-center px-4 py-2',
-                                    active && 'bg-blue-700 text-zinc-50'
-                                  )
-                                }
-                              >
-                                <ChatBubbleLeftRightIcon className={classNames('h-6 w-6 flex-none')} aria-hidden="true" />
-                                <span className="ml-3 flex-auto truncate">{room.resource}</span>
-                                <span className="ml-1 flex-auto truncate">{room.resourceLocation}</span>
-                              </Combobox.Option>
+                              <Link key={room.id} href={room.href}>
+                                <Combobox.Option
+
+                                  value={room}
+                                  className={({ active }) =>
+                                    classNames(
+                                      'flex cursor-default select-none items-center px-4 py-2',
+                                      active && 'bg-blue-700 text-zinc-50'
+                                    )
+                                  }
+                                >
+                                  <ChatBubbleLeftRightIcon className={classNames('h-6 w-6 flex-none')} aria-hidden="true" />
+                                  <span className="ml-3 flex-auto truncate">{room.resource}</span>
+                                  <span className="ml-1 flex-auto truncate">{room.resourceLocation}</span>
+                                </Combobox.Option>
+                              </Link>
                             ))}
-                          </li>
+                          </div>
                         </li>
                       </ul>
                     )}
@@ -218,24 +224,26 @@ export function BookingsSearchPalette<T>({
                       <ul>
                         <li>
                           <h2 className="text-xs font-semibold text-zinc-700 dark:text-zinc-300">Parking</h2>
-                          <li className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                          <div className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
                             {filteredParkingResources.map((parking) => (
-                              <Combobox.Option
-                                key={parking.id}
-                                value={parking}
-                                className={({ active }) =>
-                                  classNames(
-                                    'flex cursor-default select-none items-center px-4 py-2',
-                                    active && 'bg-blue-700 text-zinc-50'
-                                  )
-                                }
-                              >
-                                <TruckIcon className={classNames('h-6 w-6 flex-none')} aria-hidden="true" />
-                                <span className="ml-3 flex-auto truncate">{parking.resource}</span>
-                                <span className="ml-1 flex-auto truncate">{parking.resourceLocation}</span>
-                              </Combobox.Option>
+                              <Link key={parking.id} href={parking.href}>
+                                <Combobox.Option
+
+                                  value={parking}
+                                  className={({ active }) =>
+                                    classNames(
+                                      'flex cursor-default select-none items-center px-4 py-2',
+                                      active && 'bg-blue-700 text-zinc-50'
+                                    )
+                                  }
+                                >
+                                  <TruckIcon className={classNames('h-6 w-6 flex-none')} aria-hidden="true" />
+                                  <span className="ml-3 flex-auto truncate">{parking.resource}</span>
+                                  <span className="ml-1 flex-auto truncate">{parking.resourceLocation}</span>
+                                </Combobox.Option>
+                              </Link>
                             ))}
-                          </li>
+                          </div>
                         </li>
                       </ul>
                     )}

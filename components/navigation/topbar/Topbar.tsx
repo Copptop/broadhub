@@ -34,7 +34,7 @@ const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
       </button>
 
       <div className="text-1xl font-bold text-center">
-        **** EMAIL FUNCTION CURRENTLY NOT WORKING ON DEPLOYED VERSION - See report for proof of function ***
+        **** ANY EMAIL BASED FUNCTION CURRENTLY NOT WORKING ON DEPLOYED VERSION - See report for proof of function ***
       </div>
 
       <div className="flex-1 flex justify-end pl-4 sm:pl-6 lg:pl-8">

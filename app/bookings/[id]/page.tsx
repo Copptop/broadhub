@@ -10,6 +10,7 @@ interface BookingProps {
   startDatetime: Date;
   endDatetime: Date;
   location: string;
+  region: string;
   floor: string;
 }
 export default async function Page({ params }: { params: { id: string } }) {
@@ -25,7 +26,7 @@ export default async function Page({ params }: { params: { id: string } }) {
     <>
       <Breadcrumb pages={pages} />
       <div className="px-6 py-4 h-[85dvh] overflow-y-auto">
-        <BookingForm id={booking.id} user={booking.user} resource={booking.resource} resourceType={booking.resourceType} startDatetime={booking.startDatetime} endDatetime={booking.endDatetime} location={booking.location} floor={booking.floor} />
+        <BookingForm id={booking.id} user={booking.user} resource={booking.resource} resourceType={booking.resourceType} startDatetime={booking.startDatetime} endDatetime={booking.endDatetime} location={booking.location} region={booking.region} floor={booking.floor} />
       </div>
     </>
   );

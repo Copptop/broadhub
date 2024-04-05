@@ -1,5 +1,6 @@
 import { InvertedSubmitButton, SubmitButton } from '@/components/Buttons';
 import { deleteBooking } from '@/lib/database/bookings';
+import { deleteUser } from '@/lib/database/users';
 import { Dialog, Transition } from '@headlessui/react';
 import { useRouter } from 'next/navigation';
 import { Fragment, ReactNode, useEffect, useRef, useState } from 'react';
@@ -20,6 +21,8 @@ export function ConfirmModal({ open, onClose, children, type, id }: ModalProps) 
   async function handleConfirm() {
     if (type === 'booking') {
       await deleteBooking(id || '');
+    } else if (type === 'user') {
+      await deleteUser(id || '');
     }
     setLocalOpen(false);
     onClose();

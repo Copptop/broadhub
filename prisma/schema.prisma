@@ -28,6 +28,8 @@ model User {
   companyID     String?
   role          UserRole   @default(USER)
   Company       Company?   @relation(fields: [companyID], references: [id])
+  basedInID     String?
+  basedIn       Location?  @relation(fields: [basedInID], references: [id])
   accounts      Account[]
   Booking       Booking[]
   Favorite      Favorite[]
@@ -96,6 +98,7 @@ model Location {
   region    Region
   company   Company    @relation(fields: [companyID], references: [id])
   Resource  Resource[]
+  User      User[]
 
   @@unique([companyID, name])
 }

@@ -51,12 +51,31 @@ export const getUsersBookings = async () => {
   }
 }
 
+export const getUsersBookingHistory = async () => {
+  const user = await currentUser()
+  if (!user) return null
+  try {
+    const upcomingBookings = await prismaInstance.$queryRaw`
+      SELECT "Booking"."id" as "id", "Resource"."name" as "resource", "Resource"."type" as "resourceType","Booking"."start" as "startDatetime","Booking"."end" as "endDatetime", "Location"."name" as "location","Location"."region" as "region",  "Resource"."floor" as "floor"
+      FROM "Booking" 
+      join "Resource" on "Booking"."resourceID" = "Resource"."id"
+      join "Location" on "Resource"."locationID" = "Location"."id"
+      WHERE "userID" = ${user.id}
+      AND "start" >= NOW() - interval '1 month' 
+      ORDER BY "start" ASC
+    `
+    return JSON.parse(JSON.stringify(upcomingBookings))
+  } catch (error) {
+    return null
+  }
+}
+
 export const getSpecificBooking = async (id: string) => {
   const user = await currentUser()
   if (!user) return null
   try {
     const booking = await prismaInstance.$queryRaw`
-      SELECT "Booking"."id" as "id", "User"."name" as "user", "Resource"."name" as "resource", "Resource"."type" as "resourceType","Booking"."start" as "startDatetime","Booking"."end" as "endDatetime", "Location"."name" as "location", "Resource"."floor" as "floor"
+      SELECT "Booking"."id" as "id", "User"."name" as "user", "Resource"."name" as "resource", "Resource"."type" as "resourceType","Booking"."start" as "startDatetime","Booking"."end" as "endDatetime", "Location"."name" as "location","Location"."region" as "region",  "Resource"."floor" as "floor"
       FROM "Booking" 
       join "Resource" on "Booking"."resourceID" = "Resource"."id"
       join "Location" on "Resource"."locationID" = "Location"."id"
