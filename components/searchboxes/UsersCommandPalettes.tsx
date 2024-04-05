@@ -9,6 +9,8 @@ import {
 import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
 
+import Image from 'next/image';
+
 interface User {
   id: number;
   name: string;
@@ -119,7 +121,7 @@ export function UsersSearchPalette<T>({
                                   </>
                                 ) : (
                                   <>
-                                    <img src={user.profilePicture} alt="" className="size-8 rounded-full" />
+                                    <Image src={user.profilePicture} width={100} height={100} alt="" className="size-8 rounded-full" />
                                   </>
                                 )}
                                 <div className="ml-3 flex-auto truncate">{user.name}</div>

@@ -1,6 +1,7 @@
 import NextAuth from "next-auth"
 import authConfig from "authConfig"
-import { APIAuthPrefix, AuthRoutes, DefaultRedirectRoute, PublicRoutes } from "@/routes"
+import { APIAuthPrefix, AuthRoutes, DefaultRedirectRoute, PublicRoutes, ManagerPlusRoutesPrefix } from "@/routes"
+import { currentRole } from "./lib/hooks/server/use-current-user";
 
 const { auth } = NextAuth(authConfig);
 
@@ -8,6 +9,7 @@ export default auth((req) => {
   const { nextUrl } = req
   const activeSession = !!req.auth
 
+  const isManagerPlusRoute = nextUrl.pathname.startsWith(ManagerPlusRoutesPrefix)
   const isAPIAuthRoute = nextUrl.pathname.startsWith(APIAuthPrefix)
   const isPublicRoute = PublicRoutes.includes(nextUrl.pathname)
   const isAuthRoute = AuthRoutes.includes(nextUrl.pathname)

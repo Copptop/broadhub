@@ -2,6 +2,8 @@ import { UserCircleIcon } from '@heroicons/react/24/outline';
 
 import UserSection from './usersSection';
 import { getUsers } from '@/lib/database/users';
+import { currentRole } from '@/lib/hooks/server/use-current-user';
+import { redirect } from 'next/navigation';
 
 interface userProps {
   id: string,
@@ -14,7 +16,12 @@ interface userProps {
   isOauth: boolean,
 }
 
-export default async function BookingsPage() {
+export default async function Page() {
+  const role = await currentRole()
+  if (role !== 'HR' && role !== 'ADMIN' && role !== 'MANAGER') {
+
+    redirect('/')
+  }
   const _users = await getUsers()
   if (!_users) return <>ERROR</>
 

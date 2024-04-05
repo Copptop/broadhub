@@ -1,5 +1,6 @@
 'use client';
 
+// TODO: MAKE IT PROTECTED ROUTE
 import { SubmitButton } from '@/components/Buttons';
 import { Table } from '@/components/Tables';
 import { AdminBookingSearchPalette } from '@/components/searchboxes/BookingsCommandPalettes';

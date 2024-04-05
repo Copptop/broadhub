@@ -1,7 +1,9 @@
 import Breadcrumb from "@/components/navigation/breadcrumbs";
 import { getSpecificUser } from "@/lib/database/users";
-import UserDetails from "./userDetails";
+import UserDetails from "../../../profile/profileDetails";
 import { getAllLocations } from "@/lib/database/locations";
+import { currentRole } from "@/lib/hooks/server/use-current-user";
+import { redirect } from "next/navigation";
 
 interface UserProps {
   id: number;
@@ -15,6 +17,12 @@ interface UserProps {
 }
 
 export default async function Page({ params }: { params: { id: string } }) {
+  const role = await currentRole()
+  if (role !== 'HR' && role !== 'ADMIN' && role !== 'MANAGER') {
+
+    redirect('/')
+  }
+
   const locations = await getAllLocations()
   const locationNames = locations.map((location: any) => location.name)
   const _user = await getSpecificUser(params.id)

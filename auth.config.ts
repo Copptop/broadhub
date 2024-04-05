@@ -6,10 +6,6 @@ import type { NextAuthConfig } from "next-auth"
 import { getUser_Email } from "./lib/database/users"
 
 import bcrypt from "bcryptjs"
-interface SignInValues {
-  email: string
-  password: string
-}
 
 export default {
   providers: [

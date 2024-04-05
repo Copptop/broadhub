@@ -7,6 +7,7 @@ import Link from "next/link";
 import React, { ReactNode } from "react";
 import { ConfirmModal } from "./popups/Modals";
 import { HappyNotification } from "./popups/Notfication";
+import Image from "next/image";
 interface table {
   headers: Array<any>;
   data: Array<any>;
@@ -39,9 +40,6 @@ export function Table(dataFeed: table) {
                       {header.sortable !== false ? (
                         <div className="group inline-flex">
                           {header.name}
-                          <span className="invisible ml-2 flex-none rounded group-hover:visible group-focus:visible">
-                            <ChevronDownIcon className="size-5" aria-hidden="true" />
-                          </span>
                         </div>
                       ) : (
                         <span>{header.name}</span>
@@ -69,7 +67,7 @@ export function Table(dataFeed: table) {
                                 </>
                               ) : (
                                 <>
-                                  <img src={(value as ReactNode)?.toString()} alt="" className="size-8 rounded-full" />
+                                  <Image src={(value as ReactNode)?.toString() || ''} width={100} height={100} alt="" className="size-14 rounded-full" />
                                 </>
                               )}
                             </>

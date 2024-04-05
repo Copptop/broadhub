@@ -1,5 +1,7 @@
 import { DateRangePickerComp, SelectInput } from '@/components/InputFields';
 import { AreaChartComp, DonutChartComp } from '@/components/graphing/Graph';
+import { currentRole } from '@/lib/hooks/server/use-current-user';
+import { redirect } from 'next/navigation';
 
 const stats = [
   { name: 'Total Bookings', stat: '135' },
@@ -7,7 +9,12 @@ const stats = [
   { name: 'Total Avalibility', stat: '44.57%' },
 ]
 
-export default function Page() {
+export default async function Page() {
+  const role = await currentRole()
+  if (role !== 'HR' && role !== 'ADMIN') {
+
+    redirect('/')
+  }
   return (
     <>
       <div className="px-6 py-4 overflow-auto">
