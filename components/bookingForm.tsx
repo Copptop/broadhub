@@ -1,10 +1,16 @@
 'use client'
 
+const ics = require('ics')
+
 import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
 import React, { useState } from 'react'
 import { InvertedSubmitButton } from '@/components/Buttons';
 import { ConfirmModal } from '@/components/popups/Modals';
 import { format } from 'date-fns';
+import { createEvent } from 'ics';
+import { saveAs } from 'file-saver';
+import { useCurrentUser } from '@/lib/hooks/use-current-user';
+import Link from 'next/link';
 
 interface BookingProps {
   id: string;
@@ -14,11 +20,44 @@ interface BookingProps {
   startDatetime: Date;
   endDatetime: Date;
   location: string;
+  region: string;
   floor: string;
 }
-
 export default function BookingForm(data: BookingProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const user = useCurrentUser()
+
+  const handleSave = (data: BookingProps) => {
+    const duration = ((data.endDatetime.getTime() - data.startDatetime.getTime()) / 1000 / 60 / 60).toString()
+    const durationHours = parseInt(duration.split('.')[0])
+    const durationMinutes = parseInt(duration.split('.')[1]) * 6
+
+    const event = {
+      start: [data.startDatetime.getFullYear(), data.startDatetime.getMonth(), data.startDatetime.getDay(), data.startDatetime.getHours(), data.startDatetime.getMinutes()],
+      duration: { hours: durationHours, minutes: durationMinutes },
+      title: 'Resource Booking',
+      description: `This is you booking for ${data.resource}`,
+      location: `Floor ${data.floor} at ${data.location}`,
+      url: `https://broadhub.vercel.app/bookings/${data.id}`,
+      geo: {},
+      categories: [],
+      status: 'CONFIRMED',
+      busyStatus: 'BUSY',
+      organizer: { name: 'Admin', email: 'Race@BolderBOULDER.com' },
+      attendees: [
+        { name: user!.name, email: user!.email || '', rsvp: true, partstat: 'ACCEPTED', role: 'REQ-PARTICIPANT' },
+      ]
+    }
+
+    ics.createEvent(event, (error: any, value: any) => {
+      if (error) {
+        return
+      }
+      const blob = new Blob([value], { type: "text/plain;charset=utf-8" });
+      saveAs(blob, "event-schedule.ics")
+    })
+  }
+
   return (
     <>
       <div className="px-6 py-4 ">
@@ -47,11 +86,17 @@ export default function BookingForm(data: BookingProps) {
             <div className="px-4 py-6 flex flex-row sm:px-0">
               <span className="text-sm font-medium leading-6 text-zinc-700 dark:text-zinc-300 w-32 flex-none">Date & Time</span>
               <span className="text-sm leading-6 text-zinc-500 dark:text-zinc-500 w-32 grow ">{format(data.startDatetime, 'hh:mm dd/MM/yyyy')} --&gt; {format(data.endDatetime, 'hh:mm dd/MM/yyyy')}</span>
-              <span className="pr-4 text-sm text-right leading-6 text-blue-700 hover:text-compDarkBlue dark:hover:text-compLightBlue w-60 flex-none">Import to Calendar</span>
+              <button className="pr-4 text-sm text-right leading-6 text-blue-700 hover:text-compDarkBlue dark:hover:text-compLightBlue w-60 flex-none" onClick={() => { handleSave(data) }}>Import to Calendar</button>
             </div>
-            <div className="flex flex-auto py-4 space-x-5">
-              <InvertedSubmitButton onClick={() => setIsModalOpen(true)}>Cancel Booking</InvertedSubmitButton>
-            </div>
+            {data.startDatetime <= new Date() ? (
+              <Link className="flex flex-auto py-4 space-x-5" href={`/map/${data.region}/${data.location}/floor${data.floor}`}>
+                <InvertedSubmitButton>Rebook</InvertedSubmitButton>
+              </Link>
+            ) : (
+              <div className="flex flex-auto py-4 space-x-5">
+                <InvertedSubmitButton onClick={() => setIsModalOpen(true)}>Cancel Booking</InvertedSubmitButton>
+              </div>
+            )}
           </div>
         </div>
       </div>

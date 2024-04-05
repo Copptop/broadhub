@@ -5,7 +5,7 @@ import { Dialog, Transition } from '@headlessui/react';
 import { ComputerDesktopIcon, HeartIcon, XMarkIcon } from '@heroicons/react/24/solid';
 import React, { Fragment, useEffect, useRef, useState } from 'react';
 
-import BookingNotification from '@/components/popups/Notfication';
+import { BookingNotification } from '@/components/popups/Notfication';
 import { createBooking } from '@/lib/database/bookings';
 import { addFavorite, removeFavorite } from '@/lib/database/resources';
 import { useRouter } from 'next/navigation';

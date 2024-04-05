@@ -105,7 +105,7 @@ export function SearchPalette() {
                               >
                                 {({ active }) => (
                                   <>
-                                    <Image src={person.imageUrl} alt="" className="h-6 w-6 flex-none rounded-full" />
+                                    <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur" src={person.imageUrl} alt="" className="h-6 w-6 flex-none rounded-full" />
                                     <span className="ml-3 flex-auto truncate">{person.name}</span>
                                     {active && (
                                       <ChevronRightIcon
@@ -122,7 +122,7 @@ export function SearchPalette() {
                         {activeOption && (
                           <div className="hidden h-96 w-1/2 flex-none flex-col divide-y divide-gray-100 overflow-y-auto sm:flex">
                             <div className="flex-none p-6 text-center">
-                              <Image src={activeOption.imageUrl} alt="" className="mx-auto h-16 w-16 rounded-full" />
+                              <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur" src={activeOption.imageUrl} alt="" className="mx-auto h-16 w-16 rounded-full" />
                               <h2 className="mt-3 font-semibold text-gray-900">{activeOption.name}</h2>
                               <p className="text-sm leading-6 text-gray-500">{activeOption.role}</p>
                             </div>

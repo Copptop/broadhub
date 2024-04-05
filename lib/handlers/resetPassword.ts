@@ -16,4 +16,3 @@ export const ResetPasswordHandler = async (email: string) => {
 
   return { success: "Reset Password Email Sent" }
 }
-

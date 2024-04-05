@@ -6,7 +6,10 @@ import {
   LifebuoyIcon,
   MagnifyingGlassIcon
 } from '@heroicons/react/20/solid';
+import { UserCircleIcon } from '@heroicons/react/24/outline';
 import { Fragment, useState } from 'react';
+
+import Image from 'next/image';
 
 interface User {
   id: number;
@@ -14,7 +17,7 @@ interface User {
   email: string;
   role: string;
   officeLocation: string;
-  profilePicture: JSX.Element;
+  profilePicture: string;
 }
 interface UsersSearchPaletteProps<T> {
   data: Array<any>;
@@ -99,28 +102,34 @@ export function UsersSearchPalette<T>({
                   >
                     {filteredUsers.length > 0 && (
                       <ul>
-                        <li>
-                          <li className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
-                            {filteredUsers.map((user) => (
-                              <Combobox.Option
-                                key={user.id}
-                                value={user}
-                                className={({ active }) =>
-                                  classNames(
-                                    'flex cursor-default select-none items-center px-4 py-2 ',
-                                    active && 'bg-blue-700 text-zinc-50'
-                                  )
-                                }
-                              >
-                                <>
-                                  {user.profilePicture}
-                                  <span className="ml-3 flex-auto truncate">{user.name}</span>
-                                  <span className="ml-1 flex-auto truncate">{user.role}</span>
-                                  <span className="ml-1 flex-auto truncate">{user.location}</span>
-                                </>
-                              </Combobox.Option>
-                            ))}
-                          </li>
+                        <li className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                          {filteredUsers.map((user) => (
+                            <Combobox.Option
+                              key={user.id}
+                              value={user}
+                              className={({ active }) =>
+                                classNames(
+                                  'flex cursor-default select-none items-center px-4 py-2 ',
+                                  active && 'bg-blue-700 text-zinc-50'
+                                )
+                              }
+                            >
+                              <>
+                                {user.profilePicture == '' ? (
+                                  <>
+                                    <UserCircleIcon className='size-8 rounded-full' />
+                                  </>
+                                ) : (
+                                  <>
+                                    <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur" src={user.profilePicture} width={100} height={100} alt="" className="size-8 rounded-full" />
+                                  </>
+                                )}
+                                <div className="ml-3 flex-auto truncate">{user.name}</div>
+                                <div className="ml-1 flex-auto truncate">{user.role}</div>
+                                <div className="ml-1 flex-auto truncate">{user.location}</div>
+                              </>
+                            </Combobox.Option>
+                          ))}
                         </li>
                       </ul>
                     )}

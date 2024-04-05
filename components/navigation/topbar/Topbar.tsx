@@ -21,6 +21,7 @@ interface TopBarProps {
 const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
 
   const user = useCurrentUser();
+  const profileImage = user?.image || 'https://images.freeimages.com/image/previews/374/instabutton-png-design-5690390.png'
 
   return (
     <div className="sticky top-0 z-40 flex h-16 shrink-0 items-center gap-x-4 border-b border-zinc-200 dark:border-none bg-white dark:bg-zinc-800 pl-4 shadow-sm dark:shadow-md sm:gap-x-6 sm:pl-6 lg:pl-8 pr-6">
@@ -34,18 +35,18 @@ const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
       </button>
 
       <div className="text-1xl font-bold text-center">
-        **** EMAIL FUNCTION CURRENTLY NOT WORKING ON DEPLOYED VERSION - See report for proof of function ***
+        **** ANY EMAIL BASED FUNCTION CURRENTLY NOT WORKING ON DEPLOYED VERSION - See report for proof of function ***
       </div>
 
       <div className="flex-1 flex justify-end pl-4 sm:pl-6 lg:pl-8">
         <Dropdown userNavigation={userNavigation} className='relative'>
           <span className="sr-only">Open user menu</span>
-          <Image
-            className="h-8 w-8 rounded-full bg-zinc-50"
-            src="C:\REPOS\broadhub\components\branding\logo.svg"
+          <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur"
+            className="size-8 rounded-full bg-zinc-50"
+            src={profileImage}
             alt=""
-            width={32}
-            height={32}
+            width={100}
+            height={100}
 
           />
           <span className="hidden lg:flex lg:items-center">

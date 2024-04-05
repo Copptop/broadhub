@@ -2,10 +2,11 @@
 
 import { F0, F3, F_1 } from '@/app/(map)/(EMEA)/(marshwall)/floorplans';
 import WorldMap from '@/app/(map)/worldmap';
-import { ArrowRightIcon, ClockIcon } from "@heroicons/react/24/solid";
-import { DatePicker, DatePickerValue, Select, SelectItem } from '@tremor/react';
-import { addMinutes, addMonths, isAfter, isBefore, isWithinInterval } from "date-fns";
-import { useEffect, useState } from "react";
+
+import { ArrowRightIcon, ClockIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
+import { Button, DatePicker, DatePickerValue, Select, SelectItem } from '@tremor/react';
+import { addHours, addMinutes, addMonths, isAfter, isBefore, isWithinInterval } from "date-fns";
+import { useEffect, useState, useTransition } from "react";
 import { SubmitButton } from "@/components/Buttons";
 
 const times = [
@@ -30,14 +31,36 @@ interface favsProps {
   location: string
 }
 
+function formattedDateTime(date: Date, time: string) {
+  const [hours, minutes] = time.split(':').map(Number);
+  const newDateTime = new Date(date!.toISOString());
+  newDateTime.setHours(hours, minutes, 0, 0);
+  const formattedDateTime = newDateTime.toISOString();
+  return formattedDateTime;
+}
+
 interface restictedProps {
   name: string
 }
 
 export default function MapSection({ data, favs, params, restrictedResources }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, restrictedResources: Array<restictedProps> }) {
+  const currentTime = new Date().toTimeString()
+  let [hours, minutes] = currentTime.split(':').map(Number);
+  if (minutes < 30) minutes = 30;
+  else { hours += 1; minutes = 0; }
+
+  const initStartTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+
+  hours = hours + 1;
+  const initEndTime = () => {
+    const newTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+    if (newTime > "18:00") return newTime;
+    return "18:00";
+  }
   const [selectedDate, setSelectedDate] = useState<DatePickerValue>(new Date());
-  const [selectorValue1, setSelectorValue1] = useState("08:00");
-  const [selectorValue2, setSelectorValue2] = useState("18:00");
+  const [selectorValue1, setSelectorValue1] = useState(initStartTime);
+  const [selectorValue2, setSelectorValue2] = useState(initEndTime);
+  const [isPending, startTransition] = useTransition()
   const [mapToRender, setMapToRender] = useState<JSX.Element | null>(null);
 
   const [_data, setData] = useState(data.filter((item) => {
@@ -72,13 +95,6 @@ export default function MapSection({ data, favs, params, restrictedResources }: 
     setMapToRender(newMapToRender);
   }, [params.floor, _data, _favs, params, selectedDate, selectorValue1, selectorValue2, restrictedResources]);
 
-  function formattedDateTime(date: Date, time: string) {
-    const [hours, minutes] = time.split(':').map(Number);
-    const newDateTime = new Date(date!.toISOString());
-    newDateTime.setHours(hours, minutes, 0, 0);
-    const formattedDateTime = newDateTime.toISOString();
-    return formattedDateTime;
-  }
 
   function onclick() {
     if (!selectedDate) {
@@ -100,22 +116,25 @@ export default function MapSection({ data, favs, params, restrictedResources }: 
       return;
     }
 
-    setData(data.filter((item) => {
-      const startDateTime = item.startDateTime;
-      const endDateTime = item.endDateTime;
-      const selectedStartTime = new Date(dateTime1);
-      const selectedEndTime = new Date(dateTime2);
 
-      return (
-        // start if before range but end is in range 
-        (!isWithinInterval(startDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) }) && isWithinInterval(endDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) })!!!) ||
-        // end if after range but start is in range 
-        (isWithinInterval(startDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) }) && !isWithinInterval(endDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) })!!!) ||
-        // start and end both in range
-        (isWithinInterval(startDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) }) && isWithinInterval(endDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) })!!!) ||
-        // start and end both out of range but covers the range
-        (isBefore(startDateTime, selectedStartTime) && isAfter(endDateTime, addMinutes(selectedEndTime, -1)))!!!)
-    }));
+    startTransition(() => {
+      setData(data.filter((item) => {
+        const startDateTime = item.startDateTime;
+        const endDateTime = item.endDateTime;
+        const selectedStartTime = new Date(dateTime1);
+        const selectedEndTime = new Date(dateTime2);
+
+        return (
+          // start if before range but end is in range 
+          (!isWithinInterval(startDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) }) && isWithinInterval(endDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) })!!!) ||
+          // end if after range but start is in range 
+          (isWithinInterval(startDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) }) && !isWithinInterval(endDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) })!!!) ||
+          // start and end both in range
+          (isWithinInterval(startDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) }) && isWithinInterval(endDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) })!!!) ||
+          // start and end both out of range but covers the range
+          (isBefore(startDateTime, selectedStartTime) && isAfter(endDateTime, addMinutes(selectedEndTime, -1)))!!!)
+      }))
+    })
   }
 
   return (
@@ -145,7 +164,7 @@ export default function MapSection({ data, favs, params, restrictedResources }: 
             </Select>
           </div>
           <div className="px-3 w-1/6 " >
-            <SubmitButton onClick={() => onclick()}>Update</SubmitButton>
+            <Button loading={isPending} variant="primary" icon={MagnifyingGlassIcon} onClick={() => onclick()}> Search </Button>
           </div>
         </div>
       </nav>

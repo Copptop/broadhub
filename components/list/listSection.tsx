@@ -4,12 +4,13 @@ import { createBooking } from "@/lib/database/bookings";
 import { addFavorite, removeFavorite } from "@/lib/database/resources";
 import { Transition } from "@headlessui/react";
 import { ArrowRightIcon, ClockIcon, ComputerDesktopIcon, HeartIcon, XMarkIcon } from "@heroicons/react/24/solid";
-import { DatePicker, DatePickerValue, Dialog, Select, SelectItem } from '@tremor/react';
+import { Button, DatePicker, DatePickerValue, Dialog, Select, SelectItem } from '@tremor/react';
 import { addMinutes, addMonths, isAfter, isBefore, isWithinInterval } from "date-fns";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useState } from "react";
+import { Fragment, useEffect, useState, useTransition } from "react";
 import { InvertedSubmitButton, SubmitButton } from "../Buttons";
-import BookingNotification from "../popups/Notfication";
+import { BookingNotification } from "../popups/Notfication";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
 const headers = ['Resources', 'Type', 'Status', 'Actions']
 const times = [
@@ -67,9 +68,24 @@ function formattedDateTime(date: Date, time: string) {
 }
 
 export default function ListSection({ resources, bookings, favs, params }: { resources: Array<any>, bookings: Array<any> | null, favs: Array<favsProps>, params: { floor: string, location: string, region: string } }) {
+  const currentTime = new Date().toTimeString()
+  let [hours, minutes] = currentTime.split(':').map(Number);
+  if (minutes < 30) minutes = 30;
+  else { hours += 1; minutes = 0; }
+
+  const initStartTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+
+  hours = hours + 1;
+  const initEndTime = () => {
+    const newTime = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`
+    if (newTime > "18:00") return newTime;
+    return "18:00";
+  }
+
   const [selectedDate, setSelectedDate] = useState<DatePickerValue>(new Date());
-  const [selectorValue1, setSelectorValue1] = useState("08:00");
-  const [selectorValue2, setSelectorValue2] = useState("18:00");
+  const [selectorValue1, setSelectorValue1] = useState(initStartTime);
+  const [selectorValue2, setSelectorValue2] = useState(initEndTime);
+  const [isPending, startTransition] = useTransition()
   const router = useRouter();
 
   const [open, setOpen] = useState(false)
@@ -130,38 +146,38 @@ export default function ListSection({ resources, bookings, favs, params }: { res
       return;
     }
 
-    setResources(resources.filter((resource) => {
-      const selectedStartTime = new Date(dateTime1);
-      const selectedEndTime = new Date(dateTime2);
+    startTransition(() => {
+      setResources(resources.filter((resource) => {
+        const selectedStartTime = new Date(dateTime1);
+        const selectedEndTime = new Date(dateTime2);
 
-      if (bookings === null) return true;
+        if (bookings === null) return true;
 
-      for (const booking of bookings) {
-        const startDateTime = booking.start;
-        const endDateTime = booking.end;
+        for (const booking of bookings) {
+          const startDateTime = booking.start;
+          const endDateTime = booking.end;
 
-        const startWithinRange = isWithinInterval(startDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) });
-        const endWithinRange = isWithinInterval(endDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) });
-        const startsBeforeEndsIn = !startWithinRange && endWithinRange;
-        const endsAfterStartsIn = startWithinRange && !endWithinRange;
-        const bothInRange = startWithinRange && endWithinRange;
-        const coversRange = isBefore(startDateTime, selectedStartTime) && isAfter(endDateTime, addMinutes(selectedEndTime, -1));
+          const startWithinRange = isWithinInterval(startDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) });
+          const endWithinRange = isWithinInterval(endDateTime, { start: selectedStartTime, end: addMinutes(selectedEndTime, -1) });
+          const startsBeforeEndsIn = !startWithinRange && endWithinRange;
+          const endsAfterStartsIn = startWithinRange && !endWithinRange;
+          const bothInRange = startWithinRange && endWithinRange;
+          const coversRange = isBefore(startDateTime, selectedStartTime) && isAfter(endDateTime, addMinutes(selectedEndTime, -1));
 
-        if (
-          startsBeforeEndsIn ||
-          endsAfterStartsIn ||
-          bothInRange ||
-          coversRange
-        ) {
-          if (booking.resourceID === resource.id) {
-            console.log("flagged" + resource.name);
-            return false; // If the resource is booked during this time, filter it out
+          if (
+            startsBeforeEndsIn ||
+            endsAfterStartsIn ||
+            bothInRange ||
+            coversRange
+          ) {
+            if (booking.resourceID === resource.id) {
+              return false;
+            }
           }
         }
-      }
-
-      return true; // Resource is available during this time
-    }));
+        return true;
+      }))
+    });
   }
 
   const loadClickedData = (id: string, dataArray: Array<resourceProps>) => {
@@ -195,12 +211,9 @@ export default function ListSection({ resources, bookings, favs, params }: { res
   }
 
   async function setFav(id: string, location: string) {
-    console.log(clickedData?.isFavorite)
     if (clickedData?.isFavorite) {
-      console.log("removing")
       await removeFavorite(id, location)
     } else {
-      console.log("adding")
       await addFavorite(id, location)
     }
   }
@@ -246,7 +259,7 @@ export default function ListSection({ resources, bookings, favs, params }: { res
             </Select>
           </div>
           <div className="px-3 w-1/6 " >
-            <SubmitButton onClick={() => onclick()}>Update</SubmitButton>
+            <Button loading={isPending} variant="primary" icon={MagnifyingGlassIcon} onClick={() => onclick()}> Search </Button>
           </div>
         </div>
       </nav>

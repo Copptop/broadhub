@@ -18,6 +18,30 @@ export const AuthRoutes = [
 ];
 
 /**
+ * Array of routes only admins can access
+ * @type {string[]}
+ */
+export const AdminRoutes = [
+]
+
+/**
+ * Array of routes only HR and above can access
+ * @type {string[]}
+ */
+
+export const HRPlusRoutes = [
+  '/analytics',
+]
+
+/**
+ * Array of routes only Managers and above can access
+ * @type {string[]}
+ */
+
+export const ManagerPlusRoutesPrefix = '/management'
+
+
+/**
  * Prefix for API Authentication Routes
  * @type {string}
  */

@@ -28,13 +28,13 @@ export const getResources = async (location: string, floor: number) => {
     if (!resources) return null;
 
     const filteredResources = resources.filter(resource => {
-      if (resource.restrictedRoles !== null) {
+      if (resource.restrictedRoles.length !== 0) {
         if (resource.restrictedRoles.includes(user.role)) {
-          return false;
+          return true;
         }
-        return true;
+        return false;
       }
-      return false;
+      return true;
     })
 
     let importantBookings = []
