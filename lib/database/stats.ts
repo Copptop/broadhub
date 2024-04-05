@@ -10,40 +10,59 @@ const stats = [
   { name: 'Total Avalibility', stat: '44.57%' },
 ]
 
-export const getStatistics = async () => {
+export const getStatistics = async (id: string) => {
   const firstdayCurrentMonth = parse(format(startOfToday(), 'MMM yyyy'), 'MMM yyyy', new Date());
   const firstDayPreviousMonth = addMonths(firstdayCurrentMonth, -1)
 
-  const numberOfBookings = await prismaInstance.booking.count()
-
-  let numberOfBookingsInLastMonth = await prismaInstance.booking.count({
-    where: {
-      start: {
-        gte: firstDayPreviousMonth,
-        lt: firstdayCurrentMonth
+  const user = await prismaInstance.user.findFirst({
+    include: {
+      Company: {
+        select: {
+          id: true
+        }
       }
+    },
+    where: {
+      id
     }
   })
-  if (numberOfBookingsInLastMonth === 0) {
-    numberOfBookingsInLastMonth = 1
-  }
 
-  const numberOfBookingsInCurrentMonth = await prismaInstance.booking.count({
-    where: {
-      start: {
-        gte: firstdayCurrentMonth
-      }
-    }
-  })
+  const numberOfBookings = (await prismaInstance.$queryRaw`
+  select "Booking"."id"
+  from "Booking"
+  join "Resource" on "Booking"."resourceID" = "Resource"."id"
+  join "Location" on "Resource"."locationID" = "Location"."id"
+  where "Location"."companyID" = ${user?.Company?.id}` as any[]).length || 0
+
+  const numberOfBookingsInLastMonth = (await prismaInstance.$queryRaw`
+  select "Booking"."id"
+  from "Booking"
+  join "Resource" on "Booking"."resourceID" = "Resource"."id"
+  join "Location" on "Resource"."locationID" = "Location"."id"
+  where "Location"."companyID" = ${user?.Company?.id}
+  and "Booking"."start" >= ${firstDayPreviousMonth}
+  and "Booking"."start" < ${firstdayCurrentMonth}` as any[]).length || 1
+
+  const numberOfBookingsInCurrentMonth = (await prismaInstance.$queryRaw`
+  select "Booking"."id"
+  from "Booking"
+  join "Resource" on "Booking"."resourceID" = "Resource"."id"
+  join "Location" on "Resource"."locationID" = "Location"."id"
+  where "Location"."companyID" = ${user?.Company?.id}
+  and "Booking"."start" >= ${firstdayCurrentMonth}` as any[]).length || 1
 
   const bookingsComparedToLastMonth = ((numberOfBookingsInCurrentMonth - numberOfBookingsInLastMonth) / numberOfBookingsInLastMonth) * 100
 
-  const totalAvailability = await prismaInstance.booking.count()
+  const numberOfUsersLocally = (await prismaInstance.$queryRaw`
+  select "User"."id"
+  from "User"
+  join "Location" on "User"."basedInID" = "Location"."id"
+  where "Location"."id" = ${user?.basedInID}` as any[]).length || 0
 
   return {
     numberOfBookings,
     bookingsComparedToLastMonth,
-    totalAvailability
+    numberOfUsersLocally
   }
 }
 
