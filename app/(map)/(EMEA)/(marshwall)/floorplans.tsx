@@ -42,6 +42,10 @@ interface bookingData {
   endDateTime: string;
 }
 
+interface restictedProps {
+  name: string
+}
+
 function clearStates() {
   const elements = document.querySelectorAll('.booked, .partiallybooked, .favourite');
   elements.forEach((element) => {
@@ -49,11 +53,11 @@ function clearStates() {
   });
 }
 
-function addStateToElement(id: string, state: 'booked' | 'partiallybooked' | 'favourite'): void {
+function addStateToElement(id: string, state: 'booked' | 'partiallybooked' | 'favourite' | 'restricted'): void {
   const element = document.getElementById(id);
   if (!element) return;
   const classList = element.classList;
-  classList.remove('booked', 'partiallybooked', 'favourite');
+  classList.remove('booked', 'partiallybooked', 'favourite', 'restricted');
   classList.add(state);
 
   if (state === 'booked') {
@@ -63,7 +67,7 @@ function addStateToElement(id: string, state: 'booked' | 'partiallybooked' | 'fa
   }
 }
 
-function addStatesToElements({ data, favs }: { data: Array<dataProps>, favs: Array<favsProps> }): void {
+function addStatesToElements({ data, favs, restrictedResources }: { data: Array<dataProps>, favs: Array<favsProps>, restrictedResources: Array<restictedProps> }): void {
 
   const times = [
     "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
@@ -89,13 +93,20 @@ function addStatesToElements({ data, favs }: { data: Array<dataProps>, favs: Arr
     });
   }
 
-  if (!favs) { return; }
-  favs.forEach((fav) => {
-    addStateToElement(fav.resource, 'favourite')
-  });
+  if (favs) {
+    favs.forEach((fav) => {
+      addStateToElement(fav.resource, 'favourite')
+    });
+  }
+
+  if (restrictedResources) {
+    restrictedResources.forEach((resource: restictedProps) => {
+      addStateToElement(resource.name, 'restricted')
+    })
+  }
 }
 
-export function F_1({ data, favs, params, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, date: Date, from: string, to: string }) {
+export function F_1({ data, favs, params, restrictedResources, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, restrictedResources: Array<restictedProps>, date: Date, from: string, to: string }) {
   const [open, setOpen] = useState(false);
   const [clickedData, setClickedData] = useState<clickedData>();
   const [showNotification, setShowNotification] = useState(false);
@@ -103,7 +114,7 @@ export function F_1({ data, favs, params, date, from, to }: { data: Array<dataPr
   const router = useRouter();
 
   useEffect(() => {
-    addStatesToElements({ data, favs })
+    addStatesToElements({ data, favs, restrictedResources })
     const svg = svgRef.current as any;
     if (!svg) return;
 
@@ -194,7 +205,7 @@ export function F_1({ data, favs, params, date, from, to }: { data: Array<dataPr
       svg.addEventListener('touchmove', onPointerMove);
     }
 
-  }, [data, favs]);
+  }, [data, favs, restrictedResources]);
 
   const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
@@ -1662,7 +1673,7 @@ export function F_1({ data, favs, params, date, from, to }: { data: Array<dataPr
   )
 }
 
-export function F0({ data, favs, params, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, date: Date, from: string, to: string }) {
+export function F0({ data, favs, params, restrictedResources, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, restrictedResources: Array<restictedProps>, date: Date, from: string, to: string }) {
   const [open, setOpen] = useState(false)
   const [clickedData, setClickedData] = useState<clickedData>()
   const [showNotification, setShowNotification] = useState(false)
@@ -1670,7 +1681,7 @@ export function F0({ data, favs, params, date, from, to }: { data: Array<dataPro
   const router = useRouter()
 
   useEffect(() => {
-    addStatesToElements({ data, favs })
+    addStatesToElements({ data, favs, restrictedResources })
     const svg = svgRef.current as any;
     if (!svg) return;
 
@@ -1761,7 +1772,7 @@ export function F0({ data, favs, params, date, from, to }: { data: Array<dataPro
       svg.addEventListener('touchmove', onPointerMove);
     }
 
-  }, [data, favs]);
+  }, [data, favs, restrictedResources]);
 
   const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
@@ -1875,15 +1886,15 @@ export function F0({ data, favs, params, date, from, to }: { data: Array<dataPro
           </g>
           <g transform="matrix(1,0,0,1,-18.0889,8)">
             <g id="Offices">
-              <g id="0.116" className="office booked" transform="matrix(0.110414,0,0,0.111269,454.168,483.168)" onClick={onClickSlideOverHandler} >
+              <g id="0.116" className="office" transform="matrix(0.110414,0,0,0.111269,454.168,483.168)" onClick={onClickSlideOverHandler} >
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   strokeWidth="36.09px" />
               </g>
-              <g id="0.119" className="office partiallybooked" transform="matrix(0.110414,0,0,0.111269,675.587,483.168)" onClick={onClickSlideOverHandler} >
+              <g id="0.119" className="office" transform="matrix(0.110414,0,0,0.111269,675.587,483.168)" onClick={onClickSlideOverHandler} >
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   strokeWidth="36.09px" />
               </g>
-              <g id="0.118" className="office personallybooked" transform="matrix(0.110414,0,0,0.111269,604.709,483.168)" onClick={onClickSlideOverHandler} >
+              <g id="0.118" className="office " transform="matrix(0.110414,0,0,0.111269,604.709,483.168)" onClick={onClickSlideOverHandler} >
                 <circle cx="288.305" cy="226.068" r="212.797" fill="#ebebeb" stroke="#565656"
                   strokeWidth="36.09px" />
               </g>
@@ -1901,17 +1912,17 @@ export function F0({ data, favs, params, date, from, to }: { data: Array<dataPro
               </g>
             </g>
             <g id="Meeting-Rooms">
-              <g id="0.101" className="meeting_room booked" transform="matrix(0.110978,0,0,0.109699,433.163,526.726)" onClick={onClickSlideOverHandler} >
+              <g id="0.101" className="meeting_room" transform="matrix(0.110978,0,0,0.109699,433.163,526.726)" onClick={onClickSlideOverHandler} >
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" strokeWidth="36.25px" />
               </g>
-              <g id="0.106" className="meeting_room partiallybooked" transform="matrix(0.110978,0,0,0.109699,563.27,842.912)" onClick={onClickSlideOverHandler} >
+              <g id="0.106" className="meeting_room " transform="matrix(0.110978,0,0,0.109699,563.27,842.912)" onClick={onClickSlideOverHandler} >
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" strokeWidth="36.25px" />
               </g>
-              <g id="0.105" className="meeting_room personallybooked" transform="matrix(0.110978,0,0,0.109699,752.12,851.473)" onClick={onClickSlideOverHandler} >
+              <g id="0.105" className="meeting_room " transform="matrix(0.110978,0,0,0.109699,752.12,851.473)" onClick={onClickSlideOverHandler} >
                 <path
                   d="M595.144,306.61L863.463,501.555L760.974,816.983L429.314,816.983L326.825,501.555L595.144,306.61Z"
                   fill="#ebebeb" stroke="#565656" strokeWidth="36.25px" />
@@ -1938,7 +1949,7 @@ export function F0({ data, favs, params, date, from, to }: { data: Array<dataPro
               </g>
             </g>
             <g>
-              <g id="0.071" className="desk booked" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)" onClick={onClickSlideOverHandler}>
+              <g id="0.071" className="desk" transform="matrix(0.0463762,0,0,0.0463762,241.854,117.9)" onClick={onClickSlideOverHandler}>
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1950,7 +1961,7 @@ export function F0({ data, favs, params, date, from, to }: { data: Array<dataPro
                     fill="#ebebeb" stroke="#565656" strokeWidth="21.56px" />
                 </g>
               </g>
-              <g id="0.076" className="desk partiallybooked" transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)" onClick={onClickSlideOverHandler}>
+              <g id="0.076" className="desk " transform="matrix(2.83972e-18,0.0463762,-0.0463762,2.83972e-18,331.551,119.816)" onClick={onClickSlideOverHandler}>
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -1962,7 +1973,7 @@ export function F0({ data, favs, params, date, from, to }: { data: Array<dataPro
                     fill="#ebebeb" stroke="#565656" strokeWidth="21.56px" />
                 </g>
               </g>
-              <g id="0.073" className="desk personallybooked" transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)" onClick={onClickSlideOverHandler}>
+              <g id="0.073" className="desk " transform="matrix(0.0463762,0,0,0.0463762,241.854,199.854)" onClick={onClickSlideOverHandler}>
                 <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                   <path
                     d="M677.64,844.414L-17.35,844.414C-29.489,844.414 -39.331,835.316 -39.331,824.093L-39.331,556.741C-39.331,545.518 -29.489,536.42 -17.35,536.42L366.468,536.42L366.468,181.589C366.468,170.366 376.309,161.268 388.448,161.268L677.64,161.268C689.779,161.268 699.62,170.366 699.62,181.589L699.62,824.093C699.62,835.316 689.779,844.414 677.64,844.414Z"
@@ -3057,7 +3068,7 @@ export function F0({ data, favs, params, date, from, to }: { data: Array<dataPro
   )
 }
 
-export function F3({ data, favs, params, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, date: Date, from: string, to: string }) {
+export function F3({ data, favs, params, restrictedResources, date, from, to }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, restrictedResources: Array<restictedProps>, date: Date, from: string, to: string }) {
   const [open, setOpen] = useState(false);
   const [clickedData, setClickedData] = useState<clickedData>();
   const [showNotification, setShowNotification] = useState(false);
@@ -3066,7 +3077,7 @@ export function F3({ data, favs, params, date, from, to }: { data: Array<dataPro
   const _params = params;
 
   useEffect(() => {
-    addStatesToElements({ data, favs })
+    addStatesToElements({ data, favs, restrictedResources })
     const svg = svgRef.current as any;
     if (!svg) return;
 
@@ -3157,7 +3168,7 @@ export function F3({ data, favs, params, date, from, to }: { data: Array<dataPro
       svg.addEventListener('touchmove', onPointerMove);
     }
 
-  }, [data, favs]);
+  }, [data, favs, restrictedResources]);
 
   const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
@@ -4291,7 +4302,7 @@ export function F3({ data, favs, params, date, from, to }: { data: Array<dataPro
                 d="M443.824,451.955C457.632,451.955 468.824,463.148 468.824,476.955C468.824,510.451 468.824,569.549 468.824,603.045C468.824,616.852 457.632,628.045 443.824,628.045L238.997,628.045C236.345,628.045 233.801,626.991 231.926,625.116C230.051,623.24 228.997,620.697 228.997,618.045C228.997,587.068 228.997,492.932 228.997,461.955C228.997,459.303 230.051,456.76 231.926,454.884C233.801,453.009 236.345,451.955 238.997,451.955C274.022,451.955 391.842,451.955 443.824,451.955ZM277.265,451.955L277.265,628.045"
                 fill="#ebebeb" stroke="#565656" strokeWidth="17.65px" />
             </g>
-            <g id="3.0811" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,453.958)">
+            <g id="3.081" className="desk" onClick={onClickSlideOverHandler} transform="matrix(-0.0611036,0,0,0.0518511,911.299,453.958)">
               <g transform="matrix(1.13736,0,0,1.23027,123.193,-78.6308)">
                 <path
                   d="M610.408,161.268C659.679,161.268 699.62,204.782 699.62,258.46C699.62,388.376 699.62,617.305 699.62,747.221C699.62,800.899 659.679,844.414 610.408,844.414C562.492,844.414 503.596,844.414 455.68,844.414C406.41,844.414 366.468,800.899 366.468,747.221C366.468,617.305 366.468,388.376 366.468,258.46C366.468,204.782 406.41,161.268 455.68,161.268C503.596,161.268 562.492,161.268 610.408,161.268Z"
