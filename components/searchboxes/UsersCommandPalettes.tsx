@@ -121,7 +121,7 @@ export function UsersSearchPalette<T>({
                                   </>
                                 ) : (
                                   <>
-                                    <Image src={user.profilePicture} width={100} height={100} alt="" className="size-8 rounded-full" />
+                                    <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur" src={user.profilePicture} width={100} height={100} alt="" className="size-8 rounded-full" />
                                   </>
                                 )}
                                 <div className="ml-3 flex-auto truncate">{user.name}</div>

@@ -1,13 +1,13 @@
 import { List_Table } from "@/components/Tables";
 import Breadcrumb from "@/components/navigation/breadcrumbs";
-import { getLocations } from "@/lib/database/locations";
+import { getLocations_Region } from "@/lib/database/locations";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
 const headers = ['Locations']
 
 export default async function Page({ params }: { params: { region: string } }) {
-  const locations = await getLocations(params.region as 'NA' | 'NENA' | 'APAC' | 'UK')
+  const locations = await getLocations_Region(params.region as 'NA' | 'NENA' | 'APAC' | 'UK')
 
   const locationsList = locations.map((location: any) => {
     return { name: location.name, href: `/list/${params.region}/${location.name}` }

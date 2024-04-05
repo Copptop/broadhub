@@ -66,7 +66,7 @@ export default function SignInForm() {
       </div>
 
       <InvertedSubmitButton onClick={() => onClick('okta')} >
-        Sign In with Microsoft <Image src={'/(authScreen)/microsoft.svg'} width={25} height={25} alt={''}></Image>
+        Sign In with Microsoft <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur" src={'/(authScreen)/microsoft.svg'} width={100} height={100} alt={''} className='size-8'></Image>
       </InvertedSubmitButton>
     </>
   );

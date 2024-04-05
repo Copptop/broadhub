@@ -4,10 +4,11 @@ import { useCurrentRole } from "@/lib/hooks/use-current-user";
 import { ExclamationCircleIcon, UserCircleIcon } from "@heroicons/react/24/outline";
 import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
-import React, { ReactNode } from "react";
+import React, { ReactNode, useRef } from "react";
 import { ConfirmModal } from "./popups/Modals";
 import { HappyNotification } from "./popups/Notfication";
 import Image from "next/image";
+import { format } from "date-fns";
 interface table {
   headers: Array<any>;
   data: Array<any>;
@@ -15,15 +16,18 @@ interface table {
 }
 
 export function Table(dataFeed: table) {
-  const [isModalOpen, setIsModalOpen] = React.useState(false);
+  const [isUserModalOpen, setIsUserModalOpen] = React.useState(false);
+  const [isBookingModalOpen, setIsBookingModalOpen] = React.useState(false);
   const [showNotification, setShowNotification] = React.useState(false);
+
+  const id = useRef('');
+
   const role = useCurrentRole();
   if (dataFeed.Actions && !dataFeed.headers.some(header => header.name === "Actions")) {
     dataFeed.headers.push({ name: "Actions", sortable: false });
   }
 
   const handlePasswordReset = (email: string) => {
-    console.log(email)
     ResetPasswordHandler(email)
     setShowNotification(true)
   }
@@ -67,13 +71,21 @@ export function Table(dataFeed: table) {
                                 </>
                               ) : (
                                 <>
-                                  <Image src={(value as ReactNode)?.toString() || ''} width={100} height={100} alt="" className="size-14 rounded-full" />
+                                  <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur" src={(value as ReactNode)?.toString() || 'https://images.freeimages.com/image/previews/374/instabutton-png-design-5690390.png'} width={100} height={100} alt="" className="size-14 rounded-full" />
                                 </>
                               )}
                             </>
                           ) : (
                             <>
-                              {value as ReactNode}
+                              {key === "startDateTime" || key === "endDateTime" ? (
+                                <>
+                                  {format(value as Date, 'dd-MM-yyyy @ hh:mm') as ReactNode}
+                                </>
+                              ) : (
+                                <>
+                                  {value as ReactNode}
+                                </>
+                              )}
                             </>
                           )}
                         </td>
@@ -112,7 +124,7 @@ export function Table(dataFeed: table) {
                                 )}
                               </React.Fragment>
                             )}
-                            {(action.name === 'Amend Info' && (role == 'ADMIN' || role == 'HR' || role == 'MANAGER')) && (
+                            {(action.name === 'Amend' && (role == 'ADMIN' || role == 'HR' || role == 'MANAGER')) && (
                               <>
                                 {role == 'MANAGER' ? (
                                   <>
@@ -120,7 +132,7 @@ export function Table(dataFeed: table) {
                                       {action.navigateTo && dp.href ? (
                                         <Link href={dp.href}>
                                           <div className="px-4 py-1 text-sm font-medium text-blue-700 dark:text-blue-500 hover:text-compDarkBlue dark:hover:text-compLightBlue whitespace-nowrap">
-                                            View Info
+                                            View
                                           </div>
                                         </Link>
                                       ) : (
@@ -160,7 +172,16 @@ export function Table(dataFeed: table) {
                             )}
                             {(action.name === 'Delete' && role == 'ADMIN') && (
                               <React.Fragment >
-                                <button onClick={() => setIsModalOpen(true)}>
+                                <button onClick={() => { id.current = dp.id; setIsUserModalOpen(true) }}>
+                                  <div className="px-4 py-1 text-sm font-medium text-blue-700 dark:text-blue-500 hover:text-compDarkBlue dark:hover:text-compLightBlue whitespace-nowrap">
+                                    {action.name}
+                                  </div>
+                                </button>
+                              </React.Fragment>
+                            )}
+                            {(action.name === 'Cancel' && role == 'ADMIN') && (
+                              <React.Fragment >
+                                <button onClick={() => { id.current = dp.id; setIsBookingModalOpen(true) }}>
                                   <div className="px-4 py-1 text-sm font-medium text-blue-700 dark:text-blue-500 hover:text-compDarkBlue dark:hover:text-compLightBlue whitespace-nowrap">
                                     {action.name}
                                   </div>
@@ -178,8 +199,8 @@ export function Table(dataFeed: table) {
           </div>
         </div>
       </div >
-      {isModalOpen && (
-        <ConfirmModal open={isModalOpen} onClose={() => setIsModalOpen(false)} type='user'>
+      {isUserModalOpen && (
+        <ConfirmModal open={isUserModalOpen} onClose={() => setIsUserModalOpen(false)} type='user management' id={id.current}>
           <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-darkBgTertiary">
             <ExclamationCircleIcon className="h-12 w-12 text-red-600" aria-hidden="true" />
           </div>
@@ -195,14 +216,30 @@ export function Table(dataFeed: table) {
           </div>
         </ConfirmModal>
       )}
-      {showNotification &&
-        (
-          <>
-            <HappyNotification show={showNotification} onClose={() => setShowNotification(false)} >
-              Action was performed successfully
-            </HappyNotification>
-          </>
-        )}
+      {isBookingModalOpen && (
+        <ConfirmModal open={isBookingModalOpen} onClose={() => setIsBookingModalOpen(false)} type='booking management' id={id.current}>
+          <div className="mx-auto flex h-12 w-12 items-center justify-center rounded-full bg-red-100 dark:bg-darkBgTertiary">
+            <ExclamationCircleIcon className="h-12 w-12 text-red-600" aria-hidden="true" />
+          </div>
+          <div className="mt-3 text-center sm:mt-5">
+            <h3 className="text-base font-semibold leading-6 text-zinc-700 dark:text-zinc-300">
+              Delete Booking
+            </h3>
+            <div className="mt-2">
+              <p className="text-sm text-zinc-400">
+                Are you sure you want to delete this booking? This action cannot be undone.
+              </p>
+            </div>
+          </div>
+        </ConfirmModal>
+      )}
+      {showNotification && (
+        <>
+          <HappyNotification show={showNotification} onClose={() => setShowNotification(false)} >
+            Action was performed successfully
+          </HappyNotification>
+        </>
+      )}
     </>
   );
 };

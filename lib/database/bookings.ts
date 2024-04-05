@@ -147,6 +147,21 @@ export const deleteBooking = async (id: string) => {
   }
 }
 
+export const DeleteBookingAsManagement = async (id: string) => {
+  const user = await currentUser()
+  if (!user || id === '') return null
+  try {
+    await prismaInstance.booking.delete({
+      where: {
+        id: id
+      }
+    })
+    return
+  } catch (error) {
+    return null
+  }
+}
+
 export const getAllBookingsGoingForward = async (locationName: string) => {
   const user = await currentUser()
   if (!user) return null
@@ -162,6 +177,29 @@ export const getAllBookingsGoingForward = async (locationName: string) => {
     ORDER BY "start" ASC
     `
     return booking
+  } catch (error) {
+    return null
+  }
+}
+
+export const getAllUsersBookingsGoingForward = async () => {
+  const user = await currentUser()
+  if (!user) return null
+  try {
+    const booking = await prismaInstance.$queryRaw`
+    SELECT 
+    "Booking"."id" as "id", "Booking"."start" as "startDateTime" ,"Booking"."end" as "endDateTime" ,
+    "Resource"."name" as "resource",  "Resource"."type" as "resourceType", "Resource"."floor" as "floor",
+    "Location"."name" as "location",
+    "User"."name" as "user"
+    FROM "Booking"
+    join "Resource" on "Booking"."resourceID" = "Resource"."id"
+    join "Location" on "Resource"."locationID" = "Location"."id"
+    join "User" on "Booking"."userID" = "User"."id"
+    WHERE ("start" >= NOW() or "end" >= NOW()) and ("start" <= NOW() + interval '3 month' or "end" <= NOW() + interval '3 month')
+    ORDER BY "start" ASC
+    `
+    return JSON.parse(JSON.stringify(booking))
   } catch (error) {
     return null
   }

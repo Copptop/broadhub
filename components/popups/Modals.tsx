@@ -1,8 +1,7 @@
 import { InvertedSubmitButton, SubmitButton } from '@/components/Buttons';
-import { deleteBooking } from '@/lib/database/bookings';
+import { DeleteBookingAsManagement, deleteBooking } from '@/lib/database/bookings';
 import { deleteUser } from '@/lib/database/users';
 import { updateUserImage } from '@/lib/handlers/users';
-import { currentUser } from '@/lib/hooks/server/use-current-user';
 import { Dialog, Transition } from '@headlessui/react';
 import { TextInput } from '@tremor/react';
 import { useRouter } from 'next/navigation';
@@ -27,9 +26,19 @@ export function ConfirmModal({ open, onClose, children, type, id }: ModalProps) 
       await deleteBooking(id || '');
     } else if (type === 'user') {
       await deleteUser(id || '');
+    } else if (type === 'booking management') {
+      await DeleteBookingAsManagement(id || '');
+      setLocalOpen(false);
+      router.refresh();
+      return;
+    } else if (type === 'user management') {
+      await deleteUser(id || '');
+      setLocalOpen(false);
+      router.refresh();
+      return;
     }
+
     setLocalOpen(false);
-    onClose();
     router.push('/');
     router.refresh();
   }

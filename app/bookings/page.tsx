@@ -45,7 +45,7 @@ export default async function BookingsPage() {
       id: booking.id,
       resource: booking.resource,
       resourceType: booking.resourceType,
-      resourceLocation: `Floor ${booking.floor} at ${booking.location}`,
+      resourceLocation: `Floor ${booking.floor} ${booking.location}`,
       startDateTime: booking.startDatetime,
       endDateTime: booking.endDatetime,
       href: `bookings/${booking.id}`,

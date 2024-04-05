@@ -46,7 +46,7 @@ export default function RootLayout({ children }: RootLayoutProps) {
             max-lg:w-1/4
             max-sm:hidden
             '>
-              <Image className='
+              <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur" className='
               absolute 
               top-0
               left-0 
