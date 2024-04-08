@@ -11,7 +11,7 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^1.5.1",
-    "@prisma/client": "^5.10.2",
+    "@prisma/client": "^5.12.1",
     "@tailwindcss/aspect-ratio": "^0.4.2",
     "@tremor/react": "^3.14.1",
     "@types/node": "20.12.2",
