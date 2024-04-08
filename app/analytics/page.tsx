@@ -32,7 +32,7 @@ export default async function Page() {
 
   return (
     <>
-      <div className="px-6 py-4 overflow-auto">
+      <div className="px-6 py-4 h-[85dvh] w-full overflow-auto">
         <h3 className="text-xl font-semibold leading-6 text-zinc-700 dark:text-zinc-300">Last 30 days Locally</h3>
         <dl className="mt-5 grid grid-cols-1 gap-5 sm:grid-cols-3">
           {stats.map((item) => (

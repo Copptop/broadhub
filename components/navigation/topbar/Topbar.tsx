@@ -34,22 +34,24 @@ const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
         <Bars3Icon className="h-6 w-6" aria-hidden="true" />
       </button>
 
-      <div className="text-1xl font-bold text-center">
+      <div className="hidden md:flex text-sm font-bold text-center ">
         **** ANY EMAIL BASED FUNCTION CURRENTLY NOT WORKING ON DEPLOYED VERSION - See report for proof of function ***
       </div>
 
       <div className="flex-1 flex justify-end pl-4 sm:pl-6 lg:pl-8">
         <Dropdown userNavigation={userNavigation} className='relative'>
-          <span className="sr-only">Open user menu</span>
-          <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur"
-            className="size-8 rounded-full bg-zinc-50"
-            src={profileImage}
-            alt=""
-            width={100}
-            height={100}
+          <div>
 
-          />
-          <span className="hidden lg:flex lg:items-center">
+            <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur"
+              className="size-8 rounded-full bg-zinc-50"
+              src={profileImage}
+              alt=""
+              width={100}
+              height={100}
+
+            />
+          </div>
+          <span className=" hidden lg:flex lg:items-center ">
             <span className="ml-4 text-sm font-semibold leading-6 text-zinc-800 dark:text-zinc-300" aria-hidden="true">
               {user?.name}
             </span>
