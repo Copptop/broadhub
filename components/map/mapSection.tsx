@@ -139,8 +139,9 @@ export default function MapSection({ data, favs, params, restrictedResources }: 
 
   return (
     <>
-      <nav className="flex border-b border-zinc-200 dark:border-none bg-white dark:bg-zinc-800 shadow-sm dark:shadow-md py-3">
-        <div className="mr-auto flex w-full mar-w-screen-xl space-r-4 px-4 sm:pr-6 lg:pr-8 font-semibold text-zinc-700 dark:text-zinc-300">
+      <div className="w-full h-[85dvh] overflow-y-auto">
+        <div className="border-b border-zinc-200 dark:border-none bg-white dark:bg-zinc-800 shadow-sm dark:shadow-md py-3 ">
+          <div className="flex flex-wrap mr-auto w-full mar-w-screen-xl space-r-4 px-4 sm:pr-6 lg:pr-8 font-semibold text-zinc-700 dark:text-zinc-300"></div>
           <div className="flex items-center self-center space-r-4">
             <DatePicker className="w-full" minDate={new Date()} maxDate={addMonths(new Date(), 3)} defaultValue={new Date()} value={selectedDate} onValueChange={setSelectedDate} />
           </div>
@@ -167,7 +168,7 @@ export default function MapSection({ data, favs, params, restrictedResources }: 
             <Button loading={isPending} variant="primary" icon={MagnifyingGlassIcon} onClick={() => onclick()}> Search </Button>
           </div>
         </div>
-      </nav>
+      </div>
       <div className="h-[85vh] py-4">{mapToRender}</div>
     </>
   );

@@ -111,11 +111,11 @@ const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
                           href="/profile"
                           className="group -mx-2 flex gap-x-3 rounded-md p-2 text-sm font-semibold leading-6 text-zinc-200 hover:bg-Primary hover:text-zinc-100"
                         >
-                          <Cog6ToothIcon
-                            className="h-6 w-6 shrink-0 text-zinc-200 group-hover:text-zinc-100"
+                          <UserIcon
+                            className="h-6 w-6 shrink-0 text-zinc-300 group-hover:text-zinc-200"
                             aria-hidden="true"
                           />
-                          Settings
+                          Profile
                         </Link>
                       </li>
                     </ul>
