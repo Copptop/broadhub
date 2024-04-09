@@ -139,37 +139,40 @@ export default function MapSection({ data, favs, params, restrictedResources }: 
 
   return (
     <>
-      <div className="w-full h-[85dvh] overflow-y-auto">
+      <div className="w-full">
         <div className="border-b border-zinc-200 dark:border-none bg-white dark:bg-zinc-800 shadow-sm dark:shadow-md py-3 ">
-          <div className="flex flex-wrap mr-auto w-full mar-w-screen-xl space-r-4 px-4 sm:pr-6 lg:pr-8 font-semibold text-zinc-700 dark:text-zinc-300"></div>
-          <div className="flex items-center self-center space-r-4">
-            <DatePicker className="w-full" minDate={new Date()} maxDate={addMonths(new Date(), 3)} defaultValue={new Date()} value={selectedDate} onValueChange={setSelectedDate} />
-          </div>
+          <div className="flex flex-wrap mr-auto w-full mar-w-screen-xl space-r-4 px-4 sm:pr-6 lg:pr-8 font-semibold text-zinc-700 dark:text-zinc-300">
+            <div className="flex items-center self-center space-r-4">
+              <DatePicker className="w-full" minDate={new Date()} maxDate={addMonths(new Date(), 3)} defaultValue={new Date()} value={selectedDate} onValueChange={setSelectedDate} />
+            </div>
 
-          <div className="flex items-center self-center space-r-4 ml-4">
-            <ClockIcon className="size-6 flex-none" />
-            <Select id="distance" name="distance" value={selectorValue1} onValueChange={setSelectorValue1} className="pl-3" >
-              {times.map((time) => (
-                <SelectItem key={time} value={time}>
-                  {time}
-                </SelectItem>
-              ))}
-            </Select>
+            <div className="flex items-center self-center space-r-4 ml-4">
+              <ClockIcon className="size-6 flex-none" />
+              <Select id="distance" name="distance" value={selectorValue1} onValueChange={setSelectorValue1} className="pl-3" >
+                {times.map((time) => (
+                  <SelectItem key={time} value={time}>
+                    {time}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
             <div className="pl-3"><ArrowRightIcon className="size-5 flex self-center" /></div>
-            <Select id="distance" name="distance" value={selectorValue2} onValueChange={setSelectorValue2} className="pl-3">
-              {times.map((time) => (
-                <SelectItem key={time} value={time}>
-                  {time}
-                </SelectItem>
-              ))}
-            </Select>
-          </div>
-          <div className="px-3 w-1/6 " >
-            <Button loading={isPending} variant="primary" icon={MagnifyingGlassIcon} onClick={() => onclick()}> Search </Button>
+            <div className="flex items-center self-center space-r-4">
+              <Select id="distance" name="distance" value={selectorValue2} onValueChange={setSelectorValue2} className="pl-3">
+                {times.map((time) => (
+                  <SelectItem key={time} value={time}>
+                    {time}
+                  </SelectItem>
+                ))}
+              </Select>
+            </div>
+            <div className="px-3 w-1/6 " >
+              <Button loading={isPending} variant="primary" icon={MagnifyingGlassIcon} onClick={() => onclick()}> Search </Button>
+            </div>
           </div>
         </div>
+        <div className="h-[80vh] py-4">{mapToRender}</div>
       </div>
-      <div className="h-[85vh] py-4">{mapToRender}</div>
     </>
   );
 }
