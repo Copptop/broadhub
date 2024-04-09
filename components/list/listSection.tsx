@@ -250,7 +250,10 @@ export default function ListSection({ resources, bookings, favs, params }: { res
                   </SelectItem>
                 ))}
               </Select>
-              <div className="pl-3"><ArrowRightIcon className="size-5 flex self-center" /></div>
+            </div>
+
+            <div className="pl-3"><ArrowRightIcon className="size-5 flex self-center" /></div>
+            <div className="flex items-center self-center space-r-4">
               <Select id="distance" name="distance" value={selectorValue2} onValueChange={setSelectorValue2} className="pl-3 z-20 ">
                 {times.map((time) => (
                   <SelectItem key={time} value={time}>
