@@ -45,5 +45,5 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
   Dev.Coppertop+Broadhub.AyrtonSenna@gmail.com // Password@1
   Dev.Coppertop+Broadhub.MikaHakkinen@gmail.com // Password@1
   Dev.Coppertop+Broadhub.SebastianVettel@gmaiI.com // Password@1
-  Dev.Coppertop*Broadhub.MichaelSchumacher@gmaiI.com // Password@1
+  Dev.Coppertop+Broadhub.MichaelSchumacher@gmaiI.com // Password@1
   Dev.Coppertop+Broadhub.LewisHamilton@gmail.com // Password@1
