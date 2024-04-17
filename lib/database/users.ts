@@ -62,6 +62,7 @@ export const getSpecificUser = async (id: string) => {
 }
 
 export const deleteUser = async (id: string) => {
+  console.log(id)
   if (!id) return null
   try {
     return await prismaInstance.user.delete({ where: { id } })
