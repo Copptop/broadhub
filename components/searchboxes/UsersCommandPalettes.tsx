@@ -101,8 +101,8 @@ export function UsersSearchPalette<T>({
                     className="max-h-80 transform-gpu scroll-py-10 scroll-pb-2 space-y-4 overflow-y-auto p-4 pb-2"
                   >
                     {filteredUsers.length > 0 && (
-                      <ul>
-                        <li className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
+                      <div>
+                        <div className="-mx-4 mt-2 text-sm text-zinc-600 dark:text-zinc-300">
                           {filteredUsers.map((user) => (
                             <Combobox.Option
                               key={user.id}
@@ -121,7 +121,7 @@ export function UsersSearchPalette<T>({
                                   </>
                                 ) : (
                                   <>
-                                    <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur" src={user.profilePicture} width={100} height={100} alt="" className="size-8 rounded-full" />
+                                    <Image blurDataURL="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAoAAAAKCAYAAACNMs+9AAAAFUlEQVR42mPcWvSjnoEIwDiqkL4KAdiTGjfujfEoAAAAAElFTkSuQmCC" placeholder="blur" src={user.profilePicture || 'https://images.freeimages.com/image/previews/374/instabutton-png-design-5690390.png'} width={100} height={100} alt="" className="size-8 rounded-full" />
                                   </>
                                 )}
                                 <div className="ml-3 flex-auto truncate">{user.name}</div>
@@ -130,8 +130,8 @@ export function UsersSearchPalette<T>({
                               </>
                             </Combobox.Option>
                           ))}
-                        </li>
-                      </ul>
+                        </div>
+                      </div>
                     )}
                     {rawQuery === '?' && (
                       <div className="px-6 py-14 text-center text-sm sm:px-14">
