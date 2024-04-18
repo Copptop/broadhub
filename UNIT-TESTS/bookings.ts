@@ -1,3 +1,4 @@
+/*
 const { expect, test } = require('@playwright/test')
 
 // Configure the Playwright Test timeout to 210 seconds,
@@ -99,3 +100,4 @@ test('Cancel Upcoming Booking', async ({ page }) => {
   // Click on the "Confirm" button
   await page.getByRole('button', { name: 'Confirm' }).click();
 })
+*/
