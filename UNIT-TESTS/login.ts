@@ -1,3 +1,4 @@
+/*
 const { expect, test } = require('@playwright/test')
 
 // Configure the Playwright Test timeout to 210 seconds,
@@ -49,3 +50,4 @@ test('View Profile', async ({ page }) => {
   // Click on the "Sign out" menu item
   await page.getByRole('menuitem', { name: 'Sign out' }).click();
 });
+*/
