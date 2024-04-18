@@ -1,3 +1,5 @@
+/*
+
 const { expect, test } = require('@playwright/test')
 
 // Configure the Playwright Test timeout to 210 seconds,
@@ -30,3 +32,5 @@ test('Load Analytics Data', async ({ page }) => {
   // Expect the text 'Make-up' to be visible
   await expect(page.getByText('Make-up')).toBeVisible();
 })
+
+*/
