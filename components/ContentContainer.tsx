@@ -10,9 +10,11 @@ interface ContentContainerProps {
 }
 
 const ContentContainer = ({ children }: ContentContainerProps) => {
+  // Get the current pathname
   const pathname = usePathname();
   const [sidebarOpen, setSidebarOpen] = useState(false);
 
+  // Check if the user is on the auth page
   if (pathname.startsWith('/auth/')) {
     return (
       <>

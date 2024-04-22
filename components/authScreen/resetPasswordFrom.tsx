@@ -17,11 +17,12 @@ export default function ResetPasswordForm() {
 
   const _email = useRef("")
 
+  // Handle the form submission
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault()
     startTransition(() => {
       if (!_email.current) return setError("Please fill in all fields")
-
+      // Calls the ResetPasswordHandler function & handles the response
       ResetPasswordHandler(_email.current)
         .then((data) => {
           setError(data?.error)

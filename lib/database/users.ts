@@ -2,6 +2,7 @@
 
 import { prismaInstance } from "@/lib/prisma";
 
+// Function to return the user from the provided email
 export const getUser_Email = async (email: string) => {
   if (!email) return null
   try {
@@ -11,6 +12,7 @@ export const getUser_Email = async (email: string) => {
   }
 }
 
+// Function to return the user from the provided ID
 export const getUser_ID = async (id: string) => {
   if (!id) return null
   try {
@@ -20,6 +22,7 @@ export const getUser_ID = async (id: string) => {
   }
 }
 
+// Function to return all the users
 export const getUsers = async () => {
   try {
     const user = await prismaInstance.user.findMany()
@@ -41,6 +44,7 @@ export const getUsers = async () => {
   }
 }
 
+// Function to return the specific user
 export const getSpecificUser = async (id: string) => {
   if (!id) return null
   try {
@@ -61,6 +65,7 @@ export const getSpecificUser = async (id: string) => {
   }
 }
 
+// Function to delete a user
 export const deleteUser = async (id: string) => {
   if (!id) return null
   try {

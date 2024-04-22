@@ -1,12 +1,13 @@
 
-import { List_Table } from '@/components/Tables'
 import Breadcrumb from '@/components/navigation/breadcrumbs'
 import { ArrowRightIcon } from '@heroicons/react/24/solid'
 import Link from 'next/link'
 
+// Define the headers for the list table
 const headers = ['Floors']
 
 export default function Page({ params }: { params: { region: string, location: string } }) {
+  // Define the floors for the location
   const floors = [
     { name: 'Floor -1', href: `/list/${params.region}/${params.location}/floor-1` },
     { name: 'Floor 0', href: `/list/${params.region}/${params.location}/floor0` },

@@ -2,6 +2,7 @@ import DashboardHeader from '@/components/dashboard/DashboardHeader';
 import Schedule from '@/components/dashboard/schedule/newSchedule';
 import { getUsersBookings } from '@/lib/database/bookings';
 
+// Define the dashboard page
 export default async function Dashboard() {
   const _userbookings = await getUsersBookings()
   const _upcomingbookings = _userbookings.slice(0, 4)

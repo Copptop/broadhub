@@ -5,10 +5,10 @@ import WorldMap from '@/app/(map)/worldmap';
 
 import { ArrowRightIcon, ClockIcon, MagnifyingGlassIcon } from "@heroicons/react/24/solid";
 import { Button, DatePicker, DatePickerValue, Select, SelectItem } from '@tremor/react';
-import { addHours, addMinutes, addMonths, isAfter, isBefore, isWithinInterval } from "date-fns";
+import { addMinutes, addMonths, isAfter, isBefore, isWithinInterval } from "date-fns";
 import { useEffect, useState, useTransition } from "react";
-import { SubmitButton } from "@/components/Buttons";
 
+// List of times
 const times = [
   "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
   "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
@@ -31,6 +31,7 @@ interface favsProps {
   location: string
 }
 
+// Function to format the date and time
 function formattedDateTime(date: Date, time: string) {
   const [hours, minutes] = time.split(':').map(Number);
   const newDateTime = new Date(date!.toISOString());
@@ -44,6 +45,7 @@ interface restictedProps {
 }
 
 export default function MapSection({ data, favs, params, restrictedResources }: { data: Array<dataProps>, favs: Array<favsProps>, params: { floor: string, location: string, region: string }, restrictedResources: Array<restictedProps> }) {
+  // Get the current time and set the initial start and end time
   const currentTime = new Date().toTimeString()
   let [hours, minutes] = currentTime.split(':').map(Number);
   if (minutes < 30) minutes = 30;
@@ -82,7 +84,9 @@ export default function MapSection({ data, favs, params, restrictedResources }: 
   const [_favs, setFavs] = useState(favs);
 
   useEffect(() => {
+    // Filter the data based on the selected date and time
     let newMapToRender = null;
+    // Render the floor plan based on the selected floor
     if (params.floor === 'floor-1') {
       newMapToRender = <F_1 data={_data} favs={_favs} params={params} date={selectedDate || new Date()} from={selectorValue1 || ""} to={selectorValue2 || ""} restrictedResources={restrictedResources} />;
     } else if (params.floor === 'floor0') {
@@ -96,7 +100,9 @@ export default function MapSection({ data, favs, params, restrictedResources }: 
   }, [params.floor, _data, _favs, params, selectedDate, selectorValue1, selectorValue2, restrictedResources]);
 
 
+  // Handle the search button click
   function onclick() {
+    // Validate the selected date and time
     if (!selectedDate) {
       alert("Please ensure a date is selected ");
       return;
@@ -118,6 +124,7 @@ export default function MapSection({ data, favs, params, restrictedResources }: 
 
 
     startTransition(() => {
+      // Filter the data based on the selected date and time
       setData(data.filter((item) => {
         const startDateTime = item.startDateTime;
         const endDateTime = item.endDateTime;

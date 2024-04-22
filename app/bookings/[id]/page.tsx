@@ -15,8 +15,10 @@ interface BookingProps {
 }
 export default async function Page({ params }: { params: { id: string } }) {
 
+  // Fetch the booking data from the database
   const booking = await getSpecificBooking(params.id) as BookingProps
 
+  // Set the breadcrumb for the page
   const pages = [
     { name: 'Bookings', href: '/bookings', current: false },
     { name: 'Booking Details', href: `/bookings/${booking.id}`, current: true },

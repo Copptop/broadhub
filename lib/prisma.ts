@@ -1,5 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 
+
+// Global object to store the Prisma client based on the environment in which the application is running
 declare global {
   var prismaInstance: PrismaClient | undefined
 }

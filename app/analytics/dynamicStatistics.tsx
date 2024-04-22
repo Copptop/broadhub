@@ -34,6 +34,7 @@ export default function DynamicStatistics({ locations }: { locations: LocationPr
   const [areaData, setAreaData] = React.useState<AreaDataProps[]>([])
   const [donutData, setDonutData] = React.useState<DonutDataProps[]>([])
 
+  // Fetch data from the database and set the values for the graphs
   async function handleDataFetch() {
     setAreaData(await getGraphData(selectorValue, dateValue.from || addMonths(currentDate, -1), dateValue.to || currentDate) as AreaDataProps[])
     setDonutData(await getDonutData(selectorValue, dateValue.from || addMonths(currentDate, -1), dateValue.to || currentDate) as DonutDataProps[])

@@ -16,12 +16,15 @@ export interface ModalProps {
   currentPicture?: string;
 }
 
+// Modal component
 export function ConfirmModal({ open, onClose, children, type, id }: ModalProps) {
   const [localOpen, setLocalOpen] = useState(open);
   const cancelButtonRef = useRef(null);
   const router = useRouter();
 
+  // Function to handle the confirm button
   async function handleConfirm() {
+    // Check the type of the modal
     if (type === 'booking') {
       await deleteBooking(id || '');
     } else if (type === 'user') {
@@ -38,11 +41,13 @@ export function ConfirmModal({ open, onClose, children, type, id }: ModalProps) 
       return;
     }
 
+    // Close the modal and refresh the page
     setLocalOpen(false);
     router.push('/');
     router.refresh();
   }
 
+  // Update the local open state
   useEffect(() => {
     setLocalOpen(open);
   }, [open]);
@@ -106,13 +111,16 @@ export function ConfirmModal({ open, onClose, children, type, id }: ModalProps) 
   );
 }
 
+// Profile picture modal
 export function ProfilePicModal({ open, onClose, currentPicture, id }: ModalProps) {
   const [localOpen, setLocalOpen] = useState(open);
   const cancelButtonRef = useRef(null);
   const _newURL = useRef('');
   const router = useRouter();
 
+  // Function to handle the confirm button
   async function handleConfirm() {
+    // Update the user image
     await updateUserImage(id || '', _newURL.current);
     setLocalOpen(false);
     onClose();
@@ -120,6 +128,7 @@ export function ProfilePicModal({ open, onClose, currentPicture, id }: ModalProp
     router.refresh();
   }
 
+  // Update the local open state
   useEffect(() => {
     setLocalOpen(open);
   }, [open]);

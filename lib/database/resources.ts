@@ -3,15 +3,7 @@
 import { prismaInstance } from "@/lib/prisma";
 import { currentUser } from "@/lib/hooks/server/use-current-user";
 
-function formattedDateTime(date: Date, time: string) {
-  const [hours, minutes] = time.split(':').map(Number);
-  const newDateTime = new Date(date!.toISOString());
-  newDateTime.setHours(hours + 1, minutes, 0, 0);
-  const formattedDateTime = newDateTime.toISOString();
-  return formattedDateTime;
-}
-
-
+// Function to get the resources by location and floor
 export const getResources = async (location: string, floor: number) => {
   const user = await currentUser();
   if (!user) return null;
@@ -53,6 +45,7 @@ export const getResources = async (location: string, floor: number) => {
   }
 };
 
+// Function to get the restricted resources by location and floor
 export const getRestrictedResources = async (location: string, floor: number) => {
   const user = await currentUser();
   if (!user) return null;
@@ -89,7 +82,7 @@ export const getRestrictedResources = async (location: string, floor: number) =>
   }
 }
 
-
+// Function to get the bookings by location and floor
 export const getFavorites = async (locationName: string) => {
   const user = await currentUser()
   if (!user) return null
@@ -108,6 +101,7 @@ export const getFavorites = async (locationName: string) => {
   }
 }
 
+// Function to add a favorite
 export const addFavorite = async (resourceName: string, location: string) => {
   const user = await currentUser()
   if (!user) return null
@@ -133,6 +127,7 @@ export const addFavorite = async (resourceName: string, location: string) => {
   }
 }
 
+// Function to remove a favorite
 export const removeFavorite = async (resourceName: string, location: string) => {
   const user = await currentUser()
   if (!user) return null

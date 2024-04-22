@@ -36,6 +36,7 @@ export function UsersSearchPalette<T>({
   const [rawQuery, setRawQuery] = useState('');
   const query = rawQuery.toLowerCase().replace(/^[#>!$]/, '');
 
+  // Map the data to the required format
   const users = data.map((user: User) => {
     return {
       id: user.id,
@@ -49,6 +50,7 @@ export function UsersSearchPalette<T>({
   }
   );
 
+  // Filter the users based on the query
   const filteredUsers =
     query === ''
       ? []

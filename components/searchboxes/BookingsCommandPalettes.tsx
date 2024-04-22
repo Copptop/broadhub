@@ -28,14 +28,17 @@ function classNames(...classes: (string | boolean)[]): string {
   return classes.filter(Boolean).join(' ');
 }
 
+// Booking Search Palette
 export function BookingsSearchPalette<T>({
   data,
   onClose,
 }: BookingsSearchPaletteProps<T>): JSX.Element {
   const [open, setOpen] = useState(true);
   const [rawQuery, setRawQuery] = useState('');
+  // Remove the first character from the query and convert it to lowercase
   const query = rawQuery.toLowerCase().replace(/^[#>!$]/, '');
 
+  // Map the data to the resource object
   const resources = data.map((booking: Resource) => {
     return {
       id: booking.id,
@@ -47,11 +50,13 @@ export function BookingsSearchPalette<T>({
   }
   );
 
+  // Filter the resources based on the resource type
   const deskResources = resources.filter((resource) => resource.resourceType.toLowerCase() === 'desk');
   const officeResources = resources.filter((resource) => resource.resourceType.toLowerCase() === 'office');
   const meetingRoomResources = resources.filter((resource) => resource.resourceType.toLowerCase() === 'meeting room');
   const parkingResources = resources.filter((resource) => resource.resourceType.toLowerCase() === 'parking');
 
+  // Filter the resources based on the query
   const filteredDeskResources =
     rawQuery === '#'
       ? deskResources
@@ -330,6 +335,7 @@ interface AdminResource extends Resource {
   user: string;
 }
 
+// Admin Booking Search Palette
 export function AdminBookingSearchPalette<T>({
   data,
   onClose,
@@ -338,6 +344,7 @@ export function AdminBookingSearchPalette<T>({
   const [rawQuery, setRawQuery] = useState('');
   const query = rawQuery.toLowerCase().replace(/^[#>!$]/, '');
 
+  // Map the data to the resource object
   const resources = data.map((booking: AdminResource) => {
     return {
       id: booking.id,
@@ -350,11 +357,13 @@ export function AdminBookingSearchPalette<T>({
   }
   );
 
+  // Filter the resources based on the resource type
   const deskResources = resources.filter((resource) => resource.resourceType.toLowerCase() === 'desk');
   const officeResources = resources.filter((resource) => resource.resourceType.toLowerCase() === 'office');
   const meetingRoomResources = resources.filter((resource) => resource.resourceType.toLowerCase() === 'meeting room');
   const parkingResources = resources.filter((resource) => resource.resourceType.toLowerCase() === 'parking');
 
+  // Filter the resources based on the query
   const filteredDeskResources =
     rawQuery === '#'
       ? deskResources

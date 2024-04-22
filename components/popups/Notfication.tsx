@@ -14,13 +14,14 @@ export interface NotificationProps {
   to?: String;
 }
 
+// Notification for successful bookings
 export function BookingNotification({ show, onClose, resources, date, from, to }: NotificationProps) {
   const [localshow, setLocalShow] = useState(show);
 
+  // Update the local open state
   useEffect(() => {
     setLocalShow(show);
   }, [show]);
-
 
   return (
     <>
@@ -71,13 +72,14 @@ export function BookingNotification({ show, onClose, resources, date, from, to }
   );
 }
 
+// Notification for successful actions
 export function HappyNotification({ show, onClose, children }: NotificationProps) {
   const [localshow, setLocalShow] = useState(show);
 
+  // Update the local open state
   useEffect(() => {
     setLocalShow(show);
   }, [show]);
-
 
   return (
     <>

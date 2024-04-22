@@ -3,11 +3,10 @@
 import { Dropdown } from '@/components/Dropdowns'
 import { useCurrentUser } from '@/lib/hooks/use-current-user'
 import { ChevronDownIcon } from '@heroicons/react/20/solid'
-import {
-  Bars3Icon
-} from '@heroicons/react/24/outline'
+import { Bars3Icon } from '@heroicons/react/24/outline'
 import Image from 'next/image'
 
+// User navigation
 const userNavigation = [
   { name: 'Your profile', href: '/profile' },
   { name: 'Sign out' }
@@ -19,8 +18,9 @@ interface TopBarProps {
 }
 
 const TopBar = ({ topbarOpen, setSidebarOpen }: TopBarProps) => {
-
+  // Get the current user
   const user = useCurrentUser();
+  // Get the user profile image or use a default image
   const profileImage = user?.image || 'https://images.freeimages.com/image/previews/374/instabutton-png-design-5690390.png'
 
   return (

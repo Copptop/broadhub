@@ -7,9 +7,11 @@ export default function WorldMap() {
   const svgRef = useRef<SVGSVGElement>(null);
 
   useEffect(() => {
+    // Get a reference to the SVG element 
     const svg = svgRef.current as any;
     if (!svg) return;
 
+    // Function to get the point coordinates from a mouse or touch event
     const getPointFromEvent = (event: MouseEvent | TouchEvent) => {
       const point = svg.createSVGPoint();
       if ((event as TouchEvent).targetTouches) {
@@ -20,20 +22,22 @@ export default function WorldMap() {
         point.y = (event as MouseEvent).clientY;
       }
 
+      // Transform the point coordinates using the inverted matrix
       const invertedSVGMatrix = svg.getScreenCTM()!.inverse();
-
       return point.matrixTransform(invertedSVGMatrix);
     };
 
     let isPointerDown = false;
     let pointerOrigin: SVGPoint;
 
+    // Event handler for pointer down event
     const onPointerDown = (event: MouseEvent | TouchEvent) => {
       isPointerDown = true;
       pointerOrigin = getPointFromEvent(event);
       svg.style.cursor = 'grabbing';
     };
 
+    // Event handler for pointer move event
     const onPointerMove = (event: MouseEvent | TouchEvent) => {
       if (!isPointerDown) {
         return;
@@ -43,55 +47,64 @@ export default function WorldMap() {
       const pointerPosition = getPointFromEvent(event);
       const viewBox = svg.viewBox.baseVal;
 
+      // Update the viewBox coordinates based on the pointer movement
       viewBox.x -= pointerPosition.x - pointerOrigin.x;
       viewBox.y -= pointerPosition.y - pointerOrigin.y;
     };
 
+    // Event handler for pointer up event
     const onPointerUp = () => {
       isPointerDown = false;
       svg.style.cursor = 'grab';
     };
 
+    // Event handler for pointer wheel event
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-
       const pointerPosition = getPointFromEvent(event);
-
       if (!svg) return;
 
+      // Define the zooming speed and direction
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
 
+      // Calculate the new scale based on the zooming speed
       const viewBox = svg.viewBox.baseVal;
       const newScale = viewBox.width * zoomSpeed / viewBox.width;
       const deltaWidth = viewBox.width * (newScale - 1);
       const deltaHeight = viewBox.height * (newScale - 1);
 
+      // Update the viewBox coordinates and dimensions based on the zooming
       viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
       viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
       viewBox.width *= newScale;
       viewBox.height *= newScale;
 
+      // Set the new viewBox coordinates and dimensions
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
 
+      // Set the cursor style based on the zooming state
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
 
 
     if (svg.PointerEvent) {
+      // Add event listeners for pointer events
       svg.addEventListener('pointerdown', onPointerDown);
       svg.addEventListener('pointerup', onPointerUp);
       svg.addEventListener('pointerleave', onPointerUp);
       svg.addEventListener('pointermove', onPointerMove);
       svg.addEventListener('wheel', onPointerWheel);
     } else {
+      // Add event listeners for mouse events
       svg.addEventListener('mousedown', onPointerDown);
       svg.addEventListener('mouseup', onPointerUp);
       svg.addEventListener('mouseleave', onPointerUp);
       svg.addEventListener('mousemove', onPointerMove);
       svg.addEventListener('wheel', onPointerWheel);
 
+      // Add event listeners for touch events
       svg.addEventListener('touchstart', onPointerDown);
       svg.addEventListener('touchend', onPointerUp);
       svg.addEventListener('touchmove', onPointerMove);

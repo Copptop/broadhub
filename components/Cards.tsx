@@ -19,12 +19,15 @@ interface BookingCardProps {
 
 export const BookingCard: React.FC<BookingCardProps> = ({ id, resource, resourceType, startDatetime }) => {
 
+  // User navigation
   const userNavigation = [
     { name: 'Edit', href: `/bookings/${id}` }
   ];
 
+  // Format the date
   const displayDate = format(new Date(startDatetime), 'EEEE, dd MMM yyy')
 
+  // Define Icon component as per the resource type
   let iconComponent
   if (resourceType === 'desk') { iconComponent = <ComputerDesktopIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" /> }
   else if (resourceType === 'meeting_room') { iconComponent = <PresentationChartLineIcon className="h-5 w-5 text-zinc-200 dark:text-zinc-200" /> }
@@ -62,6 +65,7 @@ interface BookingCardsProps {
   data: BookingCardProps[];
 }
 
+// Booking Cards Component
 export const BookingCards: React.FC<BookingCardsProps> = ({ data }) => {
   return (
     <ul role="list" className="grid grid-cols-1 gap-5 pt-4 pb-6 sm:grid-cols-2 sm:gap-6 lg:grid-cols-4">

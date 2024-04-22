@@ -1,5 +1,3 @@
-
-
 import { format, isEqual, isSameMonth, startOfToday } from 'date-fns';
 import React from 'react';
 import { twMerge } from "tailwind-merge";
@@ -10,6 +8,7 @@ interface CalendarDayProps {
   dayIndex: number;
 }
 
+// CalendarDay component - renders a single day in the calendar
 const CalendarDay: React.FC<CalendarDayProps> = ({ day, dayIndex, currentMonth }) => {
   return (
     <div key={day.toISOString()} className={twMerge(dayIndex > 6 && 'border-t border-zinc-200 dark:border-zinc-500', 'py-2')}>

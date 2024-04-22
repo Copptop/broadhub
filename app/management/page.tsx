@@ -1,14 +1,10 @@
 import Link from 'next/link'
-
 import { SubmitButton } from '@/components/Buttons'
 import { currentRole } from '@/lib/hooks/server/use-current-user'
 import { redirect } from 'next/navigation'
 
-function classNames(...classes: string[]) {
-  return classes.filter(Boolean).join(' ')
-}
-
 export default async function Page() {
+  // Ensure correct user role for access
   const role = await currentRole()
   if (role !== 'HR' && role !== 'ADMIN' && role !== 'MANAGER') {
 

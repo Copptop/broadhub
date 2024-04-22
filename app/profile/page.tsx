@@ -1,30 +1,26 @@
 import Breadcrumb from "@/components/navigation/breadcrumbs";
-import { getSpecificUser } from "@/lib/database/users";
-import ProfileDetails from "./profileDetails";
 import { getAllLocations } from "@/lib/database/locations";
-import { currentRole, currentUser } from "@/lib/hooks/server/use-current-user";
+import { getSpecificUser } from "@/lib/database/users";
+import { currentUser } from "@/lib/hooks/server/use-current-user";
 import { redirect } from "next/navigation";
+import ProfileDetails from "./profileDetails";
 
-interface UserProps {
-  id: number;
-  name: string;
-  email: string;
-  role: string;
-  officeLocation: string;
-  profilePicture: string;
-  isOauth: boolean;
-  isVerified: boolean;
-}
 
 export default async function Page() {
+  // Ensure correct user role for access
   const _currentUser = await currentUser()
   if (!_currentUser) {
     redirect('/')
   }
+  // Fetch all the locations
   const locations = await getAllLocations()
   const locationNames = locations.map((location: any) => location.name)
+
+  // Fetch the user data from the database
   const _user = await getSpecificUser(_currentUser!.id!.toString())
   if (!_user) return <>ERROR</>
+
+  // Map the raw user data to the user props to be used in the component
   const user = {
     id: _user.id,
     name: _user.name,
@@ -36,6 +32,7 @@ export default async function Page() {
     isVerified: _user.emailVerified ? true : false,
   }
 
+  // Set the breadcrumb for the page
   const pages = [
     { name: 'User Profile and Settings', href: '/profile', current: true },
   ];

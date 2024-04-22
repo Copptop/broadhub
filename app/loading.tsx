@@ -1,5 +1,6 @@
 import React from 'react';
 
+// Loading spinner component
 export default function Loading() {
   return (
     <div role="status" className='h-[90dvh] flex justify-center items-center'>
