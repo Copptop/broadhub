@@ -63,7 +63,8 @@ export const SignUpHandler = async (values: SignInValues) => {
         name,
         email,
         password: hashedPassword,
-        companyID: checkCompanyCode.id
+        companyID: checkCompanyCode.id,
+        emailVerified: new Date() // Sets the email as verified has to be forced due to domain issue
       }
     })
 
@@ -82,7 +83,8 @@ export const SignUpHandler = async (values: SignInValues) => {
     data: {
       name,
       email,
-      password: hashedPassword
+      password: hashedPassword,
+      emailVerified: new Date() // Sets the email as verified has to be forced due to domain issue
     }
   })
   // Disable due to domain issue explained in the README

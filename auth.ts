@@ -39,8 +39,8 @@ export const {
       if (account?.provider !== 'credentials') return true
       const exisitingUser = await getUser_ID(user.id as string)
 
-      // Disable due to domain issue explained in the README
-      // if (!exisitingUser?.emailVerified) return false
+      // Effectively Disable due to domain issue explained in the README
+      if (!exisitingUser?.emailVerified) return false
       return true
     },
     //Defines the handleing for the session 
