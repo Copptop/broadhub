@@ -27,39 +27,29 @@ export default function NewPasswordForm() {
   const _passwordConf = useRef("")
 
   const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault() // Prevents the page from reloading
+    // Checks if the password and password confirmation match
+    if (_password.current !== _passwordConf.current) { setError("Passwords do not match"); return }
+    // Checks if the email and password fields are empty
+    if (!_email.current || !_passwordConf.current) { setError("Please fill in all fields"); return }
+    // Checks if the token is provided
+    if (searchParams.get('token') === null) { setError("No Token Provided"); return }
 
-    if (_password.current !== _passwordConf.current) {
-      setError("Passwords do not match")
-      return
-    }
-
-    if (!_email.current || !_passwordConf.current) {
-      setError("Please fill in all fields")
-      return
-    }
-
-    if (searchParams.get('token') === null) {
-      setError("No Token Provided");
-      return
-    }
-
+    // Disables the fields while the form is being submitted
     startTransition(() => {
+      // Calls the NewPassword function & handles the response
       NewPassword(searchParams.get('token') as string, _email.current, _passwordConf.current)
         .then((data) => {
           setError(data?.error),
             setSuccess(data?.success)
-
           if (!data.error && data.success) {
-
-            setTimeout(() => {
+            setTimeout(() => {  // Redirects the user to the sign in page after 3.5 seconds
               setError(undefined);
               setSuccess(undefined);
               router.push('/auth/Signin');
             }, 3500);
           }
         })
-
     })
   }
 

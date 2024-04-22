@@ -3,6 +3,7 @@
 import { prismaInstance } from '@/lib/prisma'
 import { currentUser } from '@/lib/hooks/server/use-current-user'
 
+// Handler to change the current user's information
 export const changeUserInformation = async (id: string, name: string, email: string, role: string, officeLocation: string) => {
   const user = currentUser()
   if (!user) return { error: "Not Authenticated to perform this action" }
@@ -34,6 +35,7 @@ export const changeUserInformation = async (id: string, name: string, email: str
   }
 }
 
+// Handler to change the current user's profile picture
 export const updateUserImage = async (id: string, image: string) => {
   const user = currentUser()
   if (!user || id === '') return { error: "Not Authenticated to perform this action" }

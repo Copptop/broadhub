@@ -3,15 +3,16 @@
 import { SubmitButton } from '@/components/Buttons';
 import { Table } from '@/components/Tables';
 import { BookingsSearchPalette } from '@/components/searchboxes/BookingsCommandPalettes';
-import { UsersSearchPalette } from '@/components/searchboxes/UsersCommandPalettes';
 import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { useState } from 'react';
 
+// Define the actions for the bookings
 const bookingActions = [
   { name: 'Amend', navigateTo: true },
   { name: 'Cancel' },
 ]
 
+// Define the headers for the bookings table
 const bookingsHeaders = [
   { name: 'User' },
   { name: 'Resource' },
@@ -19,8 +20,6 @@ const bookingsHeaders = [
   { name: 'Start' },
   { name: 'End' },
 ]
-
-
 interface bookingProps {
   user: string,
   resource: string,
@@ -37,10 +36,12 @@ export default function BookingsSection({ data }: { data: Array<bookingProps> })
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Handle the search click
   const handleSearchClick = () => {
     setShowCommandPalette(true);
   };
 
+  // Handle the close command palette
   const handleCloseCommandPalette = () => {
     setShowCommandPalette(false);
     setSearchQuery('');

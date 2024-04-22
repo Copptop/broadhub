@@ -1,4 +1,3 @@
-
 import APAC from '@/app/(map)/(APAC)/APAC'
 import EMEA from '@/app/(map)/(EMEA)/EMEA'
 import UK from '@/app/(map)/(EMEA)/UK'
@@ -12,6 +11,7 @@ export default function Page({ params }: { params: { region: string } }) {
 
   var map_to_render = null
 
+  // Check the region and render the appropriate map
   if (params.region === 'NA') {
     map_to_render = <NA />
   } else if (params.region === 'NENA') {

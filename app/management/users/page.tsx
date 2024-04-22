@@ -4,25 +4,17 @@ import { currentRole } from '@/lib/hooks/server/use-current-user';
 import { redirect } from 'next/navigation';
 import UserSection from './usersSection';
 
-interface userProps {
-  id: string,
-  profilePicture: string,
-  name: string,
-  email: string,
-  role: string,
-  officeLocation: string,
-  href: string,
-  isOauth: boolean,
-}
-
 export default async function Page() {
+  // Ensure correct user role for access
   const role = await currentRole()
   if (role !== 'HR' && role !== 'ADMIN' && role !== 'MANAGER') {
     redirect('/')
   }
+  // Fetch all the users
   const _users = await getUsers()
   if (!_users) return <>ERROR</>
 
+  // Map the raw user data to the user props to be used in the component
   const users = _users.map((user: any) => {
     return {
       id: user.id,

@@ -1,14 +1,16 @@
-import { List_Table } from "@/components/Tables";
 import Breadcrumb from "@/components/navigation/breadcrumbs";
 import { getLocations_Region } from "@/lib/database/locations";
 import { ArrowRightIcon } from "@heroicons/react/24/solid";
 import Link from "next/link";
 
+// Define the headers for the list table
 const headers = ['Locations']
 
 export default async function Page({ params }: { params: { region: string } }) {
+  // Fetch the locations for the region
   const locations = await getLocations_Region(params.region as 'NA' | 'NENA' | 'APAC' | 'UK')
 
+  // Map the raw location data to the location props to be used in the component
   const locationsList = locations.map((location: any) => {
     return { name: location.name, href: `/list/${params.region}/${location.name}` }
   })

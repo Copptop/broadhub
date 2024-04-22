@@ -9,7 +9,6 @@ import { BookingNotification } from '@/components/popups/Notfication';
 import { createBooking } from '@/lib/database/bookings';
 import { addFavorite, removeFavorite } from '@/lib/database/resources';
 import { useRouter } from 'next/navigation';
-import { start } from 'repl';
 
 interface dataProps {
   id: string,
@@ -47,19 +46,27 @@ interface restictedProps {
 }
 
 function clearStates() {
+  // Find all elements with the classes 'booked', 'partiallybooked', 'favourite', and 'restricted'
   const elements = document.querySelectorAll('.booked, .partiallybooked, .favourite');
+  // Remove the classes from the elements
   elements.forEach((element) => {
     element.classList.remove('booked', 'partiallybooked', 'favourite');
   });
 }
 
 function addStateToElement(id: string, state: 'booked' | 'partiallybooked' | 'favourite' | 'restricted'): void {
+  // Get the element by its ID
   const element = document.getElementById(id);
   if (!element) return;
   const classList = element.classList;
+
+  // Remove the classes 'booked', 'partiallybooked', 'favourite', and 'restricted'
   classList.remove('booked', 'partiallybooked', 'favourite', 'restricted');
+
+  // Add the class based on the state
   classList.add(state);
 
+  // Remove the opposite class
   if (state === 'booked') {
     classList.remove('partiallybooked');
   } else if (state === 'partiallybooked') {
@@ -68,15 +75,17 @@ function addStateToElement(id: string, state: 'booked' | 'partiallybooked' | 'fa
 }
 
 function addStatesToElements({ data, favs, restrictedResources }: { data: Array<dataProps>, favs: Array<favsProps>, restrictedResources: Array<restictedProps> }): void {
-
+  // Define the times for the bookings
   const times = [
     "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
     "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
     "17:00", "17:30", "18:00", "18:30", "19:00"
   ];
 
-
+  // Clear the states of all elements
   clearStates();
+
+  // Sort + Load the data incl favs + restricted resources
   if (data) {
     data.sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
     data.forEach((booking, index, array) => {
@@ -114,10 +123,14 @@ export function F_1({ data, favs, params, restrictedResources, date, from, to }:
   const router = useRouter();
 
   useEffect(() => {
-    addStatesToElements({ data, favs, restrictedResources })
+    // Add states to elements using the provided data, favs, and restricted Resources
+    addStatesToElements({ data, favs, restrictedResources });
+
+    // Get a reference to the SVG element
     const svg = svgRef.current as any;
     if (!svg) return;
 
+    // Function to get the point coordinates from a mouse or touch event
     const getPointFromEvent = (event: MouseEvent | TouchEvent) => {
       const point = svg.createSVGPoint();
       if ((event as TouchEvent).targetTouches) {
@@ -130,18 +143,21 @@ export function F_1({ data, favs, params, restrictedResources, date, from, to }:
 
       const invertedSVGMatrix = svg.getScreenCTM()!.inverse();
 
+      // Transform the point coordinates using the inverted matrix
       return point.matrixTransform(invertedSVGMatrix);
     };
 
     let isPointerDown = false;
     let pointerOrigin: SVGPoint;
 
+    // Event handler for pointer down event
     const onPointerDown = (event: MouseEvent | TouchEvent) => {
       isPointerDown = true;
       pointerOrigin = getPointFromEvent(event);
       svg.style.cursor = 'grabbing';
     };
 
+    // Event handler for pointer move event
     const onPointerMove = (event: MouseEvent | TouchEvent) => {
       if (!isPointerDown) {
         return;
@@ -151,55 +167,64 @@ export function F_1({ data, favs, params, restrictedResources, date, from, to }:
       const pointerPosition = getPointFromEvent(event);
       const viewBox = svg.viewBox.baseVal;
 
+      // Update the viewBox coordinates based on the pointer movement
       viewBox.x -= pointerPosition.x - pointerOrigin.x;
       viewBox.y -= pointerPosition.y - pointerOrigin.y;
     };
 
+    // Event handler for pointer up event
     const onPointerUp = () => {
       isPointerDown = false;
       svg.style.cursor = 'grab';
     };
 
+    // Event handler for pointer wheel event
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-
       const pointerPosition = getPointFromEvent(event);
-
       if (!svg) return;
 
+      // Define the zooming speed and direction
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
 
+      // Calculate the new scale based on the zooming speed
       const viewBox = svg.viewBox.baseVal;
       const newScale = viewBox.width * zoomSpeed / viewBox.width;
       const deltaWidth = viewBox.width * (newScale - 1);
       const deltaHeight = viewBox.height * (newScale - 1);
 
+      // Update the viewBox coordinates and dimensions based on the zooming
       viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
       viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
       viewBox.width *= newScale;
       viewBox.height *= newScale;
 
+      // Set the new viewBox coordinates and dimensions
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
 
+      // Set the cursor style based on the zooming state
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
 
 
     if (svg.PointerEvent) {
+      // Add event listeners for pointer events
       svg.addEventListener('pointerdown', onPointerDown);
       svg.addEventListener('pointerup', onPointerUp);
       svg.addEventListener('pointerleave', onPointerUp);
       svg.addEventListener('pointermove', onPointerMove);
       svg.addEventListener('wheel', onPointerWheel);
     } else {
+      // Add event listeners for mouse events
       svg.addEventListener('mousedown', onPointerDown);
       svg.addEventListener('mouseup', onPointerUp);
       svg.addEventListener('mouseleave', onPointerUp);
       svg.addEventListener('mousemove', onPointerMove);
       svg.addEventListener('wheel', onPointerWheel);
 
+      // Add event listeners for touch events
       svg.addEventListener('touchstart', onPointerDown);
       svg.addEventListener('touchend', onPointerUp);
       svg.addEventListener('touchmove', onPointerMove);
@@ -207,7 +232,9 @@ export function F_1({ data, favs, params, restrictedResources, date, from, to }:
 
   }, [data, favs, restrictedResources]);
 
+  // Append the data
   const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
+    // Get the type of the resource
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
     if (type === "desk") {
       type = "Desk";
@@ -221,8 +248,10 @@ export function F_1({ data, favs, params, restrictedResources, date, from, to }:
       type = "";
     }
 
+    // Get the bookings for the specific resource
     const specifcResoruce = dataArray.filter((item) => item.resource === id).map((item) => { return { startDateTime: item.startDateTime.toString(), endDateTime: item.endDateTime.toString() } });
 
+    // Append the data to the clickedData object
     const data: clickedData = {
       id: id,
       name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
@@ -235,6 +264,7 @@ export function F_1({ data, favs, params, restrictedResources, date, from, to }:
     return data;
   }
 
+  // Event handler for the click event on the resource
   const onClickSlideOverHandler = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     const clickedElement = event.currentTarget as unknown as HTMLElement;
     const status = clickedElement.getAttribute("class");
@@ -244,6 +274,7 @@ export function F_1({ data, favs, params, restrictedResources, date, from, to }:
     }
   }
 
+  // Event handler for the click event on the favorite button
   async function setFav(id: string, location: string) {
     if (clickedData?.isFavorite) {
       await removeFavorite(id, location)
@@ -252,6 +283,7 @@ export function F_1({ data, favs, params, restrictedResources, date, from, to }:
     }
   }
 
+  // Event handler for the click event on the booking button
   async function handleBooking(resourceName: string) {
     await createBooking(resourceName, params.location, date, from, to)
       .then((data) => {
@@ -1681,10 +1713,14 @@ export function F0({ data, favs, params, restrictedResources, date, from, to }: 
   const router = useRouter()
 
   useEffect(() => {
+    // Add states to elements using the provided data, favs, and restricted Resources
     addStatesToElements({ data, favs, restrictedResources })
+
+    // Get a reference to the SVG element
     const svg = svgRef.current as any;
     if (!svg) return;
 
+    // Function to get the point coordinates from a mouse or touch event
     const getPointFromEvent = (event: MouseEvent | TouchEvent) => {
       const point = svg.createSVGPoint();
       if ((event as TouchEvent).targetTouches) {
@@ -1697,18 +1733,21 @@ export function F0({ data, favs, params, restrictedResources, date, from, to }: 
 
       const invertedSVGMatrix = svg.getScreenCTM()!.inverse();
 
+      // Transform the point coordinates using the inverted matrix
       return point.matrixTransform(invertedSVGMatrix);
     };
 
     let isPointerDown = false;
     let pointerOrigin: SVGPoint;
 
+    // Event handler for pointer down event
     const onPointerDown = (event: MouseEvent | TouchEvent) => {
       isPointerDown = true;
       pointerOrigin = getPointFromEvent(event);
       svg.style.cursor = 'grabbing';
     };
 
+    // Event handler for pointer move event
     const onPointerMove = (event: MouseEvent | TouchEvent) => {
       if (!isPointerDown) {
         return;
@@ -1718,55 +1757,64 @@ export function F0({ data, favs, params, restrictedResources, date, from, to }: 
       const pointerPosition = getPointFromEvent(event);
       const viewBox = svg.viewBox.baseVal;
 
+      // Update the viewBox coordinates based on the pointer movement
       viewBox.x -= pointerPosition.x - pointerOrigin.x;
       viewBox.y -= pointerPosition.y - pointerOrigin.y;
     };
 
+    // Event handler for pointer up event
     const onPointerUp = () => {
       isPointerDown = false;
       svg.style.cursor = 'grab';
     };
 
+    // Event handler for pointer wheel event
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-
       const pointerPosition = getPointFromEvent(event);
-
       if (!svg) return;
 
+      // Define the zooming speed and direction
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
 
+      // Calculate the new scale based on the zooming speed
       const viewBox = svg.viewBox.baseVal;
       const newScale = viewBox.width * zoomSpeed / viewBox.width;
       const deltaWidth = viewBox.width * (newScale - 1);
       const deltaHeight = viewBox.height * (newScale - 1);
 
+      // Update the viewBox coordinates and dimensions based on the zooming
       viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
       viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
       viewBox.width *= newScale;
       viewBox.height *= newScale;
 
+      // Set the new viewBox coordinates and dimensions
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
 
+      // Set the cursor style based on the zooming state
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
 
 
     if (svg.PointerEvent) {
+      // Add event listeners for pointer events
       svg.addEventListener('pointerdown', onPointerDown);
       svg.addEventListener('pointerup', onPointerUp);
       svg.addEventListener('pointerleave', onPointerUp);
       svg.addEventListener('pointermove', onPointerMove);
       svg.addEventListener('wheel', onPointerWheel);
     } else {
+      // Add event listeners for mouse events
       svg.addEventListener('mousedown', onPointerDown);
       svg.addEventListener('mouseup', onPointerUp);
       svg.addEventListener('mouseleave', onPointerUp);
       svg.addEventListener('mousemove', onPointerMove);
       svg.addEventListener('wheel', onPointerWheel);
 
+      // Add event listeners for touch events
       svg.addEventListener('touchstart', onPointerDown);
       svg.addEventListener('touchend', onPointerUp);
       svg.addEventListener('touchmove', onPointerMove);
@@ -1774,7 +1822,9 @@ export function F0({ data, favs, params, restrictedResources, date, from, to }: 
 
   }, [data, favs, restrictedResources]);
 
+  // Append the data
   const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
+    // Get the type of the resource
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
     if (type === "desk") {
       type = "Desk";
@@ -1788,8 +1838,10 @@ export function F0({ data, favs, params, restrictedResources, date, from, to }: 
       type = "";
     }
 
+    // Get the bookings for the specific resource
     const specifcResoruce = dataArray.filter((item) => item.resource === id).map((item) => { return { startDateTime: item.startDateTime.toString(), endDateTime: item.endDateTime.toString() } });
 
+    // Append the data to the clickedData object
     const data: clickedData = {
       id: id,
       name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
@@ -1802,6 +1854,7 @@ export function F0({ data, favs, params, restrictedResources, date, from, to }: 
     return data;
   }
 
+  // Event handler for the click event on the resource
   const onClickSlideOverHandler = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     const clickedElement = event.currentTarget as unknown as HTMLElement;
     const status = clickedElement.getAttribute("class");
@@ -1811,6 +1864,7 @@ export function F0({ data, favs, params, restrictedResources, date, from, to }: 
     }
   }
 
+  // Event handler for the click event on the favorite button
   async function setFav(id: string, location: string) {
     if (clickedData?.isFavorite) {
       await removeFavorite(id, location)
@@ -1818,6 +1872,8 @@ export function F0({ data, favs, params, restrictedResources, date, from, to }: 
       await addFavorite(id, location)
     }
   }
+
+  // Event handler for the click event on the booking button
   async function handleBooking(resourceName: string) {
     await createBooking(resourceName, params.location, date, from, to)
     setOpen(false);
@@ -3074,13 +3130,16 @@ export function F3({ data, favs, params, restrictedResources, date, from, to }: 
   const [showNotification, setShowNotification] = useState(false);
   const svgRef = useRef<SVGSVGElement>(null);
   const router = useRouter();
-  const _params = params;
 
   useEffect(() => {
+    // Add states to elements using the provided data, favs, and restricted Resources
     addStatesToElements({ data, favs, restrictedResources })
+
+    // Get a reference to the SVG element
     const svg = svgRef.current as any;
     if (!svg) return;
 
+    // Function to get the point coordinates from a mouse or touch event
     const getPointFromEvent = (event: MouseEvent | TouchEvent) => {
       const point = svg.createSVGPoint();
       if ((event as TouchEvent).targetTouches) {
@@ -3093,18 +3152,21 @@ export function F3({ data, favs, params, restrictedResources, date, from, to }: 
 
       const invertedSVGMatrix = svg.getScreenCTM()!.inverse();
 
+      // Transform the point coordinates using the inverted matrix
       return point.matrixTransform(invertedSVGMatrix);
     };
 
     let isPointerDown = false;
     let pointerOrigin: SVGPoint;
 
+    // Event handler for pointer down event
     const onPointerDown = (event: MouseEvent | TouchEvent) => {
       isPointerDown = true;
       pointerOrigin = getPointFromEvent(event);
       svg.style.cursor = 'grabbing';
     };
 
+    // Event handler for pointer move event
     const onPointerMove = (event: MouseEvent | TouchEvent) => {
       if (!isPointerDown) {
         return;
@@ -3114,55 +3176,64 @@ export function F3({ data, favs, params, restrictedResources, date, from, to }: 
       const pointerPosition = getPointFromEvent(event);
       const viewBox = svg.viewBox.baseVal;
 
+      // Update the viewBox coordinates based on the pointer movement
       viewBox.x -= pointerPosition.x - pointerOrigin.x;
       viewBox.y -= pointerPosition.y - pointerOrigin.y;
     };
 
+    // Event handler for pointer up event
     const onPointerUp = () => {
       isPointerDown = false;
       svg.style.cursor = 'grab';
     };
 
+    // Event handler for pointer wheel event
     const onPointerWheel = (event: WheelEvent | TouchEvent) => {
       event.preventDefault();
-
       const pointerPosition = getPointFromEvent(event);
-
       if (!svg) return;
 
+      // Define the zooming speed and direction
       const scaleFactor = 1.1;
       const zoomSpeed = (event as WheelEvent).deltaY > 0 ? scaleFactor : 1 / scaleFactor;
 
+      // Calculate the new scale based on the zooming speed
       const viewBox = svg.viewBox.baseVal;
       const newScale = viewBox.width * zoomSpeed / viewBox.width;
       const deltaWidth = viewBox.width * (newScale - 1);
       const deltaHeight = viewBox.height * (newScale - 1);
 
+      // Update the viewBox coordinates and dimensions based on the zooming
       viewBox.x -= deltaWidth * (pointerPosition.x - viewBox.x) / viewBox.width;
       viewBox.y -= deltaHeight * (pointerPosition.y - viewBox.y) / viewBox.height;
       viewBox.width *= newScale;
       viewBox.height *= newScale;
 
+      // Set the new viewBox coordinates and dimensions
       svg.setAttributeNS(null, 'viewBox', `${viewBox.x} ${viewBox.y} ${viewBox.width} ${viewBox.height}`);
 
+      // Set the cursor style based on the zooming state
       const cursorStyle = zoomSpeed > 1 ? 'zoom-out' : 'zoom-in';
       svg.style.cursor = cursorStyle;
     };
 
 
     if (svg.PointerEvent) {
+      // Add event listeners for pointer events
       svg.addEventListener('pointerdown', onPointerDown);
       svg.addEventListener('pointerup', onPointerUp);
       svg.addEventListener('pointerleave', onPointerUp);
       svg.addEventListener('pointermove', onPointerMove);
       svg.addEventListener('wheel', onPointerWheel);
     } else {
+      // Add event listeners for mouse events
       svg.addEventListener('mousedown', onPointerDown);
       svg.addEventListener('mouseup', onPointerUp);
       svg.addEventListener('mouseleave', onPointerUp);
       svg.addEventListener('mousemove', onPointerMove);
       svg.addEventListener('wheel', onPointerWheel);
 
+      // Add event listeners for touch events
       svg.addEventListener('touchstart', onPointerDown);
       svg.addEventListener('touchend', onPointerUp);
       svg.addEventListener('touchmove', onPointerMove);
@@ -3170,7 +3241,9 @@ export function F3({ data, favs, params, restrictedResources, date, from, to }: 
 
   }, [data, favs, restrictedResources]);
 
+  // Append the data
   const loadClickedData = (id: string, dataArray: Array<dataProps>) => {
+    // Get the type of the resource
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
     if (type === "desk") {
       type = "Desk";
@@ -3184,8 +3257,10 @@ export function F3({ data, favs, params, restrictedResources, date, from, to }: 
       type = "";
     }
 
+    // Get the bookings for the specific resource
     const specifcResoruce = dataArray.filter((item) => item.resource === id).map((item) => { return { startDateTime: item.startDateTime.toString(), endDateTime: item.endDateTime.toString() } });
 
+    // Append the data to the clickedData object
     const data: clickedData = {
       id: id,
       name: id.charAt(0).toUpperCase() + id.slice(1).split("-").join(" "),
@@ -3198,6 +3273,7 @@ export function F3({ data, favs, params, restrictedResources, date, from, to }: 
     return data;
   }
 
+  // Event handler for the click event on the resource
   const onClickSlideOverHandler = (event: React.MouseEvent<SVGSVGElement, MouseEvent>) => {
     const clickedElement = event.currentTarget as unknown as HTMLElement;
     const status = clickedElement.getAttribute("class");
@@ -3207,6 +3283,7 @@ export function F3({ data, favs, params, restrictedResources, date, from, to }: 
     }
   }
 
+  // Event handler for the click event on the favorite button
   async function setFav(id: string, location: string) {
     if (clickedData?.isFavorite) {
       await removeFavorite(id, location)
@@ -3215,6 +3292,7 @@ export function F3({ data, favs, params, restrictedResources, date, from, to }: 
     }
   }
 
+  // Event handler for the click event on the booking button
   async function handleBooking(resourceName: string) {
     await createBooking(resourceName, params.location, date, from, to)
     setOpen(false);

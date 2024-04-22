@@ -11,7 +11,7 @@ interface BreadcrumbProps {
   pages: BreadcrumbElement[];
 }
 
-
+// Breadcrumb component takes in an array of pages and renders them as a breadcrumb trail
 export default function Breadcrumb({ pages }: BreadcrumbProps) {
   return (
     <>

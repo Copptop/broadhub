@@ -18,6 +18,7 @@ export const Dropdown = forwardRef<HTMLButtonElement, DropdownProps>(({
   userNavigation,
 }, ref) => {
 
+  // Sign out handler
   const onClick = async () => {
     await SignOutHandler();
   }

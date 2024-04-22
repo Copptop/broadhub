@@ -3,6 +3,7 @@
 import { prismaInstance } from "@/lib/prisma";
 import { currentUser } from "../hooks/server/use-current-user";
 
+// Function to format the date and time
 function formattedDateTime(date: Date, time: string) {
   const [hours, minutes] = time.split(':').map(Number);
   const newDateTime = new Date(date!.toISOString());
@@ -11,6 +12,8 @@ function formattedDateTime(date: Date, time: string) {
   return formattedDateTime;
 }
 
+// Function to get the upcoming bookings of the user
+// Returns the upcoming bookings of the user
 export const getUsersUpcomingBookings = async () => {
   const user = await currentUser()
   if (!user) return null
@@ -31,6 +34,8 @@ export const getUsersUpcomingBookings = async () => {
   }
 }
 
+// Function to get the bookings of the user
+// Returns the bookings of the user
 export const getUsersBookings = async () => {
   const user = await currentUser()
   if (!user) return null
@@ -51,6 +56,8 @@ export const getUsersBookings = async () => {
   }
 }
 
+// Function to get the booking history of the user
+// Returns the booking history of the user
 export const getUsersBookingHistory = async () => {
   const user = await currentUser()
   if (!user) return null
@@ -70,6 +77,7 @@ export const getUsersBookingHistory = async () => {
   }
 }
 
+// Function to get the specific booking of the user
 export const getSpecificBooking = async (id: string) => {
   const user = await currentUser()
   if (!user) return null
@@ -90,6 +98,7 @@ export const getSpecificBooking = async (id: string) => {
   }
 }
 
+// Function to create a booking
 export const createBooking = async (resourceName: string, location: string, date: Date, start: string, end: string) => {
   const startDT = formattedDateTime(date, start)
   const endDT = formattedDateTime(date, end)
@@ -131,6 +140,7 @@ export const createBooking = async (resourceName: string, location: string, date
   }
 }
 
+// Function to delete a booking
 export const deleteBooking = async (id: string) => {
   const user = await currentUser()
   if (!user || id === '') return null
@@ -147,6 +157,7 @@ export const deleteBooking = async (id: string) => {
   }
 }
 
+// Function to delete a booking as management
 export const DeleteBookingAsManagement = async (id: string) => {
   const user = await currentUser()
   if (!user || id === '') return null
@@ -162,6 +173,7 @@ export const DeleteBookingAsManagement = async (id: string) => {
   }
 }
 
+// Function to get all the bookings going forward
 export const getAllBookingsGoingForward = async (locationName: string) => {
   const user = await currentUser()
   if (!user) return null
@@ -182,6 +194,7 @@ export const getAllBookingsGoingForward = async (locationName: string) => {
   }
 }
 
+// Function to get all the users bookings going forward
 export const getAllUsersBookingsGoingForward = async () => {
   const user = await currentUser()
   if (!user) return null

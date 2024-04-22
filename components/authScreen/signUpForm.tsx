@@ -17,6 +17,7 @@ export default function SignUpForm() {
   const [success, setSuccess] = useState<string | undefined>("")
   const [isPending, startTransition] = useTransition()
 
+  // Set the initial values for the user details
   const _name = useRef("")
   const _email = useRef("")
   const _emailConfirm = useRef("")
@@ -24,13 +25,17 @@ export default function SignUpForm() {
   const _passwordConfirm = useRef("")
   const _companyCode = useRef("")
 
+  // Toggle the company code field
   const toggleCollapse = () => {
     setIsCollapsed(!isCollapsed);
   };
 
+  // Handle the form submission
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    // Disables the fields while the form is being submitted
     startTransition(() => {
+      // Calls the SignUpHandler function & handles the response
       SignUpHandler({ name: _name.current, email: _email.current, emailConfirm: _emailConfirm.current, password: _password.current, passwordConfirm: _passwordConfirm.current, companyCode: _companyCode.current })
         .then((data) => {
           setError(data.error);
@@ -42,7 +47,7 @@ export default function SignUpForm() {
             _password.current = '';
             _passwordConfirm.current = '';
             _companyCode.current = '';
-
+            // Redirects the user to the sign in page after 3.5 seconds
             setTimeout(() => {
               setError(undefined);
               setSuccess(undefined);

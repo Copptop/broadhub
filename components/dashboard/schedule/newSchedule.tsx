@@ -36,29 +36,36 @@ function classNames(...classes: any) {
   return classes.filter(Boolean).join(' ')
 }
 
+// Schedule component - renders the schedule section
 export default function Schedule({ data }: BookingCardsProps) {
-
+  // Define the current day and set the necessary states
   const today = startOfToday();
   const [selectedDay, setSelectedDay] = useState(today);
   const [currentMonth, setCurrentMonth] = useState(format(today, 'MMM yyyy'));
   const firstdayCurrentMonth = parse(currentMonth, 'MMM yyyy', new Date());
 
+  // Get the days of the current month
   const days = eachDayOfInterval({
     start: startOfWeek(firstdayCurrentMonth),
     end: endOfWeek(endOfMonth(firstdayCurrentMonth))
   });
 
+  // Functions to navigate the calendar
+  // Next month
   function nextMonth() {
     const firstDayNextMonth = addMonths(firstdayCurrentMonth, 1)
     setCurrentMonth(format(firstDayNextMonth, 'MMM yyyy'))
   }
+  // Previous month
   function previousMonth() {
     const firstDayPreviousMonth = addMonths(firstdayCurrentMonth, -1)
     setCurrentMonth(format(firstDayPreviousMonth, 'MMM yyyy'))
   }
+  // This month
   function makecurrentMonth() {
     setCurrentMonth(format(today, 'MMM yyyy'))
   }
+  // Set the selected day
   function customSetSelectedDay(day: Date) {
     if (!isSameMonth(day, firstdayCurrentMonth)) {
       if (day < firstdayCurrentMonth) {
@@ -71,6 +78,7 @@ export default function Schedule({ data }: BookingCardsProps) {
     setSelectedDay(day)
   }
 
+  // Filter the bookings for the selected day
   const selectedDayBookings = data.filter(booking => isSameDay(parseISO(booking.startDatetime), selectedDay))
 
   return (
@@ -166,7 +174,9 @@ export default function Schedule({ data }: BookingCardsProps) {
   )
 }
 
+// BookingElement component - renders a single booking element
 function BookingElement({ booking }: any) {
+  // Define the user navigation for the dropdown on the booking element
   const userNavigation = [
     { name: 'Edit', href: `bookings/${booking.id}` },
   ];

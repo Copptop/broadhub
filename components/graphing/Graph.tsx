@@ -2,30 +2,6 @@
 
 import { AreaChart, DonutChart, Legend } from '@tremor/react';
 
-
-const sales = [
-  {
-    name: 'New York',
-    sales: 980,
-  },
-  {
-    name: 'London',
-    sales: 456,
-  },
-  {
-    name: 'Hong Kong',
-    sales: 390,
-  },
-  {
-    name: 'San Francisco',
-    sales: 240,
-  },
-  {
-    name: 'Singapore',
-    sales: 190,
-  },
-];
-
 interface DonutDataProps {
   name: string,
   value: number,

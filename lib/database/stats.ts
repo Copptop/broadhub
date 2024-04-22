@@ -4,12 +4,7 @@ import { prismaInstance } from "@/lib/prisma";
 import { addDays, addMonths, format, parse, startOfToday } from "date-fns";
 import { currentUser } from "../hooks/server/use-current-user";
 
-const stats = [
-  { name: 'Total Bookings', stat: '135' },
-  { name: 'Booking Compared to Last Month', stat: '78.4%' },
-  { name: 'Total Avalibility', stat: '44.57%' },
-]
-
+// Function to get the statistics
 export const getStatistics = async (id: string) => {
   const firstdayCurrentMonth = parse(format(startOfToday(), 'MMM yyyy'), 'MMM yyyy', new Date());
   const firstDayPreviousMonth = addMonths(firstdayCurrentMonth, -1)
@@ -66,6 +61,7 @@ export const getStatistics = async (id: string) => {
   }
 }
 
+// Function to get the graph data
 export const getGraphData = async (location: string, start: Date, end: Date) => {
   const user = currentUser()
   if (!user) return null;
@@ -128,6 +124,7 @@ export const getGraphData = async (location: string, start: Date, end: Date) => 
   }
 }
 
+// Function to get the donut data
 export const getDonutData = async (location: string, start: Date, end: Date) => {
   const user = currentUser()
   if (!user) return null;

@@ -11,12 +11,12 @@ interface Booking {
   floor: number;
 }
 
-
 interface BookingCardsProps {
   data: Booking[];
 }
 
 const DashboardHeader = async ({ data }: BookingCardsProps) => {
+  // Get the current user information
   const user = await currentUser()
   return (
     <>

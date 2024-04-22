@@ -2,13 +2,13 @@
 import { prismaInstance } from '@/lib/prisma'
 import bcrypt from 'bcryptjs'
 
+//Load the initial data into the database required for the application to work
 export const loadInitialData = async (dataToLoad: 'init' | 'company' | 'locations' | 'resources' | 'users' | 'bookings') => {
   if (dataToLoad === 'init') {
     await loadCompanyData()
     await loadLocationData()
     await loadResourceData()
     await loadUserData()
-    await loadBookingData()
   }
   if (dataToLoad === 'company') {
     await loadCompanyData()
@@ -22,12 +22,9 @@ export const loadInitialData = async (dataToLoad: 'init' | 'company' | 'location
   if (dataToLoad === 'users') {
     await loadUserData()
   }
-  if (dataToLoad === 'bookings') {
-    await loadBookingData()
-  }
 }
 
-
+// Function to load the initial company data
 const loadCompanyData = async () => {
   console.log('\nCreating Company')
   try {
@@ -46,6 +43,7 @@ const loadCompanyData = async () => {
   console.log('Company Created\n')
 }
 
+// Function to load the initial location data
 const loadLocationData = async () => {
   console.log('\nCreating Broadridge Locations')
   const company = await prismaInstance.company.findFirst({ where: { code: '1001' } })
@@ -101,6 +99,7 @@ const loadLocationData = async () => {
   console.log('Broadridge Locations Created\n')
 }
 
+// Function to load the initial resource data
 const loadResourceData = async () => {
   console.log('\nCreating Resources')
   const locations = await prismaInstance.location.findMany()
@@ -355,6 +354,7 @@ const loadResourceData = async () => {
   console.log('Resources Load Complete\n')
 }
 
+// Function to load the initial user data
 const loadUserData = async () => {
   console.log('\nCreating Users -> This will not cover Oauth Users')
   const company = await prismaInstance.company.findFirst({ where: { name: 'Broadridge' } })
@@ -378,21 +378,4 @@ const loadUserData = async () => {
   console.log('Created Users as per readme\n')
 }
 
-const loadBookingData = async () => {
-  console.log('\nCreating Some Basline Bookings Spanning 2 Weeks identicaly across all locations -> This will not cover Oauth Users && will not cover all resources')
-  try {
-    await prismaInstance.company.create({
-      data: {
-        name: 'Broadridge',
-        code: '1001',
-        logo: 'https://www.broadridge.com/_assets/images/logos/br-pimary-blue-logo.svg',
-      }
-    })
-  } catch (error) {
-    console.log('error ->', error)
-    return
-  }
-
-  console.log('Bookings Created\n')
-}
 

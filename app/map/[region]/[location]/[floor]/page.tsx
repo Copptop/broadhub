@@ -25,8 +25,11 @@ interface restictedProps {
 
 
 export default async function Page({ params }: { params: { floor: string, location: string, region: string } }) {
+  // Fetch the booking data from the database
   const data = await getAllBookingsGoingForward(params.location)
+  // Fetch the favorites data from the database
   const favs = await getFavorites(params.location)
+  // Fetch the restricted resources data from the database
   const restrictedResources = await getRestrictedResources(params.location, parseInt(params.floor.replace('floor', '')))
 
   return (

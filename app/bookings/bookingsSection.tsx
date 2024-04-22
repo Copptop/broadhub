@@ -6,11 +6,13 @@ import { MagnifyingGlassIcon } from '@heroicons/react/24/solid'
 import { Table } from '@/components/Tables'
 import React, { useState } from 'react'
 
+// Define the actions that can be performed on a booking
 const bookingActions = [
   { name: 'View', navigateTo: true },
   { name: 'Rebook', navigateTo: true },
 ]
 
+// Define the headers for the bookings table
 const bookingsHeaders = [
   { name: 'Resource' },
   { name: 'Location' },
@@ -18,6 +20,7 @@ const bookingsHeaders = [
   { name: 'End' },
 ]
 
+// Define the props for a booking
 interface BookingProps {
   id: string,
   resource: string,
@@ -34,10 +37,12 @@ export default function BookingsSection({ bookings }: { bookings: Array<BookingP
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Handle the search button click
   const handleSearchClick = () => {
     setShowCommandPalette(true);
   };
 
+  // Handle the closing of the command palette
   const handleCloseCommandPalette = () => {
     setShowCommandPalette(false);
     setSearchQuery('');

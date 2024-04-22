@@ -26,16 +26,18 @@ export default function SignInForm() {
   const _password = useRef("")
 
   const onSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
-    startTransition(() => {
+    e.preventDefault()      // Prevents the page from reloading
+    startTransition(() => { // disables the fields while the form is being submitted
+      // Calls the SignInHandler function
       SignInHandler({ email: _email.current, password: _password.current }, callbackUrl ?? undefined)
-        .then((data) => {
+        .then((data) => {   //Handles the response from the SignInHandler function
           setError(data?.error)
           setSuccess(data?.success)
         })
     })
   }
 
+  // Handle the provider sign in for Okta and Azure
   const onClick = (provider: 'okta' | 'azure') => {
     startTransition(() => {
       SignInWithProviderHandler(provider, callbackUrl ?? undefined)

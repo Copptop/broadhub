@@ -1,7 +1,9 @@
 import { ArrowRightIcon } from "@heroicons/react/24/solid"
 import Link from "next/link"
 
+// Define the headers for the list table
 const headers = ['Regions']
+// Define the regions
 const regions = [{ name: 'NA', href: `/list/NA` }, { name: 'NENA', href: `/list/NENA` }, { name: 'EMEA', href: `/list/EMEA` }, { name: 'UK', href: `/list/UK` }, { name: 'APAC', href: `/list/APAC` }]
 
 export default function Page() {

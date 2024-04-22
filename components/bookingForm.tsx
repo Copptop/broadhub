@@ -1,16 +1,16 @@
 'use client'
 
+// Import the necessary modules
 const ics = require('ics')
 
-import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
-import React, { useState } from 'react'
 import { InvertedSubmitButton } from '@/components/Buttons';
 import { ConfirmModal } from '@/components/popups/Modals';
-import { format } from 'date-fns';
-import { createEvent } from 'ics';
-import { saveAs } from 'file-saver';
 import { useCurrentUser } from '@/lib/hooks/use-current-user';
+import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
+import { format } from 'date-fns';
+import { saveAs } from 'file-saver';
 import Link from 'next/link';
+import { useState } from 'react';
 
 interface BookingProps {
   id: string;
@@ -23,15 +23,19 @@ interface BookingProps {
   region: string;
   floor: string;
 }
+
+// Booking form component
 export default function BookingForm(data: BookingProps) {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const user = useCurrentUser()
 
+  // Function to handle the save button
   const handleSave = (data: BookingProps) => {
     const duration = ((data.endDatetime.getTime() - data.startDatetime.getTime()) / 1000 / 60 / 60).toString()
     const durationHours = parseInt(duration.split('.')[0])
     const durationMinutes = parseInt(duration.split('.')[1]) * 6
 
+    // Create the event object
     const event = {
       start: [data.startDatetime.getFullYear(), data.startDatetime.getMonth(), data.startDatetime.getDay(), data.startDatetime.getHours(), data.startDatetime.getMinutes()],
       duration: { hours: durationHours, minutes: durationMinutes },
@@ -49,10 +53,12 @@ export default function BookingForm(data: BookingProps) {
       ]
     }
 
+    // Create the .ics file
     ics.createEvent(event, (error: any, value: any) => {
       if (error) {
         return
       }
+      // Save the file to the user's device via file-saver
       const blob = new Blob([value], { type: "text/plain;charset=utf-8" });
       saveAs(blob, "event-schedule.ics")
     })

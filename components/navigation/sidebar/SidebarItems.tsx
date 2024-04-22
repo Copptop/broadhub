@@ -15,6 +15,8 @@ export const SidebarItem: React.FC<SidebarItemProps> = ({
   href,
   icon,
 }) => {
+
+  // Gets the current active path 
   const currentPath = usePathname();
   const current = currentPath === href;
   return (
@@ -57,6 +59,8 @@ export const AdminSidebarItem: React.FC<AdminSidebarItem> = ({
   initial,
   requiredRoles,
 }) => {
+
+  // Gets the current active path and the current user role
   const currentPath = usePathname();
   const current = currentPath === href;
   const userRole = useCurrentRole()

@@ -2,19 +2,20 @@
 import { ResetPasswordHandler } from "@/lib/handlers/resetPassword";
 import { useCurrentRole } from "@/lib/hooks/use-current-user";
 import { ExclamationCircleIcon, UserCircleIcon } from "@heroicons/react/24/outline";
-import { ArrowRightIcon, ChevronDownIcon } from "@heroicons/react/24/solid";
+import { ArrowRightIcon } from "@heroicons/react/24/solid";
+import { format } from "date-fns";
+import Image from "next/image";
 import Link from "next/link";
 import React, { ReactNode, useRef } from "react";
 import { ConfirmModal } from "./popups/Modals";
 import { HappyNotification } from "./popups/Notfication";
-import Image from "next/image";
-import { format } from "date-fns";
 interface table {
   headers: Array<any>;
   data: Array<any>;
   Actions?: Array<any>;
 }
 
+// Defines the universal table component
 export function Table(dataFeed: table) {
   const [isUserModalOpen, setIsUserModalOpen] = React.useState(false);
   const [isBookingModalOpen, setIsBookingModalOpen] = React.useState(false);
@@ -22,11 +23,13 @@ export function Table(dataFeed: table) {
 
   const id = useRef('');
 
+  // Get the current role
   const role = useCurrentRole();
   if (dataFeed.Actions && !dataFeed.headers.some(header => header.name === "Actions")) {
     dataFeed.headers.push({ name: "Actions", sortable: false });
   }
 
+  // Handle the password reset
   const handlePasswordReset = (email: string) => {
     ResetPasswordHandler(email)
     setShowNotification(true)
@@ -53,6 +56,7 @@ export function Table(dataFeed: table) {
                 </tr>
               </thead>
               <tbody className="divide-y divide-zinc-200 dark:divide-zinc-500 text-center text-zinc-500 dark:text-zinc-500 font-normal">
+                {/* Map the data to the table that was passed into the component */}
                 {dataFeed.data.map((dp) => (
                   <tr key={dp.id} className="">
                     {Object.entries(dp)
@@ -92,6 +96,7 @@ export function Table(dataFeed: table) {
                       ))}
                     <td className="relative whitespace-nowrap py-4 px-4 text-right text-sm sm:px-1">
                       <div className="flex justify-center">
+                        {/* Does Role based actions filtering */}
                         {dataFeed.Actions!.map((action) => (
                           <div key={action.name}>
                             {action.name === 'View' && (
@@ -249,6 +254,7 @@ interface list_table {
   data: Array<{ name: String, href: String }>;
 }
 
+// Defines the list table component
 export function List_Table(dataFeed: list_table) {
   return (
     <>
@@ -288,6 +294,7 @@ export function List_Table(dataFeed: list_table) {
   );
 }
 
+// Defines the booking list table component
 interface bookingListTable {
   headers: Array<String>;
   data: Array<{ name: String, type: String, status: String, isFavourite?: Boolean }>;

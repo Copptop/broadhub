@@ -1,9 +1,10 @@
-import { currentRole, currentUser } from '@/lib/hooks/server/use-current-user';
+import { getAllLocations } from '@/lib/database/locations';
+import { getStatistics } from '@/lib/database/stats';
+import { currentUser } from '@/lib/hooks/server/use-current-user';
 import { redirect } from 'next/navigation';
 import DynamicStatistics from './dynamicStatistics';
-import { getStatistics } from '@/lib/database/stats';
-import { getAllLocations } from '@/lib/database/locations';
 
+// Stats to be displayed on the page
 const stats = [
   { name: 'Total Local Bookings', stat: '' },
   { name: 'Local Booking Compared to Last Month', stat: '' },
@@ -11,17 +12,19 @@ const stats = [
 ]
 
 export default async function Page() {
+  // Ensure correct user role for access
   const user = await currentUser()
   if (!user || !user.id || user.role !== 'HR' && user.role !== 'ADMIN') {
     redirect('/')
   }
 
+  // Get the statistics from the database
   const _stats = await getStatistics(user.id)
   stats[0].stat = _stats.numberOfBookings.toString()
   stats[1].stat = `${_stats.bookingsComparedToLastMonth.toString()} %`
   stats[2].stat = _stats.numberOfUsersLocally.toString()
 
-
+  // Get all locations
   const locations = (await getAllLocations()).map((location: any) => {
     return {
       id: location.id,

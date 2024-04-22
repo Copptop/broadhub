@@ -3,16 +3,18 @@
 import { createBooking } from "@/lib/database/bookings";
 import { addFavorite, removeFavorite } from "@/lib/database/resources";
 import { Transition } from "@headlessui/react";
+import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 import { ArrowRightIcon, ClockIcon, ComputerDesktopIcon, HeartIcon, XMarkIcon } from "@heroicons/react/24/solid";
 import { Button, DatePicker, DatePickerValue, Dialog, Select, SelectItem } from '@tremor/react';
 import { addMinutes, addMonths, isAfter, isBefore, isWithinInterval } from "date-fns";
 import { useRouter } from "next/navigation";
-import { Fragment, useEffect, useState, useTransition } from "react";
+import { Fragment, useState, useTransition } from "react";
 import { InvertedSubmitButton, SubmitButton } from "../Buttons";
 import { BookingNotification } from "../popups/Notfication";
-import { MagnifyingGlassIcon } from "@heroicons/react/24/outline";
 
+// Headers for the table
 const headers = ['Resources', 'Type', 'Status', 'Actions']
+// Time slots for the day
 const times = [
   "07:00", "07:30", "08:00", "08:30", "09:00", "09:30", "10:00", "10:30", "11:00", "11:30",
   "12:00", "12:30", "13:00", "13:30", "14:00", "14:30", "15:00", "15:30", "16:00", "16:30",
@@ -26,15 +28,6 @@ interface resourceProps {
   restrictedRoles: string[],
   locationID: string,
   floor: number
-}
-
-interface bookingsaProps {
-  id: string,
-  startDateTime: Date,
-  endDateTime: Date,
-  resource: string,
-  resourceType: string,
-  location: string,
 }
 
 interface favsProps {
@@ -54,11 +47,7 @@ interface clickedData {
   isFavorite: boolean;
 }
 
-interface bookingData {
-  startDateTime: string;
-  endDateTime: string;
-}
-
+// Function to format the date and time
 function formattedDateTime(date: Date, time: string) {
   const [hours, minutes] = time.split(':').map(Number);
   const newDateTime = new Date(date!.toISOString());
@@ -68,6 +57,7 @@ function formattedDateTime(date: Date, time: string) {
 }
 
 export default function ListSection({ resources, bookings, favs, params }: { resources: Array<any>, bookings: Array<any> | null, favs: Array<favsProps>, params: { floor: string, location: string, region: string } }) {
+  // Get the current time and set the initial start and end time
   const currentTime = new Date().toTimeString()
   let [hours, minutes] = currentTime.split(':').map(Number);
   if (minutes < 30) minutes = 30;
@@ -92,12 +82,14 @@ export default function ListSection({ resources, bookings, favs, params }: { res
   const [clickedData, setClickedData] = useState<clickedData>();
   const [showNotification, setShowNotification] = useState(false);
 
+  // Filter the resources based on the selected date and time
   const [_resources, setResources] = useState(resources.filter((resource) => {
     const selectedStartTime = new Date();
     const selectedEndTime = new Date();
 
     if (bookings === null) return true;
 
+    // Check if the resource is available for the selected date and time
     for (const booking of bookings) {
       const startDateTime = booking.start;
       const endDateTime = booking.end;
@@ -109,6 +101,7 @@ export default function ListSection({ resources, bookings, favs, params }: { res
       const bothInRange = startWithinRange && endWithinRange;
       const coversRange = isBefore(startDateTime, selectedStartTime) && isAfter(endDateTime, addMinutes(selectedEndTime, -1));
 
+      // Check if the booking overlaps with the selected date and time
       if (
         startsBeforeEndsIn ||
         endsAfterStartsIn ||
@@ -126,11 +119,13 @@ export default function ListSection({ resources, bookings, favs, params }: { res
 
   const [_favs, setFavs] = useState(favs);
 
+  // Function to handle the search button click
   function onclick() {
     if (!selectedDate) {
       alert("Please ensure a date is selected ");
       return;
     }
+    // Check if the start time is before the end time
     const pos1 = times.indexOf(selectorValue1);
     const pos2 = times.indexOf(selectorValue2);
     if (pos1 >= pos2) {
@@ -138,15 +133,16 @@ export default function ListSection({ resources, bookings, favs, params }: { res
       return;
     }
 
+    // Check if the selected time is in the future
     const dateTime1 = formattedDateTime(selectedDate, times[pos1]);
     const dateTime2 = formattedDateTime(selectedDate, times[pos2]);
-
     if (dateTime1 < new Date().toISOString() || dateTime2 < new Date().toISOString()) {
       alert("Please ensure the selected time is in the future");
       return;
     }
 
     startTransition(() => {
+      // Filter the resources based on the selected date and time
       setResources(resources.filter((resource) => {
         const selectedStartTime = new Date(dateTime1);
         const selectedEndTime = new Date(dateTime2);
@@ -180,6 +176,7 @@ export default function ListSection({ resources, bookings, favs, params }: { res
     });
   }
 
+  // Function to load the clicked data and adapt the type
   const loadClickedData = (id: string, dataArray: Array<resourceProps>) => {
     let type = document.getElementById(id)?.getAttribute("class")?.split(" ")[0] ?? "";
     if (type === "desk") {
@@ -205,11 +202,13 @@ export default function ListSection({ resources, bookings, favs, params }: { res
     return data;
   }
 
+  // Function to handle the slide over click
   const onClickSlideOverHandler = (resourceName: string) => {
     setClickedData(loadClickedData(resourceName, _resources))
     setOpen(true);
   }
 
+  // Function to add or remove a favorite
   async function setFav(id: string, location: string) {
     if (clickedData?.isFavorite) {
       await removeFavorite(id, location)
@@ -218,7 +217,9 @@ export default function ListSection({ resources, bookings, favs, params }: { res
     }
   }
 
+  // Function to book a resource
   async function handleBooking(resourceName: string) {
+    // call the createBooking function and handles the response
     await createBooking(resourceName, params.location, selectedDate as Date, selectorValue1, selectorValue2)
       .then((data) => {
         if (!data?.error) {

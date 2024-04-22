@@ -9,6 +9,7 @@ interface ThemeButtonProps {
   children?: React.ReactNode;
 }
 
+// ThemeButton component
 const ThemeButton = ({ }: ThemeButtonProps) => {
   const { resolvedTheme, setTheme } = useTheme();
 

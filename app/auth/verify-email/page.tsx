@@ -12,6 +12,7 @@ const EmailVerficationPage = () => {
   const searchParams = useSearchParams()
   const token = searchParams.get('token')
 
+  // Verify the email
   const onClick = useCallback(() => {
     if (success || error) return
     if (!token) {
@@ -19,6 +20,7 @@ const EmailVerficationPage = () => {
       return
     }
 
+    // Verify the email using the token provided in the URL
     VerifyEmail(token)
       .then((data) => {
         setError(data.error);
@@ -28,6 +30,7 @@ const EmailVerficationPage = () => {
         setError("An error occurred");
       });
 
+    // Redirect to the sign in page after 3 seconds
     if (success) {
       setTimeout(() => {
         window.location.href = '/auth/signin'
@@ -35,6 +38,7 @@ const EmailVerficationPage = () => {
     }
   }, [token, success, error])
 
+  // Call the onClick function when the component mounts
   useEffect(() => {
     onClick()
   }, [onClick])

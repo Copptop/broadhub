@@ -10,6 +10,7 @@ import { SessionProvider } from 'next-auth/react';
 
 const inter = Inter({ subsets: ['latin'] })
 
+// Define the metadata for the layout
 export const metadata = {
   title: 'BroadridgeHub',
   description: 'For all your Broadridge hotelling needs',
@@ -23,6 +24,7 @@ export default function RootLayout({
   return (
     <html className="light antialiased" lang="en-GB" suppressHydrationWarning>
       <body className='bg-white dark:bg-zinc-900 overflow-hidden'>
+        {/* wraps all web pages with the session provider and the theme button */}
         <SessionProvider>
           <Providers>
             <ContentContainer>
@@ -33,6 +35,7 @@ export default function RootLayout({
           </Providers>
         </SessionProvider>
       </body>
+      {/* Allows Vercel performace hook to be avalible on deployment */}
       <Analytics />
     </html>
   )

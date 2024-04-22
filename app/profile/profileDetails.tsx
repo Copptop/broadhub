@@ -1,17 +1,14 @@
 'use client'
 
 import { InvertedSubmitButton, SubmitButton } from "@/components/Buttons";
-import { InputField } from '@/components/InputFields';
-import Breadcrumb from "@/components/navigation/breadcrumbs";
 import { ConfirmModal, ProfilePicModal } from "@/components/popups/Modals";
 import { ResetPasswordHandler } from "@/lib/handlers/resetPassword";
 import { useCurrentRole } from "@/lib/hooks/use-current-user";
 import { CheckBadgeIcon } from "@heroicons/react/20/solid";
-import { ArrowUpTrayIcon, UserCircleIcon } from "@heroicons/react/24/outline";
+import { ArrowUpTrayIcon } from "@heroicons/react/24/outline";
 import { ExclamationCircleIcon } from '@heroicons/react/24/solid';
-import { format, set } from "date-fns";
-import { useRef, useState, useTransition } from 'react';
 import { Button } from '@tremor/react';
+import { useRef, useState, useTransition } from 'react';
 
 import { changeUserInformation } from '@/lib/handlers/users';
 
@@ -41,38 +38,47 @@ export default function ProfileDetails({ User, selectLocation }: { User: UserPro
   const [isProfilePicModalOpen, setIsProfilePicModalOpen] = useState(false);
   const [isPending, startTransition] = useTransition()
 
+  // Set the initial values for the user details
   const [_role, setSelectRole] = useState(selectRole[selectRole.findIndex(role => role.toUpperCase() === User.role.toUpperCase())])
   const [_location, setSelectLocation] = useState(selectLocation[selectLocation.findIndex(location => location.toUpperCase() === User.officeLocation.toUpperCase())])
 
   const _name = useRef(User.name);
   const _email = useRef(User.email);
 
+  // Handle the edit toggle
   const handleEditToggle = () => {
+    // Set behaviour for editing based on current edit state
     if (isEditing) {
       _name.current = User.name;
       _email.current = User.email;
       setSelectRole(User.role);
       setSelectLocation(User.officeLocation);
     }
+    // Check if the user is an admin
     if (role === 'ADMIN') {
       setIsEditingWPriv(!isEditing);
     }
     setIsEditing(!isEditing);
   };
 
+  // Handle the password reset
   const handlePasswordReset = (email: string) => {
     ResetPasswordHandler(email)
   }
 
+  // Handle the form submission
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError('');
-    setSuccess('');
+    setSuccess('')
+
+    // Check if all fields are filled
     if (!_name.current || !_email.current || !_role || !_location) {
       setError('Please fill in all fields');
       return;
     }
 
+    // Start the transition and update the user information
     startTransition(() => {
       changeUserInformation(User.id, _name.current, _email.current, _role, _location)
         .then((data) => {

@@ -1,45 +1,44 @@
-
-
 import { Fragment } from 'react';
 
 import { Dialog, Transition } from '@headlessui/react';
 import {
-  Cog6ToothIcon,
   HomeIcon,
   MapIcon,
   QueueListIcon,
   TicketIcon,
-  XMarkIcon,
-  UserIcon
+  UserIcon,
+  XMarkIcon
 } from '@heroicons/react/24/outline';
 
 import { StandardLogo } from '@/components/logo';
 import { AdminSidebarItem, SidebarItem } from '@/components/navigation/sidebar/SidebarItems';
-import Link from 'next/link';
 import { useCurrentRole } from '@/lib/hooks/use-current-user';
+import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
+// Navigation items
 const navigation = [
   { name: 'Dashboard', href: '/', icon: HomeIcon },
   { name: 'Map View', href: '/map', icon: MapIcon },
   { name: 'List View', href: '/list', icon: QueueListIcon },
   { name: 'Previous Bookings', href: '/bookings', icon: TicketIcon },
 ]
+// Admin Tools
 const tools = [
   { name: 'Analytics', href: '/analytics', initial: 'A', requiredRoles: ['HR', 'ADMIN'] },
   { name: 'Manage Users', href: '/management/users', initial: 'U', requiredRoles: ['MANAGER', 'HR', 'ADMIN'] },
   { name: 'Manage Bookings', href: '/management/bookings', initial: 'B', requiredRoles: ['HR', 'ADMIN'] },
 ]
 
+// Req roles
 const adminRoles = ['ADMIN', 'HR', 'MANAGER']
 interface SidebarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
 const Sidebar = ({ sidebarOpen, setSidebarOpen }: SidebarProps) => {
+  // Get the current user role
   const userRole = useCurrentRole()
-  const currentPath = usePathname();
-  const current = currentPath === '/profile';
 
   return (
     <>

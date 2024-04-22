@@ -1,18 +1,19 @@
 'use client'
 
 import { SubmitButton } from '@/components/Buttons';
-import { UsersSearchPalette } from '@/components/searchboxes/UsersCommandPalettes';
-import { ExclamationCircleIcon, MagnifyingGlassIcon } from '@heroicons/react/24/solid';
 import { Table } from '@/components/Tables';
-import React, { useState } from 'react'
-import { ConfirmModal } from '@/components/popups/Modals';
+import { UsersSearchPalette } from '@/components/searchboxes/UsersCommandPalettes';
+import { MagnifyingGlassIcon } from '@heroicons/react/24/solid';
+import { useState } from 'react';
 
+// Define the actions for the users
 const userActions = [
   { name: 'Amend', navigateTo: true },
   { name: 'Reset Password' },
   { name: 'Delete' },
 ]
 
+// Define the headers for the users table
 const usersHeaders = [
   { name: '', sortable: false },
   { name: 'Name' },
@@ -36,10 +37,12 @@ export default function UsersSection({ data }: { data: Array<userProps> }) {
   const [showCommandPalette, setShowCommandPalette] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
 
+  // Handle the search click
   const handleSearchClick = () => {
     setShowCommandPalette(true);
   };
 
+  // Handle the close command palette
   const handleCloseCommandPalette = () => {
     setShowCommandPalette(false);
     setSearchQuery('');

@@ -3,15 +3,6 @@ import Breadcrumb from '@/components/navigation/breadcrumbs'
 import { getAllBookingsGoingForward } from '@/lib/database/bookings'
 import { getFavorites, getResources } from '@/lib/database/resources'
 
-interface dataProps {
-  id: string,
-  startDateTime: Date,
-  endDateTime: Date,
-  resource: string,
-  resourceType: string,
-  location: string,
-}
-
 interface favsProps {
   id: string,
   resource: string,
@@ -20,10 +11,12 @@ interface favsProps {
 }
 
 export default async function Page({ params }: { params: { floor: string, location: string, region: string } }) {
-  const data = await getAllBookingsGoingForward(params.location)
+  // Fetch the favs from the database
   const favs = await getFavorites(params.location)
 
+  // Fetch the booking data from the database
   const _data = await getResources(params.location, parseInt(params.floor.split('floor', 2)[1]))
+  // Map the raw booking data to the booking props to be used in the component
   const bookings = _data ? _data[1].flat() : null;
   const resources = _data ? _data[0] : [];
 
