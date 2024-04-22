@@ -1,49 +1,48 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# BroadHub
+## Technologies Used
+- [Node.js 18](https://nodejs.org/en/) 
+- [TypeScript](https://www.typescriptlang.org/) 
+- [Next.js 14.1](https://nextjs.org/) 
+- [Prisma](https://www.prisma.io/) 
+- [Tailwind CSS](https://tailwindcss.com/) 
 
-## Getting Started
+## Installation & Running
+To ensure that the project is fairly reflected please use the **deployed** instance of the project. As the project is hosted on vercel, the deployment instance can be accessed via the following link: [BroadHub](https://broadhub.vercel.app/)
 
-First, run the development server:
+Please note that no matter the environment you are running the project the following things have been disabled:
+ - Email verification required for login 
+ - Password reset functionality
+ - All other Email related functionality
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-```
+ This is due to a domain not being purchased and set up for the project, and as such the email functionality will not work.
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+If you with to run the project locally however, please follow the steps below:
+1. Install Node.js 18 or later
+2. Clone the specific 'Maker-Runnable' branch of the repository (otherwise this will not work)
+3. Install dependencies by running `npm ci`
+4. Start the server with `npm run dev`
+5. Navigate to [http://localhost:3000](http://localhost:3000) in your browser
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Defaults
+### Users Login credentials
+These are the default credentials for the users in the system. and can be used to login to the system.
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+**Please note that if you are running the project locally you will need to init the data into your database instance (please see above steps).**
 
-## Learn More
+#### Credential User Info @ Credential 
+| Email             | Password  |
+| ----------------- | --------- |
+| Dev.Coppertop+Broadhub.AyrtonSenna@gmail.com | Password@1 |
+| Dev.Coppertop+Broadhub.MikaHakkinen@gmail.com | Password@1 |
+| Dev.Coppertop+Broadhub.SebastianVettel@gmaiI.com | Password@1 |
+| Dev.Coppertop+Broadhub.MichaelSchumacher@gmaiI.com | Password@1 |
+| Dev.Coppertop+Broadhub.LewisHamilton@gmail.com | Password@1 |
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
-
-
-### OAuth2.0 User Info @ Okta 
-  Dev.Coppertop+Broadhub.SkyJackson@gmail.com // OAuthPass
-  Dev.Coppertop+Broadhub.BenGreen@gmail.com // OAuthPass
-  Dev.Coppertop+Broadhub.RebeccaDeer@gmaiI.com // OAuthPass
-  Dev.Coppertop*Broadhub.DaveBIack@gmaiI.com // OAuthPass
-  Dev.Coppertop+Broadhub.JohnDoe@gmail.com // OAuthPass
-
-  ### Credential User Info @ Credential 
-  Dev.Coppertop+Broadhub.AyrtonSenna@gmail.com // Password@1
-  Dev.Coppertop+Broadhub.MikaHakkinen@gmail.com // Password@1
-  Dev.Coppertop+Broadhub.SebastianVettel@gmaiI.com // Password@1
-  Dev.Coppertop*Broadhub.MichaelSchumacher@gmaiI.com // Password@1
-  Dev.Coppertop+Broadhub.LewisHamilton@gmail.com // Password@1
+#### OAuth2.0 User Info @ Okta 
+| Email             | Password  |
+| ----------------- | --------- |
+| Dev.Coppertop+Broadhub.SkyJackson@gmail.com | OAuthPass |
+| Dev.Coppertop+Broadhub.BenGreen@gmail.com | OAuthPass |
+| Dev.Coppertop+Broadhub.RebeccaDeer@gmaiI.com | OAuthPass |
+| Dev.Coppertop+Broadhub.DaveBIack@gmaiI.com | OAuthPass |
+| Dev.Coppertop+Broadhub.JohnDoe@gmail.com | OAuthPass |

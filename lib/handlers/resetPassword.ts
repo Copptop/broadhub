@@ -12,9 +12,10 @@ export const ResetPasswordHandler = async (email: string) => {
   const emailVerfied = await getUser_Email(email)
   if (!emailVerfied || !emailVerfied.email || !emailVerfied.password) { return { error: "User does not exist" } }
 
+  // Disable due to domain issue explained in the README
   // Generate + Send the password reset token
-  const pr = await GeneratePR(email)
-  await sendPR(pr.email, pr.token)
+  // const pr = await GeneratePR(email)
+  // await sendPR(pr.email, pr.token)
 
   return { success: "Reset Password Email Sent" }
 }

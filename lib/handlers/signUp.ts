@@ -67,11 +67,12 @@ export const SignUpHandler = async (values: SignInValues) => {
       }
     })
 
+    // Disable due to domain issue explained in the README
     // Generates a verification token and sends it to the user
-    const vt_user = await GenerateVT(email)
+    // const vt_user = await GenerateVT(email)
 
-    // Sends the verification token
-    await sendVT(vt_user.email, vt_user.token)
+    // // Sends the verification token
+    // await sendVT(vt_user.email, vt_user.token)
 
     return { success: "Confirmation Email Sent w/ company code" }
   }
@@ -84,10 +85,10 @@ export const SignUpHandler = async (values: SignInValues) => {
       password: hashedPassword
     }
   })
-
+  // Disable due to domain issue explained in the README
   // Generates a email v=verification token and sends it to the user
-  const vt_user = await GenerateVT(email)
-  await sendVT(vt_user.email, vt_user.token)
+  // const vt_user = await GenerateVT(email)
+  // await sendVT(vt_user.email, vt_user.token)
 
   return { success: "Confirmation Email Sent" }
 }

@@ -24,14 +24,15 @@ export const SignInHandler = async (values: SignInValues, callbackUrl?: string) 
   if (!emailVerfied || !emailVerfied.email || !emailVerfied.password) { return { error: "User does not exist" } }
   // ^^ checks that the user exists and has an email and password (filters out OAuth users )
 
+  // Disable due to domain issue explained in the README
   // Checks if the email is verified and sends a verification token if it is not
-  if (!emailVerfied.emailVerified) {
-    // Generates a verification token and sends it to the user
-    const vt_user = await GenerateVT(email)
-    await sendVT(vt_user.email, vt_user.token)
+  // if (!emailVerfied.emailVerified) {
+  //   // Generates a verification token and sends it to the user
+  //   const vt_user = await GenerateVT(email)
+  //   await sendVT(vt_user.email, vt_user.token)
 
-    return { success: "Email not verified. Confirmation email sent" }
-  }
+  //   return { success: "Email not verified. Confirmation email sent" }
+  // }
 
   try {
     // Attempts to sign in the user with the email and password
