@@ -34,6 +34,7 @@ export const {
     }
   },
   callbacks: {
+    //Defines the handleing for the signIn event
     async signIn({ user, account }) {
       if (account?.provider !== 'credentials') return true
       const exisitingUser = await getUser_ID(user.id as string)
@@ -41,11 +42,13 @@ export const {
 
       return true
     },
+    //Defines the handleing for the session 
     async session({ session, token }) {
       if (token.sub && session.user) session.user.id = token.sub
       if (token.role && session.user) session.user.role = token.role as UserRole
       return session
     },
+    //Defines the handleing for the jwt 
     async jwt({ token }) {
       if (!token.sub) return token
       const user = await getUser_ID(token.sub)
@@ -55,6 +58,7 @@ export const {
       return token
     }
   },
+  //Defines the pages for the NextAuth
   pages: {
     signIn: "/auth/signin",
     signOut: "/auth/signin",
