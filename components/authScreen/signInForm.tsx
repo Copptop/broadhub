@@ -32,7 +32,8 @@ export default function SignInForm() {
       SignInHandler({ email: _email.current, password: _password.current }, callbackUrl ?? undefined)
         .then((data) => {   //Handles the response from the SignInHandler function
           setError(data?.error)
-          setSuccess(data?.success)
+          // Disable due to domain issue explained in the README
+          // setSuccess(data?.success)
         })
     })
   }
