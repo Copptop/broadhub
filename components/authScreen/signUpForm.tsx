@@ -51,7 +51,7 @@ export default function SignUpForm() {
             setTimeout(() => {
               setError(undefined);
               setSuccess(undefined);
-              router.push('/auth/Signin');
+              router.push('/auth/signin');
             }, 3500);
           }
         });
