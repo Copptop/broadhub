@@ -13,9 +13,9 @@ Please note that no matter the environment you are running the project the follo
  - Email verification required for login 
  - Password reset functionality
  - All other Email related functionality
+This is due to a domain not being purchased and set up for the project, and as such the email functionality will not work.
 
- This is due to a domain not being purchased and set up for the project, and as such the email functionality will not work.
-If you with to run the project locally however, please follow the steps below:
+If you wish to run the project locally however, please follow the steps below:
 
 ### IF CLONED FROM GITHUB - PLEASE FOLLOW THE BELOW STEPS
 1. Install Node.js 18 or later
