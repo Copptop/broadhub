@@ -37,8 +37,6 @@ If you with to run the project locally however, please follow the steps below:
 ### Users Login credentials
 These are the default credentials for the users in the system. and can be used to login to the system.
 
-**Please note that if you are running the project locally you will need to init the data into your database instance (please see above steps).**
-
 #### Credential User Info @ Credential 
 | Email             | Password  |
 | ----------------- | --------- |
