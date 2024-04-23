@@ -19,9 +19,10 @@ Please note that no matter the environment you are running the project the follo
 If you with to run the project locally however, please follow the steps below:
 1. Install Node.js 18 or later
 2. Clone the repo
-3. Install dependencies by running `npm ci`
-4. Start the server with `npm run dev`
-5. Navigate to [http://localhost:3000](http://localhost:3000) in your browser
+3. Get the `.env` file from the source code found in supporting materials - cannot be shared in the public repo due to security reasons
+4. Install dependencies by running `npm ci`
+5. Start the server with `npm run dev`
+6. Navigate to [http://localhost:3000](http://localhost:3000) in your browser
 
 ## Defaults
 ### Users Login credentials
