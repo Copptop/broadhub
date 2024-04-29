@@ -2,6 +2,7 @@
 
 import { prismaInstance } from "@/lib/prisma";
 import { currentUser } from "../hooks/server/use-current-user";
+import { add } from "date-fns";
 
 // Function to format the date and time
 function formattedDateTime(date: Date, time: string) {
@@ -100,6 +101,7 @@ export const getSpecificBooking = async (id: string) => {
 
 // Function to create a booking
 export const createBooking = async (resourceName: string, location: string, date: Date, start: string, end: string) => {
+  date = add(date, { hours: 1 })
   const startDT = formattedDateTime(date, start)
   const endDT = formattedDateTime(date, end)
 
